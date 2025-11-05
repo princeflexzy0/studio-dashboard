@@ -1,3 +1,5 @@
+'use client';
+
 export const TableSkeleton = ({ rows = 5 }) => (
   <div className="space-y-3 animate-pulse">
     {[...Array(rows)].map((_, i) => (

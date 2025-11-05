@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/types/dashboard';
 
@@ -16,12 +18,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session
     const checkAuth = async () => {
       try {
         const token = localStorage.getItem('studio_token');
         if (token) {
-          // Verify token with API
           const response = await fetch('/api/auth/verify', {
             headers: { Authorization: `Bearer ${token}` }
           });
