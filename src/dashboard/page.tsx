@@ -1,4 +1,5 @@
 'use client';
+'use client';
 
 import { useQuery } from 'react-query';
 import { dashboardService } from '@/services/dashboard.service';
