@@ -1,3 +1,4 @@
+'use client';
 
 import { useQuery } from 'react-query';
 import { dashboardService } from '@/services/dashboard.service';
@@ -32,7 +33,7 @@ export default function DashboardOverview() {
         <h1 className="text-3xl font-bold text-white mb-2">
           {getGreeting()}, {user?.name}! 👋
         </h1>
-        <p className="text-gray-400">Here's what's happening with your studio today</p>
+        <p className="text-gray-400">Here is what is happening with your studio today</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
