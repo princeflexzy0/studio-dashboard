@@ -1,4 +1,3 @@
-'use client';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
@@ -19,10 +18,7 @@ export default function RequestsPage() {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
 
-  const { data: requests, isLoading, error } = useQuery(
-    'requests',
-    dashboardService.getRequests
-  );
+  const { data: requests, isLoading, error } = useQuery('requests', dashboardService.getRequests);
 
   const updateMutation = useMutation(
     ({ id, action }: { id: string; action: 'approve' | 'reject' }) =>
@@ -48,23 +44,19 @@ export default function RequestsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Content Requests</h1>
           <p className="text-gray-400">Manage and review submission requests</p>
         </div>
 
-        {/* Filter Tabs */}
         <div className="flex gap-2 bg-[#0A0A0A] border border-[#1a1a1a] rounded-lg p-1">
           {['all', 'pending', 'approved', 'rejected'].map((tab) => (
             <button
               key={tab}
               onClick={() => setFilter(tab as any)}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors capitalize ${
-                filter === tab
-                  ? 'bg-[#00D9FF] text-black'
-                  : 'text-gray-400 hover:text-white'
+                filter === tab ? 'bg-[#00D9FF] text-black' : 'text-gray-400 hover:text-white'
               }`}
             >
               {tab}
@@ -73,42 +65,26 @@ export default function RequestsPage() {
         </div>
       </div>
 
-      {/* Requests Table */}
       <div className="bg-[#0A0A0A] border border-[#1a1a1a] rounded-xl overflow-hidden">
         {isLoading ? (
-          <div className="p-6">
-            <TableSkeleton />
-          </div>
+          <div className="p-6"><TableSkeleton /></div>
         ) : filteredRequests?.length === 0 ? (
-          <div className="p-12 text-center">
-            <p className="text-gray-400">No requests found</p>
-          </div>
+          <div className="p-12 text-center"><p className="text-gray-400">No requests found</p></div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-[#1a1a1a]">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Name
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Type
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Date
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Actions
-                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Type</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Date</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Status</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1a1a1a]">
                 {filteredRequests?.map((request, index) => {
                   const StatusIcon = statusConfig[request.status].icon;
-                  
                   return (
                     <motion.tr
                       key={request.id}
@@ -123,16 +99,10 @@ export default function RequestsPage() {
                           <p className="text-sm text-gray-400">by {request.submittedBy}</p>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-gray-400 capitalize">
-                        {request.type}
-                      </td>
-                      <td className="px-6 py-4 text-gray-400">
-                        {new Date(request.date).toLocaleDateString()}
-                      </td>
+                      <td className="px-6 py-4 text-gray-400 capitalize">{request.type}</td>
+                      <td className="px-6 py-4 text-gray-400">{new Date(request.date).toLocaleDateString()}</td>
                       <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${statusConfig[request.status].bg} ${statusConfig[request.status].color}`}
-                        >
+                        <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${statusConfig[request.status].bg} ${statusConfig[request.status].color}`}>
                           <StatusIcon className="w-3 h-3" />
                           {request.status}
                         </span>
