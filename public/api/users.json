@@ -1,0 +1,6 @@
+[
+  {"id": 1, "name": "John Doe", "email": "john@example.com", "role": "Creator", "uploads": 45, "revenue": 28500, "status": "active", "joined": "2024-08-15"},
+  {"id": 2, "name": "Jane Smith", "email": "jane@example.com", "role": "Editor", "uploads": 62, "revenue": 41200, "status": "active", "joined": "2024-07-22"},
+  {"id": 3, "name": "Mike Johnson", "email": "mike@example.com", "role": "Creator", "uploads": 28, "revenue": 15800, "status": "active", "joined": "2024-09-03"},
+  {"id": 4, "name": "Sarah Williams", "email": "sarah@example.com", "role": "Creator", "uploads": 51, "revenue": 32400, "status": "pending", "joined": "2024-10-12"}
+]
