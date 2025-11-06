@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Bell, Shield, Camera, Save, Lock, Mail, Phone, MapPin } from 'lucide-react';
+import { User, Bell, Shield, Camera, Save, Lock, Mail, Phone, MapPin, Loader } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import toast from 'react-hot-toast';
 
@@ -13,12 +13,13 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<TabType>('profile');
   const [profileImage, setProfileImage] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
   const [profileData, setProfileData] = useState({
     name: user?.name || '',
     email: user?.email || '',
-    phone: '+234 123 456 7890',
-    location: 'Lagos, Nigeria',
+    phone: '',
+    location: '',
     bio: 'Creative professional specializing in video content and digital media.',
   });
 
@@ -27,7 +28,30 @@ export default function SettingsPage() {
     if (savedImage) {
       setProfileImage(savedImage);
     }
+    detectUserLocation();
   }, []);
+
+  const detectUserLocation = async () => {
+    setIsLoadingLocation(true);
+    try {
+      const response = await fetch('https://ipapi.co/json/');
+      const data = await response.json();
+      
+      if (data.city && data.country_name) {
+        const detectedLocation = `${data.city}, ${data.region}, ${data.country_name}`;
+        setProfileData(prev => ({ ...prev, location: detectedLocation }));
+        
+        if (data.country_calling_code) {
+          setProfileData(prev => ({ ...prev, phone: data.country_calling_code + ' ' }));
+        }
+      }
+    } catch (error) {
+      console.error('Failed to detect location:', error);
+      setProfileData(prev => ({ ...prev, location: 'Location not detected' }));
+    } finally {
+      setIsLoadingLocation(false);
+    }
+  };
 
   const [notifications, setNotifications] = useState({
     emailNotifications: true,
@@ -57,14 +81,13 @@ export default function SettingsPage() {
         setProfileImage(imageUrl);
         localStorage.setItem('studio_profile_image', imageUrl);
         
-        // Update user in context immediately
         if (user) {
           const updatedUser = { ...user, avatar: imageUrl };
           login(updatedUser);
         }
         
         toast.success('Profile picture updated!', { style: { background: '#1F2937', color: '#fff' }, icon: '📸' });
-        window.dispatchEvent(new Event('storage')); // Trigger update in layout
+        window.dispatchEvent(new Event('storage'));
       };
       reader.readAsDataURL(file);
     }
@@ -80,7 +103,7 @@ export default function SettingsPage() {
       };
       login(updatedUser);
       localStorage.setItem('studio_user', JSON.stringify(updatedUser));
-      window.dispatchEvent(new Event('storage')); // Trigger update in layout
+      window.dispatchEvent(new Event('storage'));
     }
     toast.success('Profile updated successfully!', { style: { background: '#1F2937', color: '#fff' }, icon: '✅' });
   };
@@ -224,6 +247,7 @@ export default function SettingsPage() {
                     type="tel"
                     value={profileData.phone}
                     onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                    placeholder="Enter phone number"
                     className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
                   />
                 </div>
@@ -232,14 +256,29 @@ export default function SettingsPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Location</label>
                 <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
+                  {isLoadingLocation ? (
+                    <Loader className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-cyan-500 animate-spin" />
+                  ) : (
+                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
+                  )}
                   <input
                     type="text"
                     value={profileData.location}
                     onChange={(e) => setProfileData({ ...profileData, location: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
+                    placeholder="Auto-detecting location..."
+                    className="w-full pl-10 pr-20 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
                   />
+                  <motion.button
+                    type="button"
+                    onClick={detectUserLocation}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 rounded text-xs hover:bg-cyan-500/30 transition-all"
+                  >
+                    Detect
+                  </motion.button>
                 </div>
+                <p className="text-xs text-gray-500 mt-1">📍 Auto-detected based on your IP address</p>
               </div>
             </div>
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Activity, Server, Database, Zap, Clock, CheckCircle, AlertTriangle, TrendingUp } from 'lucide-react';
+import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface SystemMetric {
   name: string;
@@ -19,15 +20,15 @@ const mockMetrics: SystemMetric[] = [
   { name: 'Automation Queue', status: 'operational', uptime: 98.5, responseTime: 120, icon: Activity },
 ];
 
-// Generate realistic chart data
 const generateChartData = () => {
   const data = [];
   const baseValue = 95;
-  for (let i = 0; i < 90; i++) {
-    const variance = Math.sin(i / 5) * 2 + Math.random() * 3;
+  for (let i = 0; i < 30; i++) {
+    const variance = Math.sin(i / 3) * 2 + Math.random() * 2;
     data.push({
-      value: Math.max(85, Math.min(100, baseValue + variance)),
-      timestamp: new Date(Date.now() - (89 - i) * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      day: `Day ${i + 1}`,
+      uptime: Math.max(90, Math.min(100, baseValue + variance)),
+      date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     });
   }
   return data;
@@ -37,7 +38,6 @@ export default function SystemHealthPage() {
   const [metrics, setMetrics] = useState<SystemMetric[]>([]);
   const [lastCheck, setLastCheck] = useState<string>('');
   const [chartData] = useState(generateChartData());
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   useEffect(() => {
     setMetrics(mockMetrics);
@@ -65,8 +65,17 @@ export default function SystemHealthPage() {
   const overallStatus = metrics.every(m => m.status === 'operational') ? 'operational' : 'degraded';
   const avgUptime = (metrics.reduce((sum, m) => sum + m.uptime, 0) / metrics.length).toFixed(2);
 
-  const maxValue = Math.max(...chartData.map(d => d.value));
-  const minValue = Math.min(...chartData.map(d => d.value));
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-gray-900 border border-cyan-500/50 rounded-lg px-4 py-2 shadow-xl">
+          <p className="text-cyan-400 font-bold text-sm">{payload[0].value.toFixed(2)}%</p>
+          <p className="text-gray-400 text-xs">{payload[0].payload.date}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-4 sm:p-8">
@@ -77,136 +86,97 @@ export default function SystemHealthPage() {
         <p className="text-gray-400 text-sm sm:text-base">Monitor platform infrastructure and performance</p>
       </div>
 
-      {/* Overall Status */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`mb-6 p-6 rounded-xl border ${getStatusColor(overallStatus)} flex items-center justify-between`}
+        className={`mb-6 p-6 rounded-xl border ${getStatusColor(overallStatus)} flex flex-col sm:flex-row items-center justify-between gap-4`}
       >
         <div className="flex items-center gap-4">
           {getStatusIcon(overallStatus)}
-          <div>
+          <div className="text-center sm:text-left">
             <h2 className="text-2xl font-bold capitalize">{overallStatus}</h2>
             <p className="text-sm opacity-80">All systems running smoothly</p>
           </div>
         </div>
-        <div className="text-right">
+        <div className="text-center sm:text-right">
           <p className="text-3xl font-bold">{avgUptime}%</p>
           <p className="text-sm opacity-80">Avg Uptime</p>
         </div>
       </motion.div>
 
-      {/* Last Check */}
       <div className="mb-6 flex items-center gap-2 text-gray-400 text-sm">
         <Clock className="w-4 h-4" />
         <span>Last checked: {lastCheck}</span>
       </div>
 
-      {/* Professional Crypto-Style Chart */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
         className="mb-6 bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-gray-700/50 rounded-xl p-6"
       >
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <div>
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+            <h3 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
               <TrendingUp className="w-6 h-6 text-green-400" />
-              90-Day Uptime Performance
+              30-Day Uptime Performance
             </h3>
             <p className="text-sm text-gray-400 mt-1">Real-time system availability tracking</p>
           </div>
-          <div className="text-right">
+          <div className="text-center sm:text-right">
             <p className="text-3xl font-bold text-green-400">{avgUptime}%</p>
-            <p className="text-xs text-gray-500">Average</p>
+            <p className="text-xs text-gray-500">Average Uptime</p>
           </div>
         </div>
 
-        {/* Chart Container */}
-        <div className="relative h-64 sm:h-80">
-          {/* Grid Lines */}
-          <div className="absolute inset-0">
-            {[0, 25, 50, 75, 100].map((percent) => (
-              <div
-                key={percent}
-                className="absolute w-full border-t border-gray-800/50"
-                style={{ bottom: `${percent}%` }}
-              >
-                <span className="absolute -left-12 -top-2 text-xs text-gray-600">{85 + (percent * 0.15)}%</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Chart Area with Gradient */}
-          <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+        <ResponsiveContainer width="100%" height={350}>
+          <AreaChart data={chartData}>
             <defs>
-              <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="rgb(34, 211, 238)" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="rgb(34, 211, 238)" stopOpacity="0.0" />
+              <linearGradient id="uptimeGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0.05}/>
               </linearGradient>
             </defs>
-            
-            {/* Area Fill */}
-            <path
-              d={`M 0 ${100 - ((chartData[0].value - minValue) / (maxValue - minValue)) * 100}% ${chartData.map((d, i) => 
-                `L ${(i / (chartData.length - 1)) * 100}% ${100 - ((d.value - minValue) / (maxValue - minValue)) * 100}%`
-              ).join(' ')} L 100% 100% L 0 100% Z`}
-              fill="url(#chartGradient)"
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
+            <XAxis 
+              dataKey="date" 
+              stroke="#9ca3af" 
+              fontSize={11}
+              tickLine={false}
+              interval={4}
             />
-            
-            {/* Line */}
-            <path
-              d={`M 0 ${100 - ((chartData[0].value - minValue) / (maxValue - minValue)) * 100}% ${chartData.map((d, i) => 
-                `L ${(i / (chartData.length - 1)) * 100}% ${100 - ((d.value - minValue) / (maxValue - minValue)) * 100}%`
-              ).join(' ')}`}
-              fill="none"
-              stroke="rgb(34, 211, 238)"
-              strokeWidth="2"
-              vectorEffect="non-scaling-stroke"
+            <YAxis 
+              stroke="#9ca3af" 
+              fontSize={11}
+              domain={[90, 100]}
+              tickLine={false}
+              tickFormatter={(value) => `${value}%`}
             />
-          </svg>
+            <Tooltip content={<CustomTooltip />} />
+            <Area
+              type="monotone"
+              dataKey="uptime"
+              stroke="#10b981"
+              strokeWidth={3}
+              fillOpacity={1}
+              fill="url(#uptimeGradient)"
+              animationDuration={2000}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
 
-          {/* Interactive Dots */}
-          <div className="absolute inset-0">
-            {chartData.map((d, i) => {
-              const x = (i / (chartData.length - 1)) * 100;
-              const y = 100 - ((d.value - minValue) / (maxValue - minValue)) * 100;
-              return (
-                <motion.div
-                  key={i}
-                  className="absolute w-2 h-2"
-                  style={{ left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)' }}
-                  onHoverStart={() => setHoveredIndex(i)}
-                  onHoverEnd={() => setHoveredIndex(null)}
-                  whileHover={{ scale: 2 }}
-                >
-                  <div className="w-full h-full bg-cyan-400 rounded-full shadow-lg shadow-cyan-500/50" />
-                  {hoveredIndex === i && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 border border-cyan-500/50 rounded-lg px-3 py-2 whitespace-nowrap"
-                    >
-                      <p className="text-cyan-400 font-bold text-sm">{d.value.toFixed(2)}%</p>
-                      <p className="text-gray-400 text-xs">{d.timestamp}</p>
-                    </motion.div>
-                  )}
-                </motion.div>
-              );
-            })}
+        <div className="mt-4 flex items-center justify-center gap-4 text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+            <span className="text-gray-400">System Uptime</span>
           </div>
-        </div>
-
-        {/* Timeline */}
-        <div className="flex justify-between text-xs text-gray-500 mt-4 pl-12">
-          <span>{chartData[0].timestamp}</span>
-          <span>{chartData[Math.floor(chartData.length / 2)].timestamp}</span>
-          <span>{chartData[chartData.length - 1].timestamp}</span>
+          <div className="flex items-center gap-2 text-gray-500">
+            <span>•</span>
+            <span>Last 30 days</span>
+          </div>
         </div>
       </motion.div>
 
-      {/* System Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {metrics.map((metric, index) => {
           const Icon = metric.icon;
@@ -215,7 +185,7 @@ export default function SystemHealthPage() {
               key={metric.name}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
+              transition={{ delay: 0.4 + index * 0.1 }}
               className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-gray-700/50 rounded-xl p-6 hover:border-cyan-500/50 transition-all"
             >
               <div className="flex items-start justify-between mb-4">
@@ -233,23 +203,25 @@ export default function SystemHealthPage() {
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-sm">Uptime</span>
-                  <span className="text-green-400 font-semibold">{metric.uptime}%</span>
-                </div>
-                <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${metric.uptime}%` }}
-                    transition={{ duration: 1, delay: index * 0.1 }}
-                    className="h-full bg-gradient-to-r from-green-500 to-cyan-500"
-                  />
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-400 text-sm">Uptime</span>
+                    <span className="text-green-400 font-semibold text-lg">{metric.uptime}%</span>
+                  </div>
+                  <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${metric.uptime}%` }}
+                      transition={{ duration: 1.5, delay: 0.5 + index * 0.1 }}
+                      className="h-full bg-gradient-to-r from-green-500 to-emerald-400 rounded-full"
+                    />
+                  </div>
                 </div>
 
-                <div className="flex justify-between items-center pt-2">
+                <div className="flex justify-between items-center pt-2 border-t border-gray-700/50">
                   <span className="text-gray-400 text-sm">Response Time</span>
-                  <span className="text-cyan-400 font-semibold">{metric.responseTime}ms</span>
+                  <span className="text-cyan-400 font-semibold text-lg">{metric.responseTime}ms</span>
                 </div>
               </div>
             </motion.div>
