@@ -1,46 +1,26 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { LucideIcon } from 'lucide-react';
 
 interface StatCardProps {
   title: string;
   value: number;
   icon: LucideIcon;
-  trend?: { value: number; isPositive: boolean };
   loading?: boolean;
 }
 
-export const StatCard = ({ title, value, icon: Icon, trend, loading }: StatCardProps) => {
-  if (loading) {
-    return (
-      <div className="bg-[#0A0A0A] border border-[#1a1a1a] rounded-xl p-6 animate-pulse">
-        <div className="h-4 bg-[#1a1a1a] rounded w-1/2 mb-4" />
-        <div className="h-8 bg-[#1a1a1a] rounded w-3/4" />
-      </div>
-    );
-  }
-
+export function StatCard({ title, value, icon: Icon, loading }: StatCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-[#0A0A0A] border border-[#1a1a1a] rounded-xl p-6 hover:border-[#00D9FF] transition-all duration-300"
-    >
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-gray-400 text-sm font-medium">{title}</span>
-        <Icon className="w-5 h-5 text-[#00D9FF]" />
+    <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-gray-700/50 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 cursor-pointer">
+      <div className="flex items-center justify-between mb-2 sm:mb-4">
+        <span className="text-gray-400 text-xs sm:text-sm font-medium">{title}</span>
+        <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-500" />
       </div>
-      
       <div className="flex items-end justify-between">
-        <span className="text-3xl font-bold text-white">{value}</span>
-        
-        {trend && (
-          <span className={`text-sm ${trend.isPositive ? 'text-green-500' : 'text-red-500'}`}>
-            {trend.isPositive ? '↑' : '↓'} {trend.value}%
-          </span>
-        )}
+        <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
+          {loading ? '...' : value.toLocaleString()}
+        </span>
       </div>
-    </motion.div>
+    </div>
   );
-};
+}
