@@ -17,7 +17,7 @@ const navigation = [
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { user, logout } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
@@ -26,9 +26,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     setMounted(true);
   }, []);
 
-  const displayUser = user || { name: 'Princeflexzy', role: 'admin', email: 'demo@studio.com' };
+  useEffect(() => {
+    if (mounted && !isAuthenticated) {
+      router.push('/login');
+    }
+  }, [mounted, isAuthenticated, router]);
 
-  if (!mounted) {
+  if (!mounted || !isAuthenticated) {
     return <div className="min-h-screen bg-black flex items-center justify-center">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-[#00D9FF]" />
     </div>;
@@ -43,10 +47,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         
         <div className="mb-8 p-4 bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-gray-700/50 rounded-xl">
           <div className="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center mb-3">
-            <span className="text-white font-bold text-lg">{displayUser.name.charAt(0)}</span>
+            <span className="text-white font-bold text-lg">{user?.name?.charAt(0) || 'A'}</span>
           </div>
-          <p className="text-white font-medium">{displayUser.name}</p>
-          <p className="text-xs text-gray-400 capitalize">{displayUser.role}</p>
+          <p className="text-white font-medium">{user?.name || 'Admin User'}</p>
+          <p className="text-xs text-gray-400 capitalize">{user?.role || 'admin'}</p>
         </div>
 
         <nav className="space-y-1 flex-1">
@@ -71,8 +75,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <button 
           onClick={() => { 
-            if (logout) logout(); 
-            router.push('/'); 
+            logout(); 
+            router.push('/login'); 
           }} 
           className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-gray-400 hover:text-white hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/30"
         >
