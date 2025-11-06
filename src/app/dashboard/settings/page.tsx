@@ -5,6 +5,10 @@ import { User, Bell, Shield, Camera, Mail, Phone, MapPin, Lock, Eye, EyeOff, Sav
 import { useAuth } from '@/contexts/AuthContext';
 import toast from 'react-hot-toast';
 
+// Force dynamic rendering - NO static generation
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+
 type TabType = 'profile' | 'notifications' | 'security';
 
 interface NotificationSettings {
@@ -17,7 +21,27 @@ interface NotificationSettings {
 }
 
 export default function SettingsPage() {
-  // Always call useAuth - never conditionally
+  const [mounted, setMounted] = useState(false);
+
+  // Wait for client-side hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Show loading state until mounted
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500"></div>
+      </div>
+    );
+  }
+
+  return <SettingsContent />;
+}
+
+function SettingsContent() {
+  // Now we can safely use useAuth after mount
   const { user, updateUser, updateProfilePicture } = useAuth();
   
   const [activeTab, setActiveTab] = useState<TabType>('profile');
