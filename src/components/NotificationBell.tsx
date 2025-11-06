@@ -23,7 +23,7 @@ export default function NotificationBell() {
 
   const playSound = () => {
     try {
-      const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZRQ0PVqzn77BhGgU7k9n0yX8pBSh+zPLaizsIGGS56+mgUBELTKXh8bllHAU2jdXzzn0oBSp6y/HZiToIGWi76+mjURALSqPg8bplHAU3jNTzzn0pBSl6y/HaizsIGGS56+mjUhALSqPg8bllHAU2jdXzzn0oBSh6y/HZiToIGWi76+mjURALSqPg8bllHAU3jNTzzn0pBSl6y/HaizsIGGS56+mjUhALSqPg8bllHAU2jdXzzn0oBSh6y/HZiToIGWi76+mjURALSqPg8bllHAU3jNTzzn0pBSl6y/HaizsIGGS56+mjUhALSqPg8bllHAU2jdXzzn0oBSh6y/HZiToIGWi76+mjURALSqPg8bllHAU3jNTzzn0pBSl6y/HaizsIGGS56+mjUhALSqPg8bllHAU2jdXzzn0oBSh6y/HZiToIGWi76+mjURALSqPg8bllHAU3jNTzzn0pBSl6y/HaizsIGGS56+mjUhALSqPg8bllHAU2jdXzzn0oBSh6y/HZiToIGWi76+mjURALSqPg8bllHAU3jNTzzn0pBSl6y/HaizsIGGS56+mjUhALSqPg8Q==');
+      const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZRQ0PVqzn77BhGgU7k9n0yX8pBSh+zPLaizsIGGS56+mgUBELTKXh8bllHAU2jdXzzn0oBSp6y/HZiToIGWi76+mjURALSqPg8bplHAU3jNTzzn0pBSl6y/HZiToIGWi76+mjUhALSqPg8bllHAU2jdXzzn0oBSh6y/HZiToIGWi76+mjURALSqPg8bllHAU3jNTzzn0pBSl6y/HaizsIGGS56+mjUhALSqPg8bllHAU2jdXzzn0oBSh6y/HZiToIGWi76+mjURALSqPg8bllHAU3jNTzzn0pBSl6y/HaizsIGGS56+mjUhALSqPg8bllHAU2jdXzzn0oBSh6y/HZiToIGWi76+mjURALSqPg8bllHAU3jNTzzn0pBSl6y/HaizsIGGS56+mjUhALSqPg8bllHAU2jdXzzn0oBSh6y/HZiToIGWi76+mjURALSqPg8bllHAU3jNTzzn0pBSl6y/HaizsIGGS56+mjUhALSqPg8bllHAU2jdXzzn0oBSh6y/HZiToIGWi76+mjURALSqPg8bllHAU3jNTzzn0pBSl6y/HaizsIGGS56+mjUhALSqPg8Q==');
       audio.volume = 0.5;
       audio.play().catch(() => console.log('Audio blocked by browser'));
     } catch (error) {
@@ -67,15 +67,19 @@ export default function NotificationBell() {
       <AnimatePresence>
         {isOpen && (
           <>
+            {/* Backdrop */}
             <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+            
+            {/* Notification Panel - Mobile: Full width with padding, Desktop: Fixed width */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute right-0 mt-2 w-80 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl border border-gray-700 z-50 overflow-hidden"
+              className="fixed sm:absolute left-4 right-4 sm:left-auto sm:right-0 mt-2 sm:w-96 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl border border-gray-700 z-50 overflow-hidden max-w-md sm:max-w-none"
             >
+              {/* Header */}
               <div className="p-4 border-b border-gray-700 flex items-center justify-between">
-                <h3 className="text-lg font-bold text-white">Notifications</h3>
+                <h3 className="text-base sm:text-lg font-bold text-white">Notifications</h3>
                 <div className="flex items-center gap-2">
                   {unreadCount > 0 && (
                     <button
@@ -91,26 +95,34 @@ export default function NotificationBell() {
                 </div>
               </div>
 
-              <div className="max-h-96 overflow-y-auto">
-                {notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className={`p-4 border-b border-gray-700 hover:bg-gray-700/50 transition-colors cursor-pointer ${
-                      !notification.read ? 'bg-cyan-500/5' : ''
-                    }`}
-                    onClick={() => markAsRead(notification.id)}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1">
-                        <p className="text-sm text-white mb-1">{notification.message}</p>
-                        <p className="text-xs text-gray-400">{notification.time}</p>
+              {/* Notifications List */}
+              <div className="max-h-[60vh] sm:max-h-96 overflow-y-auto">
+                {notifications.length > 0 ? (
+                  notifications.map((notification) => (
+                    <div
+                      key={notification.id}
+                      className={`p-4 border-b border-gray-700 hover:bg-gray-700/50 transition-colors cursor-pointer ${
+                        !notification.read ? 'bg-cyan-500/5' : ''
+                      }`}
+                      onClick={() => markAsRead(notification.id)}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-white mb-1 break-words">{notification.message}</p>
+                          <p className="text-xs text-gray-400">{notification.time}</p>
+                        </div>
+                        {!notification.read && (
+                          <div className="w-2 h-2 bg-cyan-500 rounded-full flex-shrink-0 mt-2" />
+                        )}
                       </div>
-                      {!notification.read && (
-                        <div className="w-2 h-2 bg-cyan-500 rounded-full flex-shrink-0 mt-2" />
-                      )}
                     </div>
+                  ))
+                ) : (
+                  <div className="p-8 text-center">
+                    <Bell className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+                    <p className="text-gray-400">No notifications</p>
                   </div>
-                ))}
+                )}
               </div>
             </motion.div>
           </>

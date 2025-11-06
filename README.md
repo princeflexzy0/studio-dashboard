@@ -1,240 +1,307 @@
-# 🎯 Studio Dashboard
+# 📸 Studio Dashboard
 
-A professional admin dashboard for managing studio operations, content creators, campaigns, and system monitoring.
+A modern, full-featured content creator management dashboard built with Next.js 14, TypeScript, and Tailwind CSS.
 
-![Next.js](https://img.shields.io/badge/Next.js-14-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
-![Tailwind](https://img.shields.io/badge/Tailwind-3.4-cyan)
-![License](https://img.shields.io/badge/License-Proprietary-red)
+## 🌟 Features
 
-## 🚀 Live Demo
+### 👤 Authentication System
+- Secure login and signup pages
+- User session management
+- Profile picture upload and display
+- Dynamic user menu with dropdown
 
-**Production URL:** [https://studio-dashboard-pearl.vercel.app](https://studio-dashboard-pearl.vercel.app)
+### 📊 Dashboard Pages
 
-## ✨ Features
+#### 1. **Overview Dashboard**
+- Real-time statistics and metrics
+- Quick access to key features
+- Activity feed and notifications
 
-### Core Features
-- 📊 **Dashboard Overview** - Real-time statistics and analytics
-- 💳 **Billing & Subscription** - Payment processing and plan management
-- 📈 **System Health Monitor** - 30-day uptime tracking
-- 👥 **User Management** - Creator and user administration
-- 📺 **Content Management** - Upload system with drag-drop
-- 📋 **Request Management** - Approval/rejection workflow
-- 🎯 **Campaign Tracker** - Budget and performance monitoring
-- ⚙️ **Settings** - Profile, Notifications, Security (3 tabs)
-- 🔔 **Notification Center** - Real-time alerts with audio
+#### 2. **Campaigns Management**
+- Create and edit campaigns with date pickers
+- Budget tracking in USD
+- Pause/Resume/Delete campaigns
+- Real-time status updates
+- Campaign performance metrics
 
-### Highlights
-- ✅ Fully responsive (mobile, tablet, desktop)
-- ✅ Dark theme with neon accents
-- ✅ Smooth animations (Framer Motion)
-- ✅ TypeScript for type safety
-- ✅ Modern UI/UX
-- ✅ Production ready
+#### 3. **Content Creators**
+- Add new creators with detailed profiles
+- Direct messaging system
+- Approve/Suspend creator accounts
+- Track earnings and performance
+- Global creator diversity support
 
-## 🛠 Tech Stack
+#### 4. **User Management**
+- Add/Edit users with role assignment
+- Role-based access (Admin/Editor/Viewer)
+- Activate/Deactivate user accounts
+- User activity tracking
 
-| Technology | Purpose |
-|------------|---------|
-| **Next.js 14** | React framework with App Router |
-| **TypeScript** | Type-safe development |
-| **Tailwind CSS** | Utility-first styling |
-| **Framer Motion** | Smooth animations |
-| **Recharts** | Data visualization |
-| **React Query** | Server state management |
-| **Lucide React** | Modern icon library |
+#### 5. **Content Requests**
+- View detailed request information
+- Approve/Reject workflow with reasons
+- Status tracking (Pending/Approved/Rejected)
+- Request filtering and search
+
+#### 6. **Billing & Payments**
+- Multiple subscription plans (Starter/Professional/Enterprise)
+- Add payment methods securely
+- Upgrade/Downgrade plans
+- Transaction history with invoice downloads
+- Credit usage tracking
+
+#### 7. **Content Library**
+- Upload files (videos, images, documents)
+- View file details and metadata
+- Download files
+- Delete with confirmation
+- File type categorization
+
+#### 8. **System Monitoring**
+- Real-time system health checks
+- Performance metrics
+- Server status monitoring
+
+#### 9. **Settings**
+- Profile management with picture upload
+- Email and password updates
+- Notification preferences
+- Security settings
+
+### 🎨 UI/UX Features
+- **Responsive Design**: Optimized for mobile, tablet, and desktop
+- **Dark Theme**: Modern gradient-based dark interface
+- **Smooth Animations**: Framer Motion powered transitions
+- **Toast Notifications**: Real-time user feedback
+- **Form Validations**: Client-side input validation
+- **Loading States**: Skeleton screens and spinners
+- **Empty States**: Helpful placeholders for empty data
+- **Dropdown Menus**: Context-aware action menus
+- **Modal Dialogs**: Clean, animated modal interfaces
+
+### 🔔 Notification System
+- Real-time notification bell with badge count
+- Mobile-responsive notification panel
+- Mark as read functionality
+- Sound alerts for new notifications
+- Notification history
+
+## 🛠️ Technology Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Notifications**: react-hot-toast
+- **State Management**: React Context API
+- **Form Handling**: React Hooks
 
 ## 📦 Installation
-
-### Prerequisites
-- Node.js 18.x or higher
-- npm or yarn
-
-### Setup
-
-1. **Clone the repository**
 ```bash
-   git clone https://github.com/princeflexzy0/studio-dashboard.git
-   cd studio-dashboard
+# Clone the repository
+git clone https://github.com/yourusername/studio-dashboard.git
+
+# Navigate to project directory
+cd studio-dashboard
+
+# Install dependencies
+npm install
+
+# Create environment file
+cp .env.example .env.local
+
+# Run development server
+npm run dev
 ```
 
-2. **Install dependencies**
-```bash
-   npm install
-```
-
-3. **Set up environment variables**
-```bash
-   cp .env.example .env.local
-```
-   
-   Edit `.env.local` with your values:
-```env
-   NEXT_PUBLIC_API_URL=your_backend_api_url
-   DEMO_ADMIN_EMAIL=your_admin_email
-   DEMO_ADMIN_PASSWORD=your_secure_password
-```
-
-4. **Run development server**
-```bash
-   npm run dev
-```
-
-5. **Open browser**
-```
-   http://localhost:3000
-```
-
-## 🏗 Project Structure
-```
-studio-dashboard/
-├── src/
-│   ├── app/                  # Next.js app router
-│   │   ├── dashboard/        # Dashboard pages
-│   │   │   ├── page.tsx      # Overview
-│   │   │   ├── billing/      # Billing & subscription
-│   │   │   ├── campaigns/    # Campaign tracker
-│   │   │   ├── creators/     # User management
-│   │   │   ├── requests/     # Request approval
-│   │   │   ├── settings/     # Settings (3 tabs)
-│   │   │   ├── system/       # System health
-│   │   │   └── uploads/      # Upload management
-│   │   ├── login/            # Authentication
-│   │   └── layout.tsx        # Root layout
-│   ├── components/           # Reusable components
-│   │   ├── dashboard/        # Dashboard-specific
-│   │   └── NotificationBell.tsx
-│   ├── contexts/             # React contexts
-│   │   └── AuthContext.tsx   # Auth state
-│   ├── services/             # API services
-│   │   └── dashboard.service.ts
-│   └── lib/                  # Utilities
-├── public/
-│   └── api/                  # Mock API data (development)
-├── docs/                     # Documentation
-│   └── CLIENT_HANDOVER.md    # Client documentation
-└── package.json
-```
-
-## 🔄 API Integration
-
-Currently using mock data from `/public/api/` for demonstration.
-
-### To Connect Your Backend:
-
-1. **Set API URL**
-```env
-   NEXT_PUBLIC_API_URL=https://your-api.com
-```
-
-2. **Update Service Layer**
-   Edit `src/services/dashboard.service.ts` to point to your endpoints.
-
-3. **Expected Endpoints**
-```
-   GET  /api/studio/overview      - Dashboard stats
-   GET  /api/admin/users          - Users list
-   GET  /api/admin/campaigns      - Campaigns
-   GET  /api/uploads              - Uploads
-   GET  /api/studio/requests      - Requests
-   GET  /api/system/health        - System health
-   POST /api/studio/request/:id/action - Approve/reject
-```
-
-4. **Response Format**
-   Check mock JSON files in `/public/api/` for expected response structure.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🚀 Deployment
 
-### Deploy to Vercel (Recommended)
-
-1. **Push to GitHub**
+### Vercel (Recommended)
 ```bash
-   git push origin main
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
 ```
 
-2. **Connect to Vercel**
-   - Go to [vercel.com](https://vercel.com)
-   - Import your repository
-   - Configure environment variables
-   - Deploy
-
-3. **Auto-Deploy**
-   - Vercel automatically deploys on push to main branch
-
-### Manual Deployment
+### Manual Build
 ```bash
+# Build for production
 npm run build
+
+# Start production server
 npm start
 ```
 
-Deploy the `.next` folder to your hosting provider.
-
-## 📱 Browser Support
-
-| Browser | Version |
-|---------|---------|
-| Chrome | 120+ |
-| Firefox | 120+ |
-| Safari | 17+ |
-| Edge | 120+ |
-| Mobile Safari | iOS 15+ |
-| Chrome Mobile | Android 12+ |
-
-## 🔒 Security
-
-⚠️ **Important Security Notes:**
-
-- Demo authentication is for **development only**
-- Implement proper authentication in production (OAuth, JWT)
-- Store credentials in environment variables (never commit)
-- Use HTTPS in production
-- Implement rate limiting
-- Add CSRF protection
-- Sanitize all user inputs
-- Regular security audits
-
-## 📝 Development
-
-### Available Scripts
-```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run type-check   # TypeScript type checking
+## 📁 Project Structure
+```
+studio-dashboard/
+├── src/
+│   ├── app/
+│   │   ├── dashboard/
+│   │   │   ├── billing/
+│   │   │   ├── campaigns/
+│   │   │   ├── creators/
+│   │   │   ├── library/
+│   │   │   ├── requests/
+│   │   │   ├── settings/
+│   │   │   ├── system/
+│   │   │   ├── uploads/
+│   │   │   ├── users/
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
+│   │   ├── login/
+│   │   ├── signup/
+│   │   └── layout.tsx
+│   ├── components/
+│   │   └── NotificationBell.tsx
+│   ├── contexts/
+│   │   └── AuthContext.tsx
+│   └── services/
+│       └── dashboard.service.ts
+├── public/
+├── .env.local
+├── next.config.js
+├── tailwind.config.ts
+├── tsconfig.json
+└── package.json
 ```
 
-### Code Style
+## 🔐 Environment Variables
 
-- TypeScript strict mode enabled
-- ESLint for code quality
-- Prettier for formatting
-- Conventional commits
+Create a `.env.local` file:
+```env
+NEXT_PUBLIC_API_URL=your_api_url_here
+NEXT_PUBLIC_APP_NAME=Studio Dashboard
+```
 
-## 📄 License
+## 🎯 Key Features by Page
 
-**Proprietary** - All rights reserved
+### Campaigns
+- Full CRUD operations
+- Budget management (USD)
+- Date range selection
+- Status management (Active/Paused/Scheduled/Completed)
+- Performance metrics display
 
-This software is proprietary and confidential. Unauthorized copying, modification, distribution, or use of this software, via any medium, is strictly prohibited.
+### Creators
+- Creator profiles with avatars
+- Email and phone contact info
+- Location tracking
+- Earnings and video statistics
+- Messaging system
+- Approval workflow
 
-## 📞 Support
+### Users
+- User role management
+- Profile editing
+- Account status toggling
+- User activity logs
 
-For issues, questions, or feature requests:
-- Create an issue in the repository
-- Contact the development team
+### Requests
+- Request status workflow
+- Approval with confirmation
+- Rejection with reasons
+- Detailed view modal
+- Date and creator tracking
 
-## 🙏 Acknowledgments
+### Billing
+- Plan comparison (Starter/Pro/Enterprise)
+- Credit usage tracking
+- Payment method management
+- Transaction history
+- Invoice downloads
 
-Built with modern web technologies:
-- [Next.js](https://nextjs.org/)
-- [React](https://react.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [Recharts](https://recharts.org/)
+### Library
+- Multi-format file support
+- File metadata display
+- Upload with progress
+- Preview and download
+- Bulk operations
+
+## 💡 Usage Examples
+
+### Adding a Campaign
+1. Navigate to Campaigns page
+2. Click "New Campaign" button
+3. Fill in campaign details (name, budget, dates)
+4. Click "Create" to save
+
+### Managing Creators
+1. Go to Creators page
+2. Click "Add Creator" to onboard new creators
+3. Use Message icon to communicate
+4. Approve/Suspend using action buttons
+
+### Handling Requests
+1. Visit Requests page
+2. Click "View" to see request details
+3. Use "Approve" or "Reject" buttons
+4. Add rejection reason if declining
+
+## 🎨 Customization
+
+### Theme Colors
+Edit `tailwind.config.ts` to customize colors:
+```typescript
+theme: {
+  extend: {
+    colors: {
+      primary: '#06b6d4', // Cyan
+      secondary: '#3b82f6', // Blue
+    }
+  }
+}
+```
+
+### Adding New Pages
+1. Create folder in `src/app/dashboard/`
+2. Add `page.tsx` file
+3. Update navigation in `layout.tsx`
+
+## 🐛 Troubleshooting
+
+### Build Errors
+```bash
+# Clear Next.js cache
+rm -rf .next
+
+# Reinstall dependencies
+rm -rf node_modules package-lock.json
+npm install
+
+# Rebuild
+npm run build
+```
+
+### Authentication Issues
+- Check localStorage is enabled in browser
+- Verify environment variables are set
+- Clear browser cache and cookies
+
+## 📝 License
+
+MIT License - feel free to use this project for personal or commercial purposes.
+
+## 👥 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📧 Support
+
+For issues and questions, please open an issue on GitHub.
+
+## 🎉 Acknowledgments
+
+- Next.js team for the amazing framework
+- Tailwind CSS for utility-first CSS
+- Framer Motion for smooth animations
+- Lucide for beautiful icons
 
 ---
 
-**Built with ❤️ for professional studio management**
-
-📅 Last Updated: November 6, 2025
+Built with ❤️ using Next.js 14
