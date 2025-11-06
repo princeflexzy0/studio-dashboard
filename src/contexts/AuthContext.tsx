@@ -1,57 +1,62 @@
 'use client';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-
-export interface User {
+interface User {
   id: string;
   name: string;
   email: string;
   role: 'admin' | 'studio' | 'creator';
-  avatar?: string;
+  profilePicture?: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  loading: boolean;
-  login: (user: User) => void;
+  login: (userData: User) => void;
   logout: () => void;
-  isAuthenticated: boolean;
+  updateProfilePicture: (imageUrl: string) => void;
+  updateUser: (userData: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('studio_user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error('Failed to parse user data:', error);
-        localStorage.removeItem('studio_user');
-      }
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
     }
-    setLoading(false);
   }, []);
 
   const login = (userData: User) => {
     setUser(userData);
-    localStorage.setItem('studio_user', JSON.stringify(userData));
+    localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('studio_user');
-    router.push('/login');
+    localStorage.removeItem('user');
+  };
+
+  const updateProfilePicture = (imageUrl: string) => {
+    if (user) {
+      const updatedUser = { ...user, profilePicture: imageUrl };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+  };
+
+  const updateUser = (userData: Partial<User>) => {
+    if (user) {
+      const updatedUser = { ...user, ...userData };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, login, logout, updateProfilePicture, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

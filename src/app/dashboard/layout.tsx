@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { NotificationBell } from '@/components/NotificationBell';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, Upload, Users, Briefcase, FileText, 
@@ -47,6 +48,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="fixed top-0 left-0 right-0 lg:left-64 bg-gray-900/95 backdrop-blur-lg border-b border-gray-800 z-50">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-4">
+            <NotificationBell />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="lg:hidden p-2 hover:bg-gray-800 rounded-lg transition-colors"
