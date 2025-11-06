@@ -1,93 +1,63 @@
-interface DashboardStats {
-  totalUploads: number;
-  activeUsers: number;
-  storageUsed: string;
-  revenue: number;
-}
-
-interface Upload {
-  id: string;
-  title: string;
-  date: string;
-  status: string;
-  uploader: string;
-}
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  status: string;
-  avatar: string;
-}
+const API_BASE = '/api/studio';
 
 export const dashboardService = {
-  getStats: async (): Promise<DashboardStats> => {
-    const response = await fetch('/api/studio/stats.json');
-    if (!response.ok) throw new Error('Failed to fetch stats');
-    return response.json();
-  },
-
   getOverview: async () => {
-    const response = await fetch('/api/studio/overview.json');
-    if (!response.ok) throw new Error('Failed to fetch overview');
+    const response = await fetch(`${API_BASE}/overview.json`);
     return response.json();
   },
 
-  getUploads: async (): Promise<Upload[]> => {
-    const response = await fetch('/api/studio/uploads.json');
-    if (!response.ok) throw new Error('Failed to fetch uploads');
+  getUploads: async () => {
+    const response = await fetch(`${API_BASE}/uploads.json`);
     return response.json();
   },
 
-  getUsers: async (): Promise<User[]> => {
-    const response = await fetch('/api/studio/users.json');
-    if (!response.ok) throw new Error('Failed to fetch users');
+  getCampaigns: async () => {
+    const response = await fetch(`${API_BASE}/campaigns.json`);
     return response.json();
   },
 
-  getBillingInfo: async () => {
-    const response = await fetch('/api/studio/billing.json');
-    if (!response.ok) throw new Error('Failed to fetch billing');
+  getCreators: async () => {
+    const response = await fetch(`${API_BASE}/creators.json`);
     return response.json();
   },
 
-  updateUserRole: async (userId: string, role: string) => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return { success: true, userId, role };
+  getRequests: async () => {
+    const response = await fetch(`${API_BASE}/requests.json`);
+    return response.json();
+  },
+
+  getBilling: async () => {
+    const response = await fetch(`${API_BASE}/billing.json`);
+    return response.json();
+  },
+
+  getPaymentMethods: async () => {
+    const response = await fetch(`${API_BASE}/payment-methods.json`);
+    return response.json();
+  },
+
+  getUsers: async () => {
+    const response = await fetch(`${API_BASE}/users.json`);
+    return response.json();
+  },
+
+  getSystemLogs: async () => {
+    const response = await fetch(`${API_BASE}/system-logs.json`);
+    return response.json();
   },
 
   deleteUser: async (userId: string) => {
     await new Promise(resolve => setTimeout(resolve, 500));
-    return { success: true, userId };
+    return { success: true };
   },
 
-  getRequests: async () => {
-    const response = await fetch('/api/studio/requests.json');
-    if (!response.ok) throw new Error('Failed to fetch requests');
-    return response.json();
-  },
-
-  approveRequest: async (id: number) => {
+  approveRequest: async (requestId: string) => {
     await new Promise(resolve => setTimeout(resolve, 500));
-    return { success: true, id };
+    return { success: true };
   },
 
-  rejectRequest: async (id: number) => {
+  rejectRequest: async (requestId: string) => {
     await new Promise(resolve => setTimeout(resolve, 500));
-    return { success: true, id };
-  },
-
-  getCampaigns: async () => {
-    const response = await fetch('/api/studio/campaigns.json');
-    if (!response.ok) throw new Error('Failed to fetch campaigns');
-    return response.json();
-  },
-
-  getSystemHealth: async () => {
-    const response = await fetch('/api/studio/system-health.json');
-    if (!response.ok) throw new Error('Failed to fetch system health');
-    return response.json();
+    return { success: true };
   }
 };

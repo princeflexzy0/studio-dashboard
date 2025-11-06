@@ -1,0 +1,20 @@
+[
+  {
+    "id": "PM001",
+    "type": "card",
+    "brand": "visa",
+    "last4": "4242",
+    "expiryMonth": "12",
+    "expiryYear": "2026",
+    "isDefault": true
+  },
+  {
+    "id": "PM002",
+    "type": "card",
+    "brand": "mastercard",
+    "last4": "8888",
+    "expiryMonth": "08",
+    "expiryYear": "2025",
+    "isDefault": false
+  }
+]
