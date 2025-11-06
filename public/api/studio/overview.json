@@ -1,0 +1,49 @@
+{
+  "stats": {
+    "totalUploads": 247,
+    "pendingRequests": 18,
+    "completed": 156,
+    "revenue": 125400
+  },
+  "recentActivity": [
+    {
+      "id": 1,
+      "user": "Sarah Johnson",
+      "action": "uploaded new video",
+      "content": "Summer Collection 2024",
+      "timestamp": "2 minutes ago",
+      "avatar": "https://ui-avatars.com/api/?name=Sarah+Johnson&background=0ea5e9&color=fff"
+    },
+    {
+      "id": 2,
+      "user": "Mike Chen",
+      "action": "requested review",
+      "content": "Product Showcase Video",
+      "timestamp": "15 minutes ago",
+      "avatar": "https://ui-avatars.com/api/?name=Mike+Chen&background=8b5cf6&color=fff"
+    },
+    {
+      "id": 3,
+      "user": "Emma Davis",
+      "action": "completed campaign",
+      "content": "Holiday Special 2024",
+      "timestamp": "1 hour ago",
+      "avatar": "https://ui-avatars.com/api/?name=Emma+Davis&background=ec4899&color=fff"
+    },
+    {
+      "id": 4,
+      "user": "Alex Turner",
+      "action": "submitted content",
+      "content": "Brand Ambassador Video",
+      "timestamp": "2 hours ago",
+      "avatar": "https://ui-avatars.com/api/?name=Alex+Turner&background=10b981&color=fff"
+    }
+  ],
+  "revenueTrend": [
+    { "day": "Mon", "revenue": 23400 },
+    { "day": "Tue", "revenue": 24800 },
+    { "day": "Wed", "revenue": 22100 },
+    { "day": "Thu", "revenue": 26300 },
+    { "day": "Fri", "revenue": 28800 }
+  ]
+}
