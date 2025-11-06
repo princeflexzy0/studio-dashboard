@@ -1,7 +1,7 @@
 'use client';
 import { useQuery } from 'react-query';
 import { dashboardService } from '@/services/dashboard.service';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { BarChart3, Upload, Clock, CheckCircle } from 'lucide-react';
 import { StatCard } from '@/components/StatCard';
 
