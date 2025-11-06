@@ -196,7 +196,7 @@ export default function BillingPage() {
                   
                   <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
                   <div className="mb-4">
-                    <span className="text-4xl font-bold text-white">A${plan.price}</span>
+                    <span className="text-4xl font-bold text-white">${plan.price}</span>
                     <span className="text-gray-400">/month</span>
                   </div>
                   <p className="text-sm text-gray-400">{plan.credits} credits/month</p>
@@ -251,7 +251,7 @@ export default function BillingPage() {
                     <td className="p-4 text-cyan-400 font-mono text-sm">{transaction.id}</td>
                     <td className="p-4 text-gray-300">{transaction.date}</td>
                     <td className="p-4 text-white">{transaction.description}</td>
-                    <td className="p-4 text-white font-semibold">A${transaction.amount}</td>
+                    <td className="p-4 text-white font-semibold">${transaction.amount}</td>
                     <td className="p-4">
                       <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold">
                         {transaction.status.toUpperCase()}
@@ -423,7 +423,7 @@ export default function BillingPage() {
                 </div>
                 <h2 className="text-2xl font-bold text-white mb-2">Upgrade to {selectedPlan.name}?</h2>
                 <p className="text-gray-400">
-                  You'll be charged A${selectedPlan.price}/month starting from your next billing cycle
+                  You'll be charged ${selectedPlan.price}/month starting from your next billing cycle
                 </p>
               </div>
 
@@ -500,7 +500,7 @@ export default function BillingPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Amount</span>
-                  <span className="text-white font-semibold text-xl">A${selectedTransaction.amount}</span>
+                  <span className="text-white font-semibold text-xl">${selectedTransaction.amount}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Status</span>

@@ -20,14 +20,14 @@ interface Creator {
 
 export default function CreatorsPage() {
   const [creators, setCreators] = useState<Creator[]>([
-    { id: 1, name: 'Yuki Tanaka', email: 'yuki.tanaka@example.com', phone: '+81 90 1234 5678', location: 'Tokyo, Japan', videos: 45, views: '2.3M', earnings: 'A$67,500', rating: 4.8, status: 'active', avatar: 'YT' },
-    { id: 2, name: 'Sofia Rodriguez', email: 'sofia.r@example.com', phone: '+34 612 345 678', location: 'Barcelona, Spain', videos: 32, views: '1.8M', earnings: 'A$57,000', rating: 4.6, status: 'active', avatar: 'SR' },
-    { id: 3, name: 'Kwame Mensah', email: 'kwame.m@example.com', phone: '+233 24 123 4567', location: 'Accra, Ghana', videos: 58, views: '3.1M', earnings: 'A$93,000', rating: 4.9, status: 'active', avatar: 'KM' },
-    { id: 4, name: 'Priya Sharma', email: 'priya.sharma@example.com', phone: '+91 98765 43210', location: 'Mumbai, India', videos: 28, views: '1.2M', earnings: 'A$43,500', rating: 4.5, status: 'pending', avatar: 'PS' },
-    { id: 5, name: 'Liam O\'Connor', email: 'liam.oconnor@example.com', phone: '+61 412 345 678', location: 'Sydney, Australia', videos: 41, views: '2.0M', earnings: 'A$61,500', rating: 4.7, status: 'active', avatar: 'LO' },
-    { id: 6, name: 'Fatima Al-Rashid', email: 'fatima.ar@example.com', phone: '+971 50 123 4567', location: 'Dubai, UAE', videos: 52, views: '2.7M', earnings: 'A$81,000', rating: 4.8, status: 'active', avatar: 'FA' },
-    { id: 7, name: 'Marcus Washington', email: 'marcus.w@example.com', phone: '+1 917 555 0123', location: 'New York, USA', videos: 38, views: '1.9M', earnings: 'A$57,000', rating: 4.6, status: 'active', avatar: 'MW' },
-    { id: 8, name: 'Chen Wei', email: 'chen.wei@example.com', phone: '+86 138 0013 8000', location: 'Shanghai, China', videos: 47, views: '2.4M', earnings: 'A$72,000', rating: 4.9, status: 'active', avatar: 'CW' },
+    { id: 1, name: 'Yuki Tanaka', email: 'yuki.tanaka@example.com', phone: '+81 90 1234 5678', location: 'Tokyo, Japan', videos: 45, views: '2.3M', earnings: '$67,500', rating: 4.8, status: 'active', avatar: 'YT' },
+    { id: 2, name: 'Sofia Rodriguez', email: 'sofia.r@example.com', phone: '+34 612 345 678', location: 'Barcelona, Spain', videos: 32, views: '1.8M', earnings: '$57,000', rating: 4.6, status: 'active', avatar: 'SR' },
+    { id: 3, name: 'Kwame Mensah', email: 'kwame.m@example.com', phone: '+233 24 123 4567', location: 'Accra, Ghana', videos: 58, views: '3.1M', earnings: '$93,000', rating: 4.9, status: 'active', avatar: 'KM' },
+    { id: 4, name: 'Priya Sharma', email: 'priya.sharma@example.com', phone: '+91 98765 43210', location: 'Mumbai, India', videos: 28, views: '1.2M', earnings: '$43,500', rating: 4.5, status: 'pending', avatar: 'PS' },
+    { id: 5, name: 'Liam O\'Connor', email: 'liam.oconnor@example.com', phone: '+61 412 345 678', location: 'Sydney, Australia', videos: 41, views: '2.0M', earnings: '$61,500', rating: 4.7, status: 'active', avatar: 'LO' },
+    { id: 6, name: 'Fatima Al-Rashid', email: 'fatima.ar@example.com', phone: '+971 50 123 4567', location: 'Dubai, UAE', videos: 52, views: '2.7M', earnings: '$81,000', rating: 4.8, status: 'active', avatar: 'FA' },
+    { id: 7, name: 'Marcus Washington', email: 'marcus.w@example.com', phone: '+1 917 555 0123', location: 'New York, USA', videos: 38, views: '1.9M', earnings: '$57,000', rating: 4.6, status: 'active', avatar: 'MW' },
+    { id: 8, name: 'Chen Wei', email: 'chen.wei@example.com', phone: '+86 138 0013 8000', location: 'Shanghai, China', videos: 47, views: '2.4M', earnings: '$72,000', rating: 4.9, status: 'active', avatar: 'CW' },
   ]);
 
   const [showModal, setShowModal] = useState(false);
@@ -58,7 +58,7 @@ export default function CreatorsPage() {
       location: formData.location,
       videos: 0,
       views: '0',
-      earnings: 'A$0',
+      earnings: '$0',
       rating: 0,
       status: 'pending',
       avatar: initials
@@ -117,7 +117,7 @@ export default function CreatorsPage() {
         <StatCard icon={Users} label="Total Creators" value={creators.length.toString()} color="cyan" />
         <StatCard icon={Video} label="Total Videos" value={totalVideos.toString()} color="purple" />
         <StatCard icon={TrendingUp} label="Total Views" value="17.4M" color="blue" />
-        <StatCard icon={DollarSign} label="Total Earnings" value="A$532.5K" color="green" />
+        <StatCard icon={DollarSign} label="Total Earnings" value="$532.5K" color="green" />
       </div>
 
       <div className="grid gap-4">

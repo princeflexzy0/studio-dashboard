@@ -18,11 +18,11 @@ interface Campaign {
 
 export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([
-    { id: 1, name: 'Summer Promo 2024', status: 'active', budget: 'A$75,000', spent: 'A$48,000', reach: '1.2M', conversions: 8420, startDate: '2024-06-01', endDate: '2024-08-31' },
-    { id: 2, name: 'Product Launch', status: 'active', budget: 'A$112,500', spent: 'A$67,500', reach: '2.1M', conversions: 15230, startDate: '2024-07-15', endDate: '2024-09-30' },
-    { id: 3, name: 'Brand Awareness', status: 'paused', budget: 'A$45,000', spent: 'A$27,000', reach: '850K', conversions: 4120, startDate: '2024-05-01', endDate: '2024-07-31' },
-    { id: 4, name: 'Holiday Special', status: 'scheduled', budget: 'A$135,000', spent: 'A$0', reach: '0', conversions: 0, startDate: '2024-12-01', endDate: '2025-01-15' },
-    { id: 5, name: 'Flash Sale Campaign', status: 'completed', budget: 'A$30,000', spent: 'A$29,250', reach: '650K', conversions: 5840, startDate: '2024-04-01', endDate: '2024-04-30' },
+    { id: 1, name: 'Summer Promo 2024', status: 'active', budget: '$75,000', spent: '$48,000', reach: '1.2M', conversions: 8420, startDate: '2024-06-01', endDate: '2024-08-31' },
+    { id: 2, name: 'Product Launch', status: 'active', budget: '$112,500', spent: '$67,500', reach: '2.1M', conversions: 15230, startDate: '2024-07-15', endDate: '2024-09-30' },
+    { id: 3, name: 'Brand Awareness', status: 'paused', budget: '$45,000', spent: '$27,000', reach: '850K', conversions: 4120, startDate: '2024-05-01', endDate: '2024-07-31' },
+    { id: 4, name: 'Holiday Special', status: 'scheduled', budget: '$135,000', spent: '$0', reach: '0', conversions: 0, startDate: '2024-12-01', endDate: '2025-01-15' },
+    { id: 5, name: 'Flash Sale Campaign', status: 'completed', budget: '$30,000', spent: '$29,250', reach: '650K', conversions: 5840, startDate: '2024-04-01', endDate: '2024-04-30' },
   ]);
 
   const [showModal, setShowModal] = useState(false);
@@ -44,7 +44,7 @@ export default function CampaignsPage() {
     setEditingCampaign(campaign);
     setFormData({
       name: campaign.name,
-      budget: campaign.budget.replace('A$', '').replace(',', ''),
+      budget: campaign.budget.replace('$', '').replace(',', ''),
       startDate: campaign.startDate,
       endDate: campaign.endDate
     });
@@ -57,7 +57,7 @@ export default function CampaignsPage() {
     if (editingCampaign) {
       setCampaigns(prev => prev.map(c => 
         c.id === editingCampaign.id 
-          ? { ...c, name: formData.name, budget: `A$${Number(formData.budget).toLocaleString()}`, startDate: formData.startDate, endDate: formData.endDate }
+          ? { ...c, name: formData.name, budget: `$${Number(formData.budget).toLocaleString()}`, startDate: formData.startDate, endDate: formData.endDate }
           : c
       ));
       toast.success(`Campaign "${formData.name}" updated!`);
@@ -66,8 +66,8 @@ export default function CampaignsPage() {
         id: campaigns.length + 1,
         name: formData.name,
         status: 'scheduled',
-        budget: `A$${Number(formData.budget).toLocaleString()}`,
-        spent: 'A$0',
+        budget: `$${Number(formData.budget).toLocaleString()}`,
+        spent: '$0',
         reach: '0',
         conversions: 0,
         startDate: formData.startDate,
@@ -113,7 +113,7 @@ export default function CampaignsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard icon={Briefcase} label="Active Campaigns" value={campaigns.filter(c => c.status === 'active').length.toString()} color="cyan" />
-        <StatCard icon={DollarSign} label="Total Budget" value="A$397.5K" color="green" />
+        <StatCard icon={DollarSign} label="Total Budget" value="$397.5K" color="green" />
         <StatCard icon={Users} label="Total Reach" value="4.8M" color="blue" />
         <StatCard icon={TrendingUp} label="Conversions" value="33.6K" color="purple" />
       </div>
@@ -246,7 +246,7 @@ export default function CampaignsPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Budget (AUD)
+                    Budget (USD)
                   </label>
                   <input
                     type="number"
