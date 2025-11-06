@@ -61,7 +61,7 @@ export default function NotificationBell() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 mt-2 w-72 bg-gray-800 rounded-lg shadow-xl border border-gray-700 overflow-hidden"
+              className="absolute right-0 mt-2 w-64 sm:w-72 bg-gray-800 rounded-lg shadow-xl border border-gray-700 overflow-hidden"
               style={{ zIndex: 9999 }}
             >
               {/* Header */}
