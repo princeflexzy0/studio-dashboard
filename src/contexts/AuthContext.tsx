@@ -1,17 +1,19 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-interface User {
+export interface User {
   id: string;
   name: string;
   email: string;
-  role: string;
-  avatar?: string | null;
+  role: 'admin' | 'studio' | 'creator';
+  avatar?: string;
 }
 
 interface AuthContextType {
   user: User | null;
+  loading: boolean;
   login: (user: User) => void;
   logout: () => void;
   isAuthenticated: boolean;
@@ -19,32 +21,37 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('studio_user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error('Failed to parse user data:', error);
+        localStorage.removeItem('studio_user');
+      }
     }
+    setLoading(false);
   }, []);
 
   const login = (userData: User) => {
     setUser(userData);
-    setIsAuthenticated(true);
     localStorage.setItem('studio_user', JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    setIsAuthenticated(false);
     localStorage.removeItem('studio_user');
+    router.push('/login');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );
