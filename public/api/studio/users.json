@@ -1,0 +1,80 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "phone": "+1 (555) 123-4567",
+    "location": "New York, USA",
+    "status": "active",
+    "joinedDate": "Jan 2024",
+    "uploads": 24,
+    "campaigns": 3,
+    "earnings": 1250,
+    "avatar": "https://ui-avatars.com/api/?name=John+Doe&background=0ea5e9&color=fff"
+  },
+  {
+    "id": 2,
+    "name": "Jane Smith",
+    "email": "jane@example.com",
+    "phone": "+1 (555) 987-6543",
+    "location": "Los Angeles, USA",
+    "status": "active",
+    "joinedDate": "Feb 2024",
+    "uploads": 18,
+    "campaigns": 2,
+    "earnings": 980,
+    "avatar": "https://ui-avatars.com/api/?name=Jane+Smith&background=8b5cf6&color=fff"
+  },
+  {
+    "id": 3,
+    "name": "Mike Chen",
+    "email": "mike@example.com",
+    "phone": "+1 (555) 456-7890",
+    "location": "San Francisco, USA",
+    "status": "pending",
+    "joinedDate": "Mar 2024",
+    "uploads": 5,
+    "campaigns": 0,
+    "earnings": 0,
+    "avatar": "https://ui-avatars.com/api/?name=Mike+Chen&background=10b981&color=fff"
+  },
+  {
+    "id": 4,
+    "name": "Sarah Johnson",
+    "email": "sarah@example.com",
+    "phone": "+1 (555) 321-0987",
+    "location": "Chicago, USA",
+    "status": "active",
+    "joinedDate": "Dec 2023",
+    "uploads": 42,
+    "campaigns": 5,
+    "earnings": 2340,
+    "avatar": "https://ui-avatars.com/api/?name=Sarah+Johnson&background=ec4899&color=fff"
+  },
+  {
+    "id": 5,
+    "name": "Alex Turner",
+    "email": "alex@example.com",
+    "phone": "+1 (555) 654-3210",
+    "location": "Miami, USA",
+    "status": "active",
+    "joinedDate": "Jan 2024",
+    "uploads": 15,
+    "campaigns": 1,
+    "earnings": 560,
+    "avatar": "https://ui-avatars.com/api/?name=Alex+Turner&background=f59e0b&color=fff"
+  },
+  {
+    "id": 6,
+    "name": "Emma Davis",
+    "email": "emma@example.com",
+    "phone": "+1 (555) 789-0123",
+    "location": "Seattle, USA",
+    "status": "inactive",
+    "joinedDate": "Nov 2023",
+    "uploads": 8,
+    "campaigns": 0,
+    "earnings": 120,
+    "avatar": "https://ui-avatars.com/api/?name=Emma+Davis&background=06b6d4&color=fff"
+  }
+]
