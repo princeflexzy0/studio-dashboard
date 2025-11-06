@@ -19,7 +19,14 @@ export default function RequestsPage() {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
 
-  const { data: requests, isLoading, error } = useQuery('requests', dashboardService.getRequests);
+  const { data: requests, isLoading, error, refetch } = useQuery(
+    'requests', 
+    dashboardService.getRequests,
+    {
+      retry: 3,
+      retryDelay: 1000,
+    }
+  );
 
   const updateMutation = useMutation(
     ({ id, action }: { id: string; action: 'approve' | 'reject' }) =>
@@ -44,12 +51,16 @@ export default function RequestsPage() {
   );
 
   if (error) {
-    return <ErrorState message="Failed to load requests" />;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-8">
+        <ErrorState message="Failed to load requests" onRetry={() => refetch()} />
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-8">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">
             Content Requests
@@ -76,17 +87,19 @@ export default function RequestsPage() {
         {isLoading ? (
           <div className="p-6"><TableSkeleton /></div>
         ) : filteredRequests?.length === 0 ? (
-          <div className="p-12 text-center"><p className="text-gray-400">No requests found</p></div>
+          <div className="p-12 text-center">
+            <p className="text-gray-400">No requests found</p>
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-800/50 border-b border-gray-700">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Name</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Type</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Date</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Status</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700/50">
@@ -107,9 +120,17 @@ export default function RequestsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-gray-400 capitalize">{request.type}</td>
-                      <td className="px-6 py-4 text-gray-400">{new Date(request.date).toLocaleDateString()}</td>
+                      <td className="px-6 py-4 text-gray-400">
+                        {new Date(request.date).toLocaleDateString()}
+                      </td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${statusConfig[request.status as keyof typeof statusConfig].bg} ${statusConfig[request.status as keyof typeof statusConfig].color}`}>
+                        <span 
+                          className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${
+                            statusConfig[request.status as keyof typeof statusConfig].bg
+                          } ${
+                            statusConfig[request.status as keyof typeof statusConfig].color
+                          }`}
+                        >
                           <StatusIcon className="w-3 h-3" />
                           {request.status}
                         </span>
@@ -121,6 +142,7 @@ export default function RequestsPage() {
                               onClick={() => updateMutation.mutate({ id: request.id, action: 'approve' })}
                               disabled={updateMutation.isLoading}
                               className="p-2 bg-green-500/10 text-green-500 rounded-lg hover:bg-green-500/20 transition-colors disabled:opacity-50"
+                              title="Approve"
                             >
                               <Check className="w-4 h-4" />
                             </button>
@@ -128,6 +150,7 @@ export default function RequestsPage() {
                               onClick={() => updateMutation.mutate({ id: request.id, action: 'reject' })}
                               disabled={updateMutation.isLoading}
                               className="p-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-colors disabled:opacity-50"
+                              title="Reject"
                             >
                               <X className="w-4 h-4" />
                             </button>
