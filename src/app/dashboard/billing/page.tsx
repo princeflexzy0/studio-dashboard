@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CreditCard, TrendingUp, DollarSign, Calendar, Download, AlertCircle, CheckCircle, Package, Zap, Crown, Plus, X, Lock } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 interface Plan {
   name: string;
@@ -10,6 +11,14 @@ interface Plan {
   credits: number;
   features: string[];
   popular?: boolean;
+}
+
+interface Transaction {
+  id: string;
+  date: string;
+  description: string;
+  amount: number;
+  status: string;
 }
 
 const plans: Plan[] = [
@@ -34,20 +43,25 @@ const plans: Plan[] = [
   }
 ];
 
-const transactions = [
-  { id: 'TXN001', date: '2024-11-05', description: 'Monthly subscription', amount: 79, status: 'completed' },
-  { id: 'TXN002', date: '2024-11-01', description: 'Credit top-up', amount: 25, status: 'completed' },
-  { id: 'TXN003', date: '2024-10-05', description: 'Monthly subscription', amount: 79, status: 'completed' },
-  { id: 'TXN004', date: '2024-10-15', description: 'Credit top-up', amount: 50, status: 'completed' }
-];
-
 export default function BillingPage() {
-  const [currentPlan] = useState('Professional');
+  const [currentPlan, setCurrentPlan] = useState('Professional');
   const [creditsUsed] = useState(287);
   const [totalCredits] = useState(500);
   const [billingCycle] = useState('Monthly');
   const [nextBillingDate] = useState('Dec 5, 2024');
+  
+  const [transactions] = useState<Transaction[]>([
+    { id: 'TXN001', date: '2024-11-05', description: 'Monthly subscription', amount: 79, status: 'completed' },
+    { id: 'TXN002', date: '2024-11-01', description: 'Credit top-up', amount: 25, status: 'completed' },
+    { id: 'TXN003', date: '2024-10-05', description: 'Monthly subscription', amount: 79, status: 'completed' },
+    { id: 'TXN004', date: '2024-10-15', description: 'Credit top-up', amount: 50, status: 'completed' }
+  ]);
+
   const [showAddCardModal, setShowAddCardModal] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   
   // Card form state
   const [cardNumber, setCardNumber] = useState('');
@@ -58,388 +72,453 @@ export default function BillingPage() {
   const creditPercentage = (creditsUsed / totalCredits) * 100;
   const remainingCredits = totalCredits - creditsUsed;
 
-  const handleAddCard = () => {
-    // Simulate adding card
-    setTimeout(() => {
-      setShowAddCardModal(false);
-      setCardNumber('');
-      setCardName('');
-      setExpiryDate('');
-      setCvv('');
-      alert('Card added successfully!');
-    }, 500);
+  const handleAddCard = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast.success('Payment method added successfully!');
+    setShowAddCardModal(false);
+    setCardNumber('');
+    setCardName('');
+    setExpiryDate('');
+    setCvv('');
+  };
+
+  const handleUpgradePlan = (plan: Plan) => {
+    setSelectedPlan(plan);
+    setShowUpgradeModal(true);
+  };
+
+  const confirmUpgrade = () => {
+    if (selectedPlan) {
+      setCurrentPlan(selectedPlan.name);
+      toast.success(`Successfully upgraded to ${selectedPlan.name} plan!`);
+      setShowUpgradeModal(false);
+    }
+  };
+
+  const handleViewTransaction = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setShowTransactionModal(true);
+  };
+
+  const handleDownloadInvoice = (transactionId: string) => {
+    toast.success(`Downloading invoice for ${transactionId}...`);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-4 sm:p-8">
-      <div className="mb-6 sm:mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">
-          Billing & Subscription
-        </h1>
-        <p className="text-gray-400">Manage your credits, plan, and payment history</p>
-      </div>
-
-      {/* Current Plan & Credits - Optimized Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
-        {/* Current Plan */}
+      <div className="max-w-7xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 backdrop-blur-xl border border-purple-500/30 rounded-xl p-4 sm:p-6"
+          className="mb-8"
         >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Crown className="w-5 h-5 text-purple-400" />
-              <h2 className="text-base sm:text-lg font-semibold text-white">Current Plan</h2>
-            </div>
-            <span className="px-2 sm:px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full border border-purple-500/50">
-              ACTIVE
-            </span>
-          </div>
-          <div className="mb-3">
-            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-1">{currentPlan}</h3>
-            <p className="text-gray-400 text-sm">{billingCycle} billing</p>
-          </div>
-          <div className="flex items-baseline gap-2 mb-3">
-            <span className="text-3xl sm:text-4xl font-bold text-white">${plans.find(p => p.name === currentPlan)?.price}</span>
-            <span className="text-gray-400 text-sm">/month</span>
-          </div>
-          <div className="space-y-2 mb-4">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-400">Next billing date</span>
-              <span className="text-white font-semibold">{nextBillingDate}</span>
-            </div>
-          </div>
-          <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-2 sm:py-3 rounded-lg hover:opacity-90 transition-opacity text-sm sm:text-base">
-            Upgrade Plan
-          </button>
+          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">
+            Billing & Subscription
+          </h1>
+          <p className="text-gray-400">Manage your subscription and payment methods</p>
         </motion.div>
 
-        {/* Credit Usage */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-gradient-to-br from-cyan-900/20 to-blue-900/20 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-4 sm:p-6"
-        >
-          <div className="flex items-center gap-2 mb-4">
-            <Zap className="w-5 h-5 text-cyan-400" />
-            <h2 className="text-base sm:text-lg font-semibold text-white">Credit Usage</h2>
-          </div>
-          <div className="mb-3">
-            <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-3xl sm:text-4xl font-bold text-white">{creditsUsed}</span>
-              <span className="text-gray-400 text-sm">/ {totalCredits}</span>
-            </div>
-            <p className="text-sm text-gray-400">Credits used this month</p>
-          </div>
-          <div className="mb-4">
-            <div className="h-3 bg-gray-700 rounded-full overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${creditPercentage}%` }}
-                transition={{ duration: 1, delay: 0.3 }}
-                className={`h-full rounded-full ${creditPercentage > 80 ? 'bg-gradient-to-r from-red-500 to-orange-500' : 'bg-gradient-to-r from-cyan-500 to-blue-500'}`}
-              />
-            </div>
-          </div>
-          <div className="flex items-center justify-between text-sm mb-4">
-            <span className="text-gray-400">Remaining credits</span>
-            <span className={`font-semibold ${remainingCredits < 100 ? 'text-orange-400' : 'text-green-400'}`}>
-              {remainingCredits}
-            </span>
-          </div>
-          {creditPercentage > 80 && (
-            <div className="flex items-start gap-2 p-2 sm:p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
-              <AlertCircle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-orange-400">Running low on credits! Consider upgrading.</p>
-            </div>
-          )}
-        </motion.div>
-
-        {/* Quick Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-gray-700/50 rounded-xl p-4 sm:p-6"
-        >
-          <div className="flex items-center gap-2 mb-6">
-            <TrendingUp className="w-5 h-5 text-green-400" />
-            <h2 className="text-base sm:text-lg font-semibold text-white">This Month</h2>
-          </div>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
-                  <CreditCard className="w-5 h-5 text-cyan-400" />
-                </div>
-                <div>
-                  <p className="text-white font-semibold text-sm">Total Spent</p>
-                  <p className="text-gray-400 text-xs">Last 30 days</p>
-                </div>
+        {/* Current Plan & Credits */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="lg:col-span-2 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-white mb-1">Current Plan: {currentPlan}</h3>
+                <p className="text-gray-400 text-sm">
+                  {billingCycle} billing • Next payment on {nextBillingDate}
+                </p>
               </div>
-              <span className="text-xl font-bold text-white">$79</span>
+              <Crown className="w-8 h-8 text-yellow-400" />
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                  <Package className="w-5 h-5 text-green-400" />
-                </div>
-                <div>
-                  <p className="text-white font-semibold text-sm">Credits Purchased</p>
-                  <p className="text-gray-400 text-xs">Top-ups</p>
-                </div>
-              </div>
-              <span className="text-xl font-bold text-white">75</span>
-            </div>
-          </div>
-        </motion.div>
-      </div>
 
-      {/* Available Plans - Mobile Optimized */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="mb-6"
-      >
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Available Plans</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {plans.map((plan, index) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4 + index * 0.1 }}
-              className={`relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border rounded-xl p-4 sm:p-6 ${
-                plan.popular 
-                  ? 'border-cyan-500/50 ring-2 ring-cyan-500/20' 
-                  : 'border-gray-700/50'
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="px-3 sm:px-4 py-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs font-bold rounded-full">
-                    MOST POPULAR
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-gray-400">Credits Used</span>
+                  <span className="text-white font-semibold">
+                    {creditsUsed} / {totalCredits}
                   </span>
                 </div>
-              )}
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">{plan.name}</h3>
-              <div className="flex items-baseline gap-2 mb-4">
-                <span className="text-3xl sm:text-4xl font-bold text-white">${plan.price}</span>
-                <span className="text-gray-400 text-sm">/month</span>
-              </div>
-              <div className="mb-4 sm:mb-6">
-                <span className="text-cyan-400 font-semibold text-base sm:text-lg">{plan.credits} credits</span>
-                <span className="text-gray-400 text-sm"> / month</span>
-              </div>
-              <ul className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-2 text-xs sm:text-sm">
-                    <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-                    <span className="text-gray-300">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <button 
-                className={`w-full font-semibold py-2 sm:py-3 rounded-lg transition-all text-sm sm:text-base ${
-                  currentPlan === plan.name
-                    ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:opacity-90'
-                }`}
-                disabled={currentPlan === plan.name}
-              >
-                {currentPlan === plan.name ? 'Current Plan' : 'Select Plan'}
-              </button>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Transaction History - Mobile Optimized */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-xl p-4 sm:p-6"
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-cyan-400" />
-            <h2 className="text-lg sm:text-xl font-semibold text-white">Transaction History</h2>
-          </div>
-          <div className="flex gap-2">
-            <button 
-              onClick={() => setShowAddCardModal(true)}
-              className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition-colors text-sm"
-            >
-              <Plus className="w-4 h-4" />
-              Add Card
-            </button>
-            <button className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm">
-              <Download className="w-4 h-4" />
-              Export
-            </button>
-          </div>
-        </div>
-        
-        {/* Mobile: Card view, Desktop: Table view */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-700">
-                <th className="text-left py-3 px-4 text-gray-400 font-semibold text-sm">Transaction ID</th>
-                <th className="text-left py-3 px-4 text-gray-400 font-semibold text-sm">Date</th>
-                <th className="text-left py-3 px-4 text-gray-400 font-semibold text-sm">Description</th>
-                <th className="text-right py-3 px-4 text-gray-400 font-semibold text-sm">Amount</th>
-                <th className="text-center py-3 px-4 text-gray-400 font-semibold text-sm">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((txn) => (
-                <tr key={txn.id} className="border-b border-gray-800 hover:bg-gray-800/30 transition-colors">
-                  <td className="py-4 px-4">
-                    <span className="text-cyan-400 font-mono text-sm">{txn.id}</span>
-                  </td>
-                  <td className="py-4 px-4">
-                    <span className="text-gray-300 text-sm">{txn.date}</span>
-                  </td>
-                  <td className="py-4 px-4">
-                    <span className="text-white text-sm">{txn.description}</span>
-                  </td>
-                  <td className="py-4 px-4 text-right">
-                    <span className="text-white font-semibold text-sm">${txn.amount}</span>
-                  </td>
-                  <td className="py-4 px-4">
-                    <div className="flex justify-center">
-                      <span className="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/50">
-                        {txn.status.toUpperCase()}
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Mobile Card View */}
-        <div className="md:hidden space-y-3">
-          {transactions.map((txn) => (
-            <div key={txn.id} className="bg-gray-700/30 rounded-lg p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-cyan-400 font-mono text-sm">{txn.id}</span>
-                <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/50">
-                  {txn.status.toUpperCase()}
-                </span>
-              </div>
-              <p className="text-white text-sm font-medium">{txn.description}</p>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-400">{txn.date}</span>
-                <span className="text-white font-bold">${txn.amount}</span>
+                <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${creditPercentage}%` }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
+                  />
+                </div>
+                <p className="text-sm text-gray-400 mt-2">
+                  {remainingCredits} credits remaining
+                </p>
               </div>
             </div>
-          ))}
-        </div>
-      </motion.div>
+          </div>
 
-      {/* Add Card Modal */}
-      <AnimatePresence>
-        {showAddCardModal && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
-              onClick={() => setShowAddCardModal(false)}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700">
+            <CreditCard className="w-8 h-8 text-cyan-400 mb-4" />
+            <h3 className="text-lg font-bold text-white mb-2">Payment Method</h3>
+            <p className="text-gray-400 text-sm mb-4">•••• •••• •••• 4242</p>
+            <button
+              onClick={() => setShowAddCardModal(true)}
+              className="w-full px-4 py-2 bg-cyan-500/20 text-cyan-400 font-semibold rounded-lg hover:bg-cyan-500/30 transition-colors flex items-center justify-center gap-2"
             >
-              <div 
-                className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 sm:p-8 max-w-md w-full border border-gray-700 shadow-2xl"
-                onClick={(e) => e.stopPropagation()}
+              <Plus className="w-4 h-4" />
+              Add New Card
+            </button>
+          </div>
+        </div>
+
+        {/* Available Plans */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-6">Available Plans</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {plans.map((plan) => (
+              <motion.div
+                key={plan.name}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border ${
+                  plan.popular ? 'border-cyan-500' : 'border-gray-700'
+                } hover:border-cyan-500/50 transition-all`}
               >
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl sm:text-2xl font-bold text-white">Add Payment Card</h2>
-                  <button 
-                    onClick={() => setShowAddCardModal(false)}
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
+                {plan.popular && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <span className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs font-bold px-4 py-1 rounded-full">
+                      POPULAR
+                    </span>
+                  </div>
+                )}
+
+                <div className="text-center mb-6">
+                  {plan.name === 'Starter' && <Package className="w-12 h-12 text-cyan-400 mx-auto mb-3" />}
+                  {plan.name === 'Professional' && <Zap className="w-12 h-12 text-cyan-400 mx-auto mb-3" />}
+                  {plan.name === 'Enterprise' && <Crown className="w-12 h-12 text-cyan-400 mx-auto mb-3" />}
+                  
+                  <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
+                  <div className="mb-4">
+                    <span className="text-4xl font-bold text-white">A${plan.price}</span>
+                    <span className="text-gray-400">/month</span>
+                  </div>
+                  <p className="text-sm text-gray-400">{plan.credits} credits/month</p>
                 </div>
 
-                <div className="space-y-4">
+                <ul className="space-y-3 mb-6">
+                  {plan.features.map((feature, index) => (
+                    <li key={index} className="flex items-start gap-2 text-sm text-gray-300">
+                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <button
+                  onClick={() => handleUpgradePlan(plan)}
+                  disabled={currentPlan === plan.name}
+                  className={`w-full px-6 py-3 font-semibold rounded-lg transition-all ${
+                    currentPlan === plan.name
+                      ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:opacity-90'
+                  }`}
+                >
+                  {currentPlan === plan.name ? 'Current Plan' : 'Upgrade'}
+                </button>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Transaction History */}
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border border-gray-700 overflow-hidden">
+          <div className="p-6 border-b border-gray-700">
+            <h2 className="text-2xl font-bold text-white">Transaction History</h2>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-800/50 border-b border-gray-700">
+                <tr>
+                  <th className="text-left p-4 text-sm font-medium text-gray-300">Transaction ID</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-300">Date</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-300">Description</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-300">Amount</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-300">Status</th>
+                  <th className="text-right p-4 text-sm font-medium text-gray-300">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-700">
+                {transactions.map((transaction) => (
+                  <tr key={transaction.id} className="hover:bg-gray-800/30 transition-colors">
+                    <td className="p-4 text-cyan-400 font-mono text-sm">{transaction.id}</td>
+                    <td className="p-4 text-gray-300">{transaction.date}</td>
+                    <td className="p-4 text-white">{transaction.description}</td>
+                    <td className="p-4 text-white font-semibold">A${transaction.amount}</td>
+                    <td className="p-4">
+                      <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold">
+                        {transaction.status.toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleViewTransaction(transaction)}
+                          className="p-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-colors"
+                          title="View details"
+                        >
+                          <AlertCircle className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDownloadInvoice(transaction.id)}
+                          className="p-2 bg-cyan-500/20 text-cyan-400 rounded-lg hover:bg-cyan-500/30 transition-colors"
+                          title="Download invoice"
+                        >
+                          <Download className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* ADD CARD MODAL */}
+      <AnimatePresence>
+        {showAddCardModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowAddCardModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-md w-full"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-white">Add Payment Method</h2>
+                <button
+                  onClick={() => setShowAddCardModal(false)}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddCard} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Card Number
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+                    placeholder="1234 5678 9012 3456"
+                    maxLength={19}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Cardholder Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={cardName}
+                    onChange={(e) => setCardName(e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+                    placeholder="John Smith"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Card Number</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Expiry Date
+                    </label>
                     <input
                       type="text"
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, '').slice(0, 16))}
-                      placeholder="1234 5678 9012 3456"
-                      maxLength={16}
-                      className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
+                      required
+                      value={expiryDate}
+                      onChange={(e) => setExpiryDate(e.target.value)}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+                      placeholder="MM/YY"
+                      maxLength={5}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Cardholder Name</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      CVV
+                    </label>
                     <input
                       type="text"
-                      value={cardName}
-                      onChange={(e) => setCardName(e.target.value)}
-                      placeholder="John Doe"
-                      className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
+                      required
+                      value={cvv}
+                      onChange={(e) => setCvv(e.target.value)}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+                      placeholder="123"
+                      maxLength={4}
                     />
                   </div>
+                </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Expiry Date</label>
-                      <input
-                        type="text"
-                        value={expiryDate}
-                        onChange={(e) => setExpiryDate(e.target.value)}
-                        placeholder="MM/YY"
-                        maxLength={5}
-                        className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">CVV</label>
-                      <input
-                        type="text"
-                        value={cvv}
-                        onChange={(e) => setCvv(e.target.value.replace(/\D/g, '').slice(0, 3))}
-                        placeholder="123"
-                        maxLength={3}
-                        className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
-                      />
-                    </div>
-                  </div>
+                <div className="flex items-center gap-2 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                  <Lock className="w-5 h-5 text-blue-400 flex-shrink-0" />
+                  <p className="text-sm text-blue-400">
+                    Your payment information is encrypted and secure
+                  </p>
+                </div>
 
-                  <div className="flex items-start gap-2 p-3 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
-                    <Lock className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-xs text-cyan-400">Your payment information is encrypted and secure</p>
-                  </div>
-
+                <div className="flex gap-3 pt-4">
                   <button
-                    onClick={handleAddCard}
-                    className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold py-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                    type="button"
+                    onClick={() => setShowAddCardModal(false)}
+                    className="flex-1 px-6 py-3 bg-gray-800 text-gray-300 font-semibold rounded-lg hover:bg-gray-700 transition-colors"
                   >
-                    <CreditCard className="w-5 h-5" />
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
+                  >
                     Add Card
                   </button>
                 </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* UPGRADE PLAN MODAL */}
+      <AnimatePresence>
+        {showUpgradeModal && selectedPlan && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowUpgradeModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-md w-full"
+            >
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-cyan-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp className="w-8 h-8 text-cyan-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-2">Upgrade to {selectedPlan.name}?</h2>
+                <p className="text-gray-400">
+                  You'll be charged A${selectedPlan.price}/month starting from your next billing cycle
+                </p>
+              </div>
+
+              <div className="bg-gray-800/50 rounded-lg p-4 mb-6">
+                <h3 className="text-white font-semibold mb-3">Plan includes:</h3>
+                <ul className="space-y-2">
+                  {selectedPlan.features.map((feature, index) => (
+                    <li key={index} className="flex items-start gap-2 text-sm text-gray-300">
+                      <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowUpgradeModal(false)}
+                  className="flex-1 px-6 py-3 bg-gray-800 text-gray-300 font-semibold rounded-lg hover:bg-gray-700 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmUpgrade}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  Confirm Upgrade
+                </button>
               </div>
             </motion.div>
-          </>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* TRANSACTION DETAILS MODAL */}
+      <AnimatePresence>
+        {showTransactionModal && selectedTransaction && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowTransactionModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-md w-full"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-white">Transaction Details</h2>
+                <button
+                  onClick={() => setShowTransactionModal(false)}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Transaction ID</span>
+                  <span className="text-white font-mono">{selectedTransaction.id}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Date</span>
+                  <span className="text-white">{selectedTransaction.date}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Description</span>
+                  <span className="text-white">{selectedTransaction.description}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Amount</span>
+                  <span className="text-white font-semibold text-xl">A${selectedTransaction.amount}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Status</span>
+                  <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold">
+                    {selectedTransaction.status.toUpperCase()}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => handleDownloadInvoice(selectedTransaction.id)}
+                className="w-full mt-6 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+              >
+                <Download className="w-5 h-5" />
+                Download Invoice
+              </button>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
