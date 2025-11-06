@@ -5,9 +5,6 @@ import { User, Bell, Shield, Camera, Mail, Phone, MapPin, Lock, Eye, EyeOff, Sav
 import { useAuth } from '@/contexts/AuthContext';
 import toast from 'react-hot-toast';
 
-// Force dynamic rendering - prevent static generation
-export const dynamic = 'force-dynamic';
-
 type TabType = 'profile' | 'notifications' | 'security';
 
 interface NotificationSettings {
@@ -20,19 +17,9 @@ interface NotificationSettings {
 }
 
 export default function SettingsPage() {
-  const [mounted, setMounted] = useState(false);
-
-  // Wait for client-side mount
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Only use auth after mounted
-  const authHook = mounted ? useAuth() : null;
-  const user = authHook?.user;
-  const updateUser = authHook?.updateUser;
-  const updateProfilePicture = authHook?.updateProfilePicture;
-
+  // Always call useAuth - never conditionally
+  const { user, updateUser, updateProfilePicture } = useAuth();
+  
   const [activeTab, setActiveTab] = useState<TabType>('profile');
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -48,16 +35,16 @@ export default function SettingsPage() {
     bio: 'Studio administrator managing content and operations'
   });
 
-  // Update profile from user data after mount
+  // Update profile from user data when available
   useEffect(() => {
-    if (mounted && user) {
+    if (user) {
       setProfile(prev => ({
         ...prev,
         name: user.name || prev.name,
         email: user.email || prev.email
       }));
     }
-  }, [mounted, user]);
+  }, [user]);
 
   const [notifications, setNotifications] = useState<NotificationSettings>({
     emailNotifications: true,
@@ -128,15 +115,6 @@ export default function SettingsPage() {
   const toggleNotification = (key: keyof NotificationSettings) => {
     setNotifications(prev => ({ ...prev, [key]: !prev[key] }));
   };
-
-  // Show loading until mounted
-  if (!mounted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-4 sm:p-8">
