@@ -1,80 +1,66 @@
 'use client';
-'use client';
-
 import { useQuery } from 'react-query';
 import { dashboardService } from '@/services/dashboard.service';
-import { useAuth } from '@/contexts/AuthContext';
-import { StatCard } from '@/components/dashboard/StatCard';
-import { ErrorState } from '@/components/dashboard/ErrorState';
-import { Upload, FileText, Users } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { BarChart3, Upload, Clock, CheckCircle } from 'lucide-react';
+import { StatCard } from '@/components/StatCard';
 
-export default function DashboardOverview() {
+export default function DashboardPage() {
   const { user } = useAuth();
   
-  const { data: stats, isLoading, error, refetch } = useQuery(
-    'dashboard-stats',
+  const { data: stats, isLoading } = useQuery(
+    'dashboardStats',
     dashboardService.getStats,
-    { refetchInterval: 30000 }
+    {
+      refetchInterval: 30000, // Refresh every 30 seconds
+    }
   );
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
-  };
-
-  if (error) {
-    return <ErrorState message="Failed to load dashboard stats" onRetry={() => refetch()} />;
-  }
-
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-white mb-2">
-          {getGreeting()}, {user?.name}! 👋
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-4 sm:p-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">
+          Welcome back, {user?.name}! 👋
         </h1>
-        <p className="text-gray-400">Here is what is happening with your studio today</p>
+        <p className="text-gray-400">Here's what's happening with your studio today.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
         <StatCard
           title="Total Uploads"
-          value={stats?.uploads || 0}
+          value={stats?.totalUploads || 0}
           icon={Upload}
           loading={isLoading}
-          trend={{ value: 12, isPositive: true }}
         />
         <StatCard
           title="Pending Requests"
-          value={stats?.requests || 0}
-          icon={FileText}
+          value={stats?.pendingRequests || 0}
+          icon={Clock}
           loading={isLoading}
         />
         <StatCard
-          title="Active Users"
-          value={stats?.users || 0}
-          icon={Users}
+          title="Completed"
+          value={stats?.completedRequests || 0}
+          icon={CheckCircle}
           loading={isLoading}
-          trend={{ value: 5, isPositive: true }}
+        />
+        <StatCard
+          title="Total Revenue"
+          value={`₦${stats?.totalRevenue?.toLocaleString() || 0}`}
+          icon={BarChart3}
+          loading={isLoading}
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-gradient-to-br from-[#00D9FF]/10 to-[#7B2BFF]/10 border border-[#00D9FF]/20 rounded-xl p-6">
-          <h3 className="text-xl font-semibold text-white mb-2">Quick Upload</h3>
-          <p className="text-gray-400 mb-4">Upload new content directly from here</p>
-          <button className="px-4 py-2 bg-[#00D9FF] text-black rounded-lg hover:bg-[#00b8d4] transition-colors">
-            Upload File
-          </button>
+      {/* Rest of dashboard content */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
+          <h2 className="text-xl font-semibold text-white mb-4">Recent Activity</h2>
+          <p className="text-gray-400">No recent activity</p>
         </div>
-
-        <div className="bg-gradient-to-br from-[#7B2BFF]/10 to-[#FF006E]/10 border border-[#7B2BFF]/20 rounded-xl p-6">
-          <h3 className="text-xl font-semibold text-white mb-2">Review Requests</h3>
-          <p className="text-gray-400 mb-4">{stats?.requests || 0} requests waiting for review</p>
-          <button className="px-4 py-2 bg-[#7B2BFF] text-white rounded-lg hover:bg-[#6a25e6] transition-colors">
-            Review Now
-          </button>
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
+          <h2 className="text-xl font-semibold text-white mb-4">Quick Actions</h2>
+          <p className="text-gray-400">Quick actions coming soon</p>
         </div>
       </div>
     </div>
