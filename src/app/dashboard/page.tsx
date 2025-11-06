@@ -40,7 +40,7 @@ export default function DashboardOverview() {
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-8">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <h1 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent mb-3">
-          {getGreeting()}, {user?.name || 'Admin'}! 👋🏽
+          {getGreeting()}, {user?.name || 'Admin'}! 👋
         </h1>
         <p className="text-gray-400 text-lg">Here's your studio performance today</p>
       </motion.div>
