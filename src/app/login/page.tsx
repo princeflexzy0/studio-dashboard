@@ -7,9 +7,9 @@ import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
 const DEMO_ACCOUNTS = [
-  { email: 'admin@studio.com', password: 'Studio@2025', name: 'Admin User', role: 'admin' as const },
-  { email: 'studio@manager.com', password: 'Manager@2025', name: 'Studio Manager', role: 'studio' as const },
-  { email: 'creator@studio.com', password: 'Creator@2025', name: 'Content Creator', role: 'creator' as const },
+  { id: '1', email: 'admin@studio.com', password: 'Studio@2025', name: 'Admin User', role: 'admin' as const },
+  { id: '2', email: 'studio@manager.com', password: 'Manager@2025', name: 'Studio Manager', role: 'studio' as const },
+  { id: '3', email: 'creator@studio.com', password: 'Creator@2025', name: 'Content Creator', role: 'creator' as const },
 ];
 
 export default function LoginPage() {
