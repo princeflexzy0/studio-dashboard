@@ -1,7 +1,8 @@
 'use client';
-
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { useState } from 'react';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { Toaster } from 'react-hot-toast';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient({
@@ -15,7 +16,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <AuthProvider>
+        <Toaster position="top-right" />
+        {children}
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
