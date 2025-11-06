@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Activity, Server, Database, Zap, Clock, CheckCircle, AlertTriangle, TrendingUp } from 'lucide-react';
@@ -38,10 +37,19 @@ export default function SystemHealthPage() {
   const [metrics, setMetrics] = useState<SystemMetric[]>([]);
   const [lastCheck, setLastCheck] = useState<string>('');
   const [chartData] = useState(generateChartData());
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setMetrics(mockMetrics);
     setLastCheck(new Date().toLocaleString());
+    
+    // Check if mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const getStatusColor = (status: string) => {
@@ -68,7 +76,7 @@ export default function SystemHealthPage() {
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-gray-900 border border-cyan-500/50 rounded-lg px-4 py-2 shadow-xl">
+        <div className="bg-gray-900 border border-cyan-500/50 rounded-lg px-3 py-2 shadow-xl">
           <p className="text-cyan-400 font-bold text-sm">{payload[0].value.toFixed(2)}%</p>
           <p className="text-gray-400 text-xs">{payload[0].payload.date}</p>
         </div>
@@ -99,38 +107,24 @@ export default function SystemHealthPage() {
           </div>
         </div>
         <div className="text-center sm:text-right">
-          <p className="text-3xl font-bold">{avgUptime}%</p>
-          <p className="text-sm opacity-80">Avg Uptime</p>
+          <div className="text-3xl font-bold text-green-400">{avgUptime}%</div>
+          <p className="text-sm opacity-80">Average Uptime</p>
         </div>
       </motion.div>
-
-      <div className="mb-6 flex items-center gap-2 text-gray-400 text-sm">
-        <Clock className="w-4 h-4" />
-        <span>Last checked: {lastCheck}</span>
-      </div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="mb-6 bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-gray-700/50 rounded-xl p-6"
+        className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-gray-700/50 rounded-xl p-4 sm:p-6 mb-6"
       >
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-          <div>
-            <h3 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-              <TrendingUp className="w-6 h-6 text-green-400" />
-              30-Day Uptime Performance
-            </h3>
-            <p className="text-sm text-gray-400 mt-1">Real-time system availability tracking</p>
-          </div>
-          <div className="text-center sm:text-right">
-            <p className="text-3xl font-bold text-green-400">{avgUptime}%</p>
-            <p className="text-xs text-gray-500">Average Uptime</p>
-          </div>
-        </div>
-
-        <ResponsiveContainer width="100%" height={350}>
-          <AreaChart data={chartData}>
+        <h2 className="text-lg sm:text-xl font-semibold text-white mb-4 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-green-400" />
+          30-Day Uptime Performance
+        </h2>
+        
+        <ResponsiveContainer width="100%" height={isMobile ? 220 : 280}>
+          <AreaChart data={chartData} margin={{ top: 10, right: isMobile ? 5 : 10, left: isMobile ? -20 : -10, bottom: 0 }}>
             <defs>
               <linearGradient id="uptimeGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
@@ -141,23 +135,27 @@ export default function SystemHealthPage() {
             <XAxis 
               dataKey="date" 
               stroke="#9ca3af" 
-              fontSize={11}
+              fontSize={isMobile ? 9 : 11}
               tickLine={false}
-              interval={4}
+              interval={isMobile ? 6 : 4}
+              angle={isMobile ? -45 : 0}
+              textAnchor={isMobile ? "end" : "middle"}
+              height={isMobile ? 60 : 30}
             />
             <YAxis 
               stroke="#9ca3af" 
-              fontSize={11}
+              fontSize={isMobile ? 9 : 11}
               domain={[90, 100]}
               tickLine={false}
               tickFormatter={(value) => `${value}%`}
+              width={isMobile ? 35 : 45}
             />
             <Tooltip content={<CustomTooltip />} />
             <Area
               type="monotone"
               dataKey="uptime"
               stroke="#10b981"
-              strokeWidth={3}
+              strokeWidth={isMobile ? 2 : 3}
               fillOpacity={1}
               fill="url(#uptimeGradient)"
               animationDuration={2000}
@@ -165,7 +163,7 @@ export default function SystemHealthPage() {
           </AreaChart>
         </ResponsiveContainer>
 
-        <div className="mt-4 flex items-center justify-center gap-4 text-sm">
+        <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-green-500 rounded-full"></div>
             <span className="text-gray-400">System Uptime</span>
