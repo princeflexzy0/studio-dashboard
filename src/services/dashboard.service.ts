@@ -29,6 +29,12 @@ export const dashboardService = {
     return response.json();
   },
 
+  getOverview: async () => {
+    const response = await fetch('/api/studio/overview.json');
+    if (!response.ok) throw new Error('Failed to fetch overview');
+    return response.json();
+  },
+
   getUploads: async (): Promise<Upload[]> => {
     const response = await fetch('/api/studio/uploads.json');
     if (!response.ok) throw new Error('Failed to fetch uploads');

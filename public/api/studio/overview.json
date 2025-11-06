@@ -1,49 +1,114 @@
 {
   "stats": {
-    "totalUploads": 247,
-    "pendingRequests": 18,
-    "completed": 156,
-    "revenue": 125400
+    "totalViews": 1247890,
+    "totalUploads": 3842,
+    "activeUsers": 1256,
+    "revenue": 48750,
+    "storageUsed": "2.4 TB",
+    "bandwidthUsed": "18.7 TB"
   },
   "recentActivity": [
     {
       "id": 1,
       "user": "Sarah Johnson",
-      "action": "uploaded new video",
-      "content": "Summer Collection 2024",
-      "timestamp": "2 minutes ago",
+      "action": "uploaded",
+      "item": "Summer Campaign Video.mp4",
+      "time": "2 minutes ago",
       "avatar": "https://ui-avatars.com/api/?name=Sarah+Johnson&background=0ea5e9&color=fff"
     },
     {
       "id": 2,
       "user": "Mike Chen",
-      "action": "requested review",
-      "content": "Product Showcase Video",
-      "timestamp": "15 minutes ago",
+      "action": "approved",
+      "item": "Product Launch Request",
+      "time": "15 minutes ago",
       "avatar": "https://ui-avatars.com/api/?name=Mike+Chen&background=8b5cf6&color=fff"
     },
     {
       "id": 3,
       "user": "Emma Davis",
-      "action": "completed campaign",
-      "content": "Holiday Special 2024",
-      "timestamp": "1 hour ago",
+      "action": "created",
+      "item": "Holiday Special Campaign",
+      "time": "1 hour ago",
       "avatar": "https://ui-avatars.com/api/?name=Emma+Davis&background=ec4899&color=fff"
     },
     {
       "id": 4,
-      "user": "Alex Turner",
-      "action": "submitted content",
-      "content": "Brand Ambassador Video",
-      "timestamp": "2 hours ago",
-      "avatar": "https://ui-avatars.com/api/?name=Alex+Turner&background=10b981&color=fff"
+      "user": "James Wilson",
+      "action": "commented on",
+      "item": "Q4 Marketing Strategy",
+      "time": "2 hours ago",
+      "avatar": "https://ui-avatars.com/api/?name=James+Wilson&background=f59e0b&color=fff"
+    },
+    {
+      "id": 5,
+      "user": "Lisa Anderson",
+      "action": "shared",
+      "item": "Brand Guidelines 2024",
+      "time": "3 hours ago",
+      "avatar": "https://ui-avatars.com/api/?name=Lisa+Anderson&background=10b981&color=fff"
     }
   ],
-  "revenueTrend": [
-    { "day": "Mon", "revenue": 23400 },
-    { "day": "Tue", "revenue": 24800 },
-    { "day": "Wed", "revenue": 22100 },
-    { "day": "Thu", "revenue": 26300 },
-    { "day": "Fri", "revenue": 28800 }
+  "topContent": [
+    {
+      "id": 1,
+      "title": "Summer Collection Launch",
+      "views": 45280,
+      "likes": 3420,
+      "thumbnail": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop"
+    },
+    {
+      "id": 2,
+      "title": "Product Demo Series",
+      "views": 38950,
+      "likes": 2890,
+      "thumbnail": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop"
+    },
+    {
+      "id": 3,
+      "title": "Behind The Scenes",
+      "views": 32100,
+      "likes": 2340,
+      "thumbnail": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&h=300&fit=crop"
+    },
+    {
+      "id": 4,
+      "title": "Customer Success Stories",
+      "views": 28750,
+      "likes": 2120,
+      "thumbnail": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=300&fit=crop"
+    }
+  ],
+  "analytics": {
+    "viewsGrowth": "+23.5%",
+    "uploadsGrowth": "+12.8%",
+    "usersGrowth": "+18.2%",
+    "revenueGrowth": "+31.4%"
+  },
+  "quickStats": [
+    {
+      "label": "Pending Approvals",
+      "value": 12,
+      "icon": "clock",
+      "color": "yellow"
+    },
+    {
+      "label": "Active Campaigns",
+      "value": 8,
+      "icon": "trending",
+      "color": "blue"
+    },
+    {
+      "label": "Storage Available",
+      "value": "1.6 TB",
+      "icon": "database",
+      "color": "green"
+    },
+    {
+      "label": "API Calls Today",
+      "value": "247K",
+      "icon": "zap",
+      "color": "purple"
+    }
   ]
 }
