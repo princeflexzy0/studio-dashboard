@@ -1,177 +1,184 @@
 'use client';
 
-import { useAuth } from '@/contexts/AuthContext';
-import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Home, Upload, Users, FileText, LogOut, Menu, X } from 'lucide-react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { Home, Upload, Users, FileText, TrendingUp, Activity, Settings, LogOut, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 
-const navItems = [
-  { name: 'Dashboard', href: '/dashboard', icon: Home },
-  { name: 'Uploads', href: '/dashboard/uploads', icon: Upload },
-  { name: 'Creators', href: '/dashboard/creators', icon: Users },
-  { name: 'Requests', href: '/dashboard/requests', icon: FileText },
+const menuItems = [
+  { name: 'Dashboard', path: '/dashboard', icon: Home },
+  { name: 'Uploads', path: '/dashboard/uploads', icon: Upload },
+  { name: 'Creators', path: '/dashboard/creators', icon: Users },
+  { name: 'Requests', path: '/dashboard/requests', icon: FileText },
+  { name: 'Campaigns', path: '/dashboard/campaigns', icon: TrendingUp },
+  { name: 'System', path: '/dashboard/system', icon: Activity },
+  { name: 'Settings', path: '/dashboard/settings', icon: Settings },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, logout, isAuthenticated } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (!user) {
+    if (!isAuthenticated) {
       router.push('/login');
     }
-  }, [user, router]);
-
-  if (!user) {
-    return null;
-  }
+  }, [isAuthenticated, router]);
 
   const handleLogout = () => {
     logout();
     router.push('/login');
   };
 
+  if (!isAuthenticated || !user) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen bg-black">
-      {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-gray-900 to-black border-b border-gray-800 px-4 py-3">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+    <div className="flex h-screen bg-gradient-to-br from-black via-gray-900 to-black">
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="lg:hidden fixed top-4 right-4 z-50 p-3 bg-gray-800 rounded-lg text-cyan-400 hover:bg-gray-700 transition-all"
+      >
+        {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      </button>
+
+      {/* Sidebar - Desktop */}
+      <aside className="hidden lg:flex w-64 bg-gradient-to-b from-gray-900 to-black border-r border-gray-800 flex-col">
+        <div className="p-6 border-b border-gray-800">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
             Studio
           </h1>
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-gray-400 hover:text-white transition-colors"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
+        <div className="p-4 border-b border-gray-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-black font-bold">
+              {user.name.charAt(0)}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-white font-medium truncate">{user.name}</p>
+              <p className="text-gray-400 text-sm truncate">{user.email}</p>
+            </div>
+          </div>
+        </div>
+
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.path;
+            return (
+              <Link key={item.path} href={item.path}>
+                <motion.div
+                  whileHover={{ x: 4, scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-black shadow-lg shadow-cyan-500/30'
+                      : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="font-medium">{item.name}</span>
+                </motion.div>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="p-4 border-t border-gray-800">
+          <motion.button
+            onClick={handleLogout}
+            whileHover={{ scale: 1.02, x: 4 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full flex items-center gap-3 px-4 py-3 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-all"
+          >
+            <LogOut className="w-5 h-5" />
+            <span className="font-medium">Logout</span>
+          </motion.button>
+        </div>
+      </aside>
+
+      {/* Sidebar - Mobile */}
       <AnimatePresence>
-        {mobileMenuOpen && (
+        {isMobileMenuOpen && (
           <>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="lg:hidden fixed inset-0 bg-black/50 z-40"
             />
-            <motion.div
-              initial={{ x: '-100%' }}
+            <motion.aside
+              initial={{ x: -300 }}
               animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="lg:hidden fixed top-0 left-0 bottom-0 w-64 bg-gradient-to-b from-gray-900 to-black border-r border-gray-800 z-50"
+              exit={{ x: -300 }}
+              transition={{ type: 'spring', damping: 25 }}
+              className="lg:hidden fixed left-0 top-0 bottom-0 w-64 bg-gradient-to-b from-gray-900 to-black border-r border-gray-800 flex flex-col z-50"
             >
               <div className="p-6 border-b border-gray-800">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-4">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
                   Studio
                 </h1>
-                <div className="flex items-center gap-3 mt-6">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">{user.name?.charAt(0)}</span>
+              </div>
+
+              <div className="p-4 border-b border-gray-800">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-black font-bold">
+                    {user.name.charAt(0)}
                   </div>
-                  <div>
-                    <p className="text-white font-semibold truncate">{user.name}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-medium truncate">{user.name}</p>
                     <p className="text-gray-400 text-sm truncate">{user.email}</p>
                   </div>
                 </div>
               </div>
 
-              <nav className="p-4 space-y-2">
-                {navItems.map((item) => {
-                  const isActive = pathname === item.href;
+              <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+                {menuItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = pathname === item.path;
                   return (
-                    <a
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                        isActive
-                          ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-semibold'
-                          : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-                      }`}
-                    >
-                      <item.icon className="w-5 h-5" />
-                      <span>{item.name}</span>
-                    </a>
+                    <Link key={item.path} href={item.path} onClick={() => setIsMobileMenuOpen(false)}>
+                      <motion.div
+                        whileTap={{ scale: 0.98 }}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all cursor-pointer ${
+                          isActive
+                            ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-black shadow-lg shadow-cyan-500/30'
+                            : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                        }`}
+                      >
+                        <Icon className="w-5 h-5" />
+                        <span className="font-medium">{item.name}</span>
+                      </motion.div>
+                    </Link>
                   );
                 })}
               </nav>
 
-              <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800">
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    handleLogout();
-                  }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-500/20 text-red-500 rounded-lg hover:bg-red-500/30 transition-colors font-medium"
+              <div className="p-4 border-t border-gray-800">
+                <motion.button
+                  onClick={handleLogout}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full flex items-center gap-3 px-4 py-3 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-all"
                 >
                   <LogOut className="w-5 h-5" />
-                  <span>Logout</span>
-                </button>
+                  <span className="font-medium">Logout</span>
+                </motion.button>
               </div>
-            </motion.div>
+            </motion.aside>
           </>
         )}
       </AnimatePresence>
 
-      {/* Desktop Sidebar - ORIGINAL DESIGN */}
-      <aside className="hidden lg:block fixed top-0 left-0 bottom-0 w-64 bg-gradient-to-b from-gray-900 to-black border-r border-gray-800">
-        <div className="p-6 border-b border-gray-800">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-4">
-            Studio
-          </h1>
-          <div className="flex items-center gap-3 mt-6">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">{user.name?.charAt(0)}</span>
-            </div>
-            <div>
-              <p className="text-white font-semibold">{user.name}</p>
-              <p className="text-gray-400 text-sm">{user.email}</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="p-4 space-y-2">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <a
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                  isActive
-                    ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-semibold shadow-lg shadow-cyan-500/30'
-                    : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-                }`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span>{item.name}</span>
-              </a>
-            );
-          })}
-        </nav>
-
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-500/20 text-red-500 rounded-lg hover:bg-red-500/30 transition-colors font-medium"
-          >
-            <LogOut className="w-5 h-5" />
-            <span>Logout</span>
-          </button>
-        </div>
-      </aside>
-
       {/* Main Content */}
-      <main className="pt-14 lg:pt-0 lg:ml-64">
+      <main className="flex-1 overflow-y-auto">
         {children}
       </main>
     </div>
