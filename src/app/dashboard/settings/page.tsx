@@ -1,21 +1,26 @@
 'use client';
 
-import { useState } from 'react';
-import { useQuery, useMutation } from 'react-query';
+import { useState, useRef } from 'react';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { dashboardService } from '@/services/dashboard.service';
-import { User, Bell, Shield, Save } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { User, Bell, Shield, Save, Camera, Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
 export default function SettingsPage() {
+  const { user, login } = useAuth();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'security'>('profile');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: profile, isLoading } = useQuery('profile', dashboardService.getProfile);
 
   const [profileData, setProfileData] = useState({
-    name: '',
-    email: '',
+    name: user?.name || '',
+    email: user?.email || '',
     bio: '',
+    avatar: user?.avatar || null,
   });
 
   const [notifications, setNotifications] = useState({
@@ -31,11 +36,54 @@ export default function SettingsPage() {
     twoFactor: false,
   });
 
+  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please upload an image file', {
+          style: { background: '#1F2937', color: '#fff' },
+        });
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Image size must be less than 5MB', {
+          style: { background: '#1F2937', color: '#fff' },
+        });
+        return;
+      }
+
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const avatarUrl = reader.result as string;
+        setProfileData({ ...profileData, avatar: avatarUrl });
+        
+        // Update user in auth context
+        if (user) {
+          login({ ...user, avatar: avatarUrl });
+        }
+
+        toast.success('Profile picture updated!', {
+          style: { background: '#1F2937', color: '#fff' },
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const profileMutation = useMutation(dashboardService.updateProfile, {
     onSuccess: () => {
       toast.success('Profile updated!', {
         style: { background: '#1F2937', color: '#fff' },
       });
+      
+      // Update auth context
+      if (user) {
+        login({ ...user, name: profileData.name, email: profileData.email });
+      }
     },
   });
 
@@ -71,9 +119,9 @@ export default function SettingsPage() {
         <p className="text-gray-400">Manage your account preferences</p>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* Tabs */}
-        <div className="w-64 space-y-2">
+        <div className="lg:w-64 space-y-2">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -95,6 +143,55 @@ export default function SettingsPage() {
           {activeTab === 'profile' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               <h2 className="text-2xl font-bold text-white mb-6">Profile Settings</h2>
+              
+              {/* Avatar Upload */}
+              <div className="mb-8">
+                <label className="block text-sm font-medium text-gray-300 mb-4">Profile Picture</label>
+                <div className="flex items-center gap-6">
+                  <div className="relative group">
+                    {profileData.avatar ? (
+                      <img
+                        src={profileData.avatar}
+                        alt="Profile"
+                        className="w-24 h-24 rounded-full object-cover border-2 border-gray-700"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center">
+                        <span className="text-white font-bold text-3xl">
+                          {(user?.name || 'A').charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                    
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Camera className="w-6 h-6 text-white" />
+                    </button>
+                  </div>
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarUpload}
+                    className="hidden"
+                  />
+
+                  <div>
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors mb-2"
+                    >
+                      <Upload className="w-4 h-4" />
+                      Upload Photo
+                    </button>
+                    <p className="text-xs text-gray-500">JPG, PNG or GIF (max 5MB)</p>
+                  </div>
+                </div>
+              </div>
+
               <div className="space-y-4 max-w-xl">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">Name</label>
@@ -102,7 +199,7 @@ export default function SettingsPage() {
                     type="text"
                     value={profileData.name}
                     onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                    placeholder="Princeflexzy"
+                    placeholder="Your name"
                     className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
                   />
                 </div>
@@ -112,7 +209,7 @@ export default function SettingsPage() {
                     type="email"
                     value={profileData.email}
                     onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                    placeholder="admin@studio.com"
+                    placeholder="your@email.com"
                     className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
                   />
                 </div>
@@ -128,7 +225,7 @@ export default function SettingsPage() {
                 </div>
                 <button
                   onClick={() => profileMutation.mutate(profileData)}
-                  className="flex items-center gap-2 px-6 py-3 bg-cyan-500 text-black rounded-lg hover:bg-cyan-400 transition-colors"
+                  className="flex items-center gap-2 px-6 py-3 bg-cyan-500 text-black rounded-lg hover:bg-cyan-400 transition-colors font-medium"
                 >
                   <Save className="w-4 h-4" />
                   Save Changes
@@ -197,7 +294,7 @@ export default function SettingsPage() {
                 </div>
                 <button
                   onClick={() => notificationsMutation.mutate(notifications)}
-                  className="flex items-center gap-2 px-6 py-3 bg-cyan-500 text-black rounded-lg hover:bg-cyan-400 transition-colors"
+                  className="flex items-center gap-2 px-6 py-3 bg-cyan-500 text-black rounded-lg hover:bg-cyan-400 transition-colors font-medium"
                 >
                   <Save className="w-4 h-4" />
                   Save Preferences
@@ -257,7 +354,7 @@ export default function SettingsPage() {
                 </div>
                 <button
                   onClick={() => securityMutation.mutate(security)}
-                  className="flex items-center gap-2 px-6 py-3 bg-cyan-500 text-black rounded-lg hover:bg-cyan-400 transition-colors"
+                  className="flex items-center gap-2 px-6 py-3 bg-cyan-500 text-black rounded-lg hover:bg-cyan-400 transition-colors font-medium"
                 >
                   <Save className="w-4 h-4" />
                   Update Security
