@@ -1,0 +1,42 @@
+{
+  "currentPlan": "Professional",
+  "planPrice": 79,
+  "billingCycle": "monthly",
+  "creditsUsed": 287,
+  "totalCredits": 500,
+  "nextBillingDate": "Dec 5, 2024",
+  "monthlySpend": 79,
+  "creditsPurchased": 75,
+  "transactions": [
+    {
+      "date": "Nov 1, 2024",
+      "description": "Professional Plan - Monthly",
+      "type": "subscription",
+      "amount": 79
+    },
+    {
+      "date": "Oct 15, 2024",
+      "description": "Additional Credits Purchase",
+      "type": "credits",
+      "amount": 25
+    },
+    {
+      "date": "Oct 1, 2024",
+      "description": "Professional Plan - Monthly",
+      "type": "subscription",
+      "amount": 79
+    },
+    {
+      "date": "Sep 20, 2024",
+      "description": "Additional Credits Purchase",
+      "type": "credits",
+      "amount": 50
+    },
+    {
+      "date": "Sep 1, 2024",
+      "description": "Professional Plan - Monthly",
+      "type": "subscription",
+      "amount": 79
+    }
+  ]
+}

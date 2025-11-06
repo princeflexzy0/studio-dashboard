@@ -1,82 +1,58 @@
-import axios from 'axios';
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
-
-// Fallback to local dummy data if API fails
-const useDummyData = !BASE_URL || BASE_URL === '';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 export const dashboardService = {
-  getStats: async () => {
-    if (useDummyData) {
-      const response = await fetch('/api/summary.json');
-      return response.json();
-    }
-    const { data } = await axios.get(`${BASE_URL}/api/studio/overview`);
-    return data;
+  // Dashboard Overview
+  async getStats() {
+    const response = await fetch(`${API_BASE_URL}/studio/overview.json`);
+    return response.json();
   },
 
-  getUsers: async () => {
-    if (useDummyData) {
-      const response = await fetch('/api/users.json');
-      return response.json();
-    }
-    const { data } = await axios.get(`${BASE_URL}/api/admin/users`);
-    return data;
+  // Users/Creators
+  async getUsers() {
+    const response = await fetch(`${API_BASE_URL}/admin/users.json`);
+    return response.json();
   },
 
-  getCampaigns: async () => {
-    if (useDummyData) {
-      const response = await fetch('/api/campaigns.json');
-      return response.json();
-    }
-    const { data } = await axios.get(`${BASE_URL}/api/admin/campaigns`);
-    return data;
+  // Campaigns
+  async getCampaigns() {
+    const response = await fetch(`${API_BASE_URL}/admin/campaigns.json`);
+    return response.json();
   },
 
-  getUploads: async () => {
-    if (useDummyData) {
-      const response = await fetch('/api/uploads.json');
-      return response.json();
-    }
-    const { data } = await axios.get(`${BASE_URL}/api/uploads`);
-    return data;
+  // Uploads
+  async getUploads() {
+    const response = await fetch(`${API_BASE_URL}/uploads.json`);
+    return response.json();
   },
 
-  getRequests: async () => {
-    if (useDummyData) {
-      const response = await fetch('/api/requests.json');
-      return response.json();
-    }
-    const { data } = await axios.get(`${BASE_URL}/api/studio/requests`);
-    return data;
+  // Requests
+  async getRequests() {
+    const response = await fetch(`${API_BASE_URL}/studio/requests.json`);
+    return response.json();
   },
 
-  getSystemHealth: async () => {
-    if (useDummyData) {
-      const response = await fetch('/api/health.json');
-      return response.json();
-    }
-    const { data } = await axios.get(`${BASE_URL}/api/system/health`);
-    return data;
+  // System Health
+  async getSystemHealth() {
+    const response = await fetch(`${API_BASE_URL}/system/health.json`);
+    return response.json();
   },
 
-  approveRequest: async (id: number) => {
-    if (useDummyData) {
-      return { success: true };
-    }
-    const { data } = await axios.post(`${BASE_URL}/api/studio/request/${id}/action`, {
-      action: 'approve'
-    });
-    return data;
+  // Billing Info
+  async getBillingInfo() {
+    const response = await fetch(`${API_BASE_URL}/billing/info.json`);
+    return response.json();
   },
 
-  rejectRequest: async (id: number) => {
-    if (useDummyData) {
-      return { success: true };
-    }
-    const { data } = await axios.post(`${BASE_URL}/api/studio/request/${id}/action`, {
-      action: 'reject'
-    });
-    return data;
-  }
+  // Request Actions
+  async approveRequest(id: number) {
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return { success: true, message: 'Request approved' };
+  },
+
+  async rejectRequest(id: number) {
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return { success: true, message: 'Request rejected' };
+  },
 };
