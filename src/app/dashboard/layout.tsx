@@ -32,7 +32,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
   }, [isAuthenticated, router]);
 
-  // Load and listen for profile updates
   useEffect(() => {
     const loadProfile = () => {
       const savedImage = localStorage.getItem('studio_profile_image');
@@ -51,7 +50,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     loadProfile();
 
-    // Listen for storage changes
     const handleStorageChange = () => loadProfile();
     window.addEventListener('storage', handleStorageChange);
     
@@ -183,8 +181,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all cursor-pointer ${
                           isActive
                             ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-black shadow-lg shadow-cyan-500/30'
-                            : 'text-gray-400 hover:bg-
-gray-800 hover:text-white'
+                            : 'text-gray-400 hover:bg-gray-800 hover:text-white'
                         }`}
                       >
                         <Icon className="w-5 h-5" />
