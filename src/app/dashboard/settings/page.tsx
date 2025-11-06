@@ -5,6 +5,9 @@ import { User, Bell, Shield, Camera, Mail, Phone, MapPin, Lock, Eye, EyeOff, Sav
 import { useAuth } from '@/contexts/AuthContext';
 import toast from 'react-hot-toast';
 
+// Force dynamic rendering - prevent static generation
+export const dynamic = 'force-dynamic';
+
 type TabType = 'profile' | 'notifications' | 'security';
 
 interface NotificationSettings {
@@ -17,19 +20,25 @@ interface NotificationSettings {
 }
 
 export default function SettingsPage() {
-  const { user, updateUser, updateProfilePicture } = useAuth();
+  const [mounted, setMounted] = useState(false);
+
+  // Wait for client-side mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Only use auth after mounted
+  const authHook = mounted ? useAuth() : null;
+  const user = authHook?.user;
+  const updateUser = authHook?.updateUser;
+  const updateProfilePicture = authHook?.updateProfilePicture;
+
   const [activeTab, setActiveTab] = useState<TabType>('profile');
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Wait for client-side mount to avoid SSR issues
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const [profile, setProfile] = useState({
     name: 'Admin User',
