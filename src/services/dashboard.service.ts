@@ -1,58 +1,61 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '/api/studio';
 
 export const dashboardService = {
-  // Dashboard Overview
+  async getOverview() {
+    const response = await fetch(`${API_BASE}/overview.json`);
+    if (!response.ok) throw new Error('Failed to fetch overview');
+    return response.json();
+  },
+
   async getStats() {
-    const response = await fetch(`${API_BASE_URL}/studio/overview.json`);
+    const response = await fetch(`${API_BASE}/stats.json`);
+    if (!response.ok) throw new Error('Failed to fetch stats');
     return response.json();
   },
 
-  // Users/Creators
   async getUsers() {
-    const response = await fetch(`${API_BASE_URL}/admin/users.json`);
+    const response = await fetch(`${API_BASE}/users.json`);
+    if (!response.ok) throw new Error('Failed to fetch users');
     return response.json();
   },
 
-  // Campaigns
   async getCampaigns() {
-    const response = await fetch(`${API_BASE_URL}/admin/campaigns.json`);
+    const response = await fetch(`${API_BASE}/campaigns.json`);
+    if (!response.ok) throw new Error('Failed to fetch campaigns');
     return response.json();
   },
 
-  // Uploads
   async getUploads() {
-    const response = await fetch(`${API_BASE_URL}/uploads.json`);
+    const response = await fetch(`${API_BASE}/uploads.json`);
+    if (!response.ok) throw new Error('Failed to fetch uploads');
     return response.json();
   },
 
-  // Requests
   async getRequests() {
-    const response = await fetch(`${API_BASE_URL}/studio/requests.json`);
+    const response = await fetch(`${API_BASE}/requests.json`);
+    if (!response.ok) throw new Error('Failed to fetch requests');
     return response.json();
   },
 
-  // System Health
   async getSystemHealth() {
-    const response = await fetch(`${API_BASE_URL}/system/health.json`);
+    const response = await fetch(`${API_BASE}/system-health.json`);
+    if (!response.ok) throw new Error('Failed to fetch system health');
     return response.json();
   },
 
-  // Billing Info
   async getBillingInfo() {
-    const response = await fetch(`${API_BASE_URL}/billing/info.json`);
+    const response = await fetch(`${API_BASE}/billing.json`);
+    if (!response.ok) throw new Error('Failed to fetch billing info');
     return response.json();
   },
 
-  // Request Actions
   async approveRequest(id: number) {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return { success: true, message: 'Request approved' };
+    // Mock approval - in real app would be POST request
+    return { success: true, id };
   },
 
   async rejectRequest(id: number) {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return { success: true, message: 'Request rejected' };
+    // Mock rejection - in real app would be POST request
+    return { success: true, id };
   },
 };
