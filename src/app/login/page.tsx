@@ -6,8 +6,6 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { toast, Toaster } from 'react-hot-toast';
 
-export const dynamic = 'force-dynamic';
-
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
