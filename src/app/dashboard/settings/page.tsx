@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { User, Bell, Shield, Camera, Mail, Phone, MapPin, Lock, Eye, EyeOff, Save, Check, Upload } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -23,15 +23,32 @@ export default function SettingsPage() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Wait for client-side mount to avoid SSR issues
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const [profile, setProfile] = useState({
-    name: user?.name || 'Admin User',
-    email: user?.email || 'admin@studio.com',
+    name: 'Admin User',
+    email: 'admin@studio.com',
     phone: '+234 812 345 6789',
     location: 'Lagos, Nigeria',
     bio: 'Studio administrator managing content and operations'
   });
+
+  // Update profile from user data after mount
+  useEffect(() => {
+    if (mounted && user) {
+      setProfile(prev => ({
+        ...prev,
+        name: user.name || prev.name,
+        email: user.email || prev.email
+      }));
+    }
+  }, [mounted, user]);
 
   const [notifications, setNotifications] = useState<NotificationSettings>({
     emailNotifications: true,
@@ -56,7 +73,9 @@ export default function SettingsPage() {
   ];
 
   const handleSave = () => {
-    updateUser({ name: profile.name, email: profile.email });
+    if (updateUser) {
+      updateUser({ name: profile.name, email: profile.email });
+    }
     setSaved(true);
     toast.success('Settings saved successfully!', {
       style: { background: '#1F2937', color: '#fff' },
@@ -85,7 +104,9 @@ export default function SettingsPage() {
       const reader = new FileReader();
       reader.onloadend = () => {
         const imageUrl = reader.result as string;
-        updateProfilePicture(imageUrl);
+        if (updateProfilePicture) {
+          updateProfilePicture(imageUrl);
+        }
         setUploading(false);
         toast.success('Profile picture updated!', {
           style: { background: '#1F2937', color: '#fff' },
@@ -98,6 +119,15 @@ export default function SettingsPage() {
   const toggleNotification = (key: keyof NotificationSettings) => {
     setNotifications(prev => ({ ...prev, [key]: !prev[key] }));
   };
+
+  // Show loading until mounted
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-4 sm:p-8">
