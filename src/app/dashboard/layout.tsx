@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { Home, Upload, Users, FileText, TrendingUp, Activity, Settings, LogOut, Menu, X } from 'lucide-react';
+import { Home, Upload, Users, FileText, TrendingUp, Activity, CreditCard, Settings, LogOut, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
@@ -14,6 +14,7 @@ const menuItems = [
   { name: 'Requests', path: '/dashboard/requests', icon: FileText },
   { name: 'Campaigns', path: '/dashboard/campaigns', icon: TrendingUp },
   { name: 'System', path: '/dashboard/system', icon: Activity },
+  { name: 'Billing', path: '/dashboard/billing', icon: CreditCard },
   { name: 'Settings', path: '/dashboard/settings', icon: Settings },
 ];
 
