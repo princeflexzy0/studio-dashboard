@@ -29,26 +29,25 @@ export default function LoginPage() {
       (acc) => acc.email === email && acc.password === password
     );
 
-    setTimeout(() => {
-      if (account) {
-        login({
-          id: account.id.toString(),
-          name: account.name,
-          email: account.email,
-          role: account.role,
-        });
-        toast.success(`Welcome back, ${account.name}!`, {
-          style: { background: '#1F2937', color: '#fff' },
-          icon: '👋',
-        });
-        router.push('/dashboard');
-      } else {
-        toast.error('Invalid email or password', {
-          style: { background: '#1F2937', color: '#fff' },
-        });
-      }
-      setIsLoading(false);
-    }, 1000);
+    // Removed setTimeout - instant login now
+    if (account) {
+      login({
+        id: account.id.toString(),
+        name: account.name,
+        email: account.email,
+        role: account.role,
+      });
+      toast.success(`Welcome back, ${account.name}!`, {
+        style: { background: '#1F2937', color: '#fff' },
+        icon: '👋',
+      });
+      router.push('/dashboard');
+    } else {
+      toast.error('Invalid email or password', {
+        style: { background: '#1F2937', color: '#fff' },
+      });
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -107,14 +106,7 @@ export default function LoginPage() {
             whileTap={{ scale: 0.98 }}
             className="w-full py-2.5 sm:py-3 text-sm sm:text-base bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-medium rounded-lg hover:from-cyan-400 hover:to-blue-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50"
           >
-            {isLoading ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-black border-t-transparent" />
-                Signing in...
-              </div>
-            ) : (
-              'Sign In'
-            )}
+            {isLoading ? 'Signing in...' : 'Sign In'}
           </motion.button>
         </form>
       </motion.div>
