@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { toast, Toaster } from 'react-hot-toast';
@@ -93,6 +94,13 @@ export default function LoginPage() {
               {isLoading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
+
+          <p className="text-center text-gray-400 mt-6">
+            Don't have an account?{' '}
+            <Link href="/signup" className="text-cyan-400 hover:underline font-medium">
+              Sign Up
+            </Link>
+          </p>
         </div>
       </motion.div>
     </div>
