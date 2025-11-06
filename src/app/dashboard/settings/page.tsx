@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { User, Bell, Shield, Camera, Save, Lock, Mail, Phone, MapPin } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,12 +9,11 @@ import toast from 'react-hot-toast';
 type TabType = 'profile' | 'notifications' | 'security';
 
 export default function SettingsPage() {
-  const { user } = useAuth();
+  const { user, login } = useAuth();
   const [activeTab, setActiveTab] = useState<TabType>('profile');
-  const [profileImage, setProfileImage] = useState<string>(user?.avatar || '');
+  const [profileImage, setProfileImage] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Profile Form State
   const [profileData, setProfileData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -23,7 +22,13 @@ export default function SettingsPage() {
     bio: 'Creative professional specializing in video content and digital media.',
   });
 
-  // Notification Settings
+  useEffect(() => {
+    const savedImage = localStorage.getItem('studio_profile_image');
+    if (savedImage) {
+      setProfileImage(savedImage);
+    }
+  }, []);
+
   const [notifications, setNotifications] = useState({
     emailNotifications: true,
     pushNotifications: true,
@@ -32,7 +37,6 @@ export default function SettingsPage() {
     marketingEmails: false,
   });
 
-  // Security Settings
   const [passwords, setPasswords] = useState({
     currentPassword: '',
     newPassword: '',
@@ -49,18 +53,40 @@ export default function SettingsPage() {
       }
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileImage(reader.result as string);
+        const imageUrl = reader.result as string;
+        setProfileImage(imageUrl);
+        localStorage.setItem('studio_profile_image', imageUrl);
+        
+        // Update user in context immediately
+        if (user) {
+          const updatedUser = { ...user, avatar: imageUrl };
+          login(updatedUser);
+        }
+        
         toast.success('Profile picture updated!', { style: { background: '#1F2937', color: '#fff' }, icon: '📸' });
+        window.dispatchEvent(new Event('storage')); // Trigger update in layout
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleProfileSave = () => {
+    if (user) {
+      const updatedUser = {
+        ...user,
+        name: profileData.name,
+        email: profileData.email,
+        avatar: profileImage,
+      };
+      login(updatedUser);
+      localStorage.setItem('studio_user', JSON.stringify(updatedUser));
+      window.dispatchEvent(new Event('storage')); // Trigger update in layout
+    }
     toast.success('Profile updated successfully!', { style: { background: '#1F2937', color: '#fff' }, icon: '✅' });
   };
 
   const handleNotificationSave = () => {
+    localStorage.setItem('studio_notifications', JSON.stringify(notifications));
     toast.success('Notification preferences saved!', { style: { background: '#1F2937', color: '#fff' }, icon: '🔔' });
   };
 
@@ -92,7 +118,6 @@ export default function SettingsPage() {
         <p className="text-gray-400 text-sm sm:text-base">Manage your account preferences and security</p>
       </div>
 
-      {/* Tabs */}
       <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -115,7 +140,6 @@ export default function SettingsPage() {
         })}
       </div>
 
-      {/* Tab Content */}
       <motion.div
         key={activeTab}
         initial={{ opacity: 0, x: 20 }}
@@ -124,12 +148,10 @@ export default function SettingsPage() {
         transition={{ duration: 0.3 }}
         className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-gray-700/50 rounded-xl p-4 sm:p-6"
       >
-        {/* PROFILE TAB */}
         {activeTab === 'profile' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-white mb-4">Profile Information</h2>
 
-            {/* Profile Picture Upload */}
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <div className="relative">
                 <motion.div
@@ -140,7 +162,7 @@ export default function SettingsPage() {
                   {profileImage ? (
                     <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
-                    user?.name.charAt(0).toUpperCase()
+                    profileData.name.charAt(0).toUpperCase()
                   )}
                 </motion.div>
                 <motion.button
@@ -160,14 +182,13 @@ export default function SettingsPage() {
                 />
               </div>
               <div className="text-center sm:text-left">
-                <h3 className="text-xl font-semibold text-white">{user?.name}</h3>
-                <p className="text-gray-400">{user?.email}</p>
+                <h3 className="text-xl font-semibold text-white">{profileData.name}</h3>
+                <p className="text-gray-400">{profileData.email}</p>
                 <p className="text-sm text-gray-500 mt-1">Click the camera icon to upload a new photo</p>
                 <p className="text-xs text-gray-600">Max size: 5MB</p>
               </div>
             </div>
 
-            {/* Profile Form */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
@@ -244,7 +265,6 @@ export default function SettingsPage() {
           </div>
         )}
 
-        {/* NOTIFICATIONS TAB */}
         {activeTab === 'notifications' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-white mb-4">Notification Preferences</h2>
@@ -298,12 +318,10 @@ export default function SettingsPage() {
           </div>
         )}
 
-        {/* SECURITY TAB */}
         {activeTab === 'security' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-white mb-4">Security Settings</h2>
 
-            {/* Change Password */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-white">Change Password</h3>
               
@@ -360,7 +378,6 @@ export default function SettingsPage() {
               </motion.button>
             </div>
 
-            {/* 2FA Toggle */}
             <div className="pt-6 border-t border-gray-700">
               <h3 className="text-lg font-semibold text-white mb-4">Two-Factor Authentication</h3>
               <motion.div

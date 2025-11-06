@@ -22,12 +22,41 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const { user, logout, isAuthenticated } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [profileImage, setProfileImage] = useState<string>('');
+  const [displayName, setDisplayName] = useState<string>('');
+  const [displayEmail, setDisplayEmail] = useState<string>('');
 
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/login');
     }
   }, [isAuthenticated, router]);
+
+  // Load and listen for profile updates
+  useEffect(() => {
+    const loadProfile = () => {
+      const savedImage = localStorage.getItem('studio_profile_image');
+      const savedUser = localStorage.getItem('studio_user');
+      
+      if (savedImage) setProfileImage(savedImage);
+      if (savedUser) {
+        const userData = JSON.parse(savedUser);
+        setDisplayName(userData.name);
+        setDisplayEmail(userData.email);
+      } else if (user) {
+        setDisplayName(user.name);
+        setDisplayEmail(user.email);
+      }
+    };
+
+    loadProfile();
+
+    // Listen for storage changes
+    const handleStorageChange = () => loadProfile();
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [user]);
 
   const handleLogout = () => {
     logout();
@@ -38,9 +67,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return null;
   }
 
+  const UserAvatar = () => (
+    <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-black font-bold overflow-hidden">
+      {profileImage ? (
+        <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+      ) : (
+        (displayName || user.name).charAt(0).toUpperCase()
+      )}
+    </div>
+  );
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-black via-gray-900 to-black">
-      {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         className="lg:hidden fixed top-4 right-4 z-50 p-3 bg-gray-800 rounded-lg text-cyan-400 hover:bg-gray-700 transition-all"
@@ -48,7 +86,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
 
-      {/* Sidebar - Desktop */}
       <aside className="hidden lg:flex w-64 bg-gradient-to-b from-gray-900 to-black border-r border-gray-800 flex-col">
         <div className="p-6 border-b border-gray-800">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
@@ -58,12 +95,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <div className="p-4 border-b border-gray-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-black font-bold">
-              {user.name.charAt(0)}
-            </div>
+            <UserAvatar />
             <div className="flex-1 min-w-0">
-              <p className="text-white font-medium truncate">{user.name}</p>
-              <p className="text-gray-400 text-sm truncate">{user.email}</p>
+              <p className="text-white font-medium truncate">{displayName || user.name}</p>
+              <p className="text-gray-400 text-sm truncate">{displayEmail || user.email}</p>
             </div>
           </div>
         </div>
@@ -104,7 +139,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
 
-      {/* Sidebar - Mobile */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
@@ -130,12 +164,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
               <div className="p-4 border-b border-gray-800">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-black font-bold">
-                    {user.name.charAt(0)}
-                  </div>
+                  <UserAvatar />
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-medium truncate">{user.name}</p>
-                    <p className="text-gray-400 text-sm truncate">{user.email}</p>
+                    <p className="text-white font-medium truncate">{displayName || user.name}</p>
+                    <p className="text-gray-400 text-sm truncate">{displayEmail || user.email}</p>
                   </div>
                 </div>
               </div>
@@ -151,7 +183,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all cursor-pointer ${
                           isActive
                             ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-black shadow-lg shadow-cyan-500/30'
-                            : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                            : 'text-gray-400 hover:bg-
+gray-800 hover:text-white'
                         }`}
                       >
                         <Icon className="w-5 h-5" />
@@ -177,7 +210,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         )}
       </AnimatePresence>
 
-      {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
         {children}
       </main>
