@@ -1,213 +1,179 @@
-# 🎬 Studio Dashboard - Professional Content Management Platform
+# 🎯 Studio Dashboard
 
-A modern, responsive dashboard for managing video content, creator collaborations, and studio operations. Built with Next.js 14, TypeScript, and Tailwind CSS.
+Professional admin dashboard for managing studio operations, content creators, campaigns, and system monitoring.
 
-![Studio Dashboard](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?style=for-the-badge&logo=tailwind-css)
+## 🚀 Live Demo
+
+**Production URL:** [https://studio-dashboard-pearl.vercel.app](https://studio-dashboard-pearl.vercel.app)
+
+## 🔐 Login Credentials
+
+### Admin Access (Full Permissions)
+- **Email:** `admin@studio.com`
+- **Password:** `Studio@2025`
+- **Access:** All features including billing, system health, user management
+
+### Studio Manager Access
+- **Email:** `studio@manager.com`
+- **Password:** `Manager@2025`
+- **Access:** Content management, campaigns, requests approval
+
+### Creator Access
+- **Email:** `creator@studio.com`
+- **Password:** `Creator@2025`
+- **Access:** Upload content, view own statistics
+
+---
 
 ## ✨ Features
 
 ### 📊 Dashboard Overview
-- Real-time analytics and statistics
-- Active campaigns tracking
-- Recent uploads monitoring
-- System health indicators
-- Beautiful gradient UI with animations
+- Real-time statistics (uploads, requests, revenue)
+- Recent activity feed with user actions
+- Revenue trend chart (5-day performance)
+- Quick action buttons for common tasks
 
-### 🎥 Content Management
-- Drag-and-drop file uploads
-- Video and image support
-- Upload progress tracking
-- File management system
-- Preview capabilities
+### 💳 Billing & Subscription
+- Current plan overview with next billing date
+- Credit usage tracker with visual progress bar
+- Low credit warnings (>80% usage)
+- 3 subscription tiers (Starter, Professional, Enterprise)
+- Transaction history with export functionality
+- Monthly spending analytics
 
-### 👥 Creator Collaboration
-- Collaboration request system
-- Creator management
-- Request approval workflow
-- Communication tools
-
-### 📈 Campaign Management
-- Campaign creation and tracking
-- Performance analytics
-- Budget monitoring
-- Timeline management
-
-### ⚙️ Settings & Profile
-- **Auto-location detection** via IP geolocation
-- Profile picture upload
-- Email and notification preferences
-- Password management
-- Two-factor authentication
-- Security settings
-
-### 🖥️ System Health
-- Real-time system monitoring
+### 📈 System Health Monitor
+- Overall system status dashboard
 - 30-day uptime performance chart
-- Service status tracking
-- Response time metrics
-- Professional recharts visualization
+- Individual service monitoring (API, Database, CDN, Queue)
+- Response time tracking
+- Mobile-optimized charts
 
-## 🚀 Tech Stack
+### 👥 User Management
+- Creator/user list with search and filters
+- Role-based access control
+- User statistics and activity tracking
 
-- **Framework:** Next.js 14 with App Router
+### 📺 Content Management
+- Upload system with drag-drop support
+- Video library with preview thumbnails
+- File validation (mp4/webm, max 200MB)
+- Upload progress tracking
+
+### 📋 Request Management
+- Approval/rejection workflow
+- Status tracking (Pending, Approved, Rejected)
+- Real-time notifications
+
+### 🎯 Campaign Tracker
+- Active campaign monitoring
+- Budget tracking and spending analysis
+- Performance metrics (impressions, clicks)
+- Campaign status management
+
+### ⚙️ Settings
+**Profile Tab:**
+- Edit personal information (name, email, phone, location)
+- Bio/description
+- Profile avatar management
+
+**Notifications Tab:**
+- Email notifications toggle
+- Push notifications toggle
+- Activity alerts (uploads, requests, campaigns)
+- Weekly report subscription
+
+**Security Tab:**
+- Password change with current password verification
+- Two-factor authentication (2FA) toggle
+- Password visibility controls
+
+### 🔔 Notifications
+- Real-time notification bell with badge counter
+- Audio notification sound on new alerts
+- Mark as read/unread functionality
+- Clear individual or all notifications
+- Notification types: Success, Warning, Info
+
+---
+
+## 🛠 Tech Stack
+
+- **Framework:** Next.js 14 (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
 - **Animations:** Framer Motion
 - **Charts:** Recharts
-- **State Management:** React Context API
-- **File Upload:** React Dropzone
-- **Notifications:** React Hot Toast
 - **Icons:** Lucide React
-
-## 📱 Mobile Responsive
-
-Fully optimized for all devices:
-- **📱 Mobile:** 320px - 640px (Single column, touch-optimized)
-- **📲 Tablet:** 640px - 1024px (2-column grids)
-- **💻 Desktop:** 1024px+ (Full multi-column layouts)
-
-## 🛠️ Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/princeflexzy0/studio-dashboard.git
-
-# Navigate to project directory
-cd studio-dashboard
-
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 🔐 Default Login Credentials
-
-```
-Email: admin@studio.com
-Password: admin123
-```
-
-**⚠️ Important:** Change these credentials in production!
-
-## 📦 Build for Production
-
-```bash
-# Create production build
-npm run build
-
-# Start production server
-npm start
-```
-
-## 🌐 Deploy to Vercel
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Login to Vercel
-vercel login
-
-# Deploy to production
-vercel --prod
-```
-
-Or connect your GitHub repository on [vercel.com](https://vercel.com) for automatic deployments.
-
-## 📂 Project Structure
-
-```
-studio-dashboard/
-├── src/
-│   ├── app/
-│   │   ├── dashboard/          # Dashboard pages
-│   │   │   ├── page.tsx        # Main dashboard
-│   │   │   ├── settings/       # Settings page
-│   │   │   ├── system/         # System health
-│   │   │   ├── campaigns/      # Campaign management
-│   │   │   ├── creators/       # Creator management
-│   │   │   └── requests/       # Collaboration requests
-│   │   ├── login/              # Authentication
-│   │   └── api/                # API routes
-│   ├── components/             # Reusable components
-│   ├── contexts/               # React contexts
-│   ├── services/               # API services
-│   └── types/                  # TypeScript types
-├── public/                     # Static assets
-└── backend/                    # Backend API (optional)
-```
-
-## 🎨 Key Features Breakdown
-
-### Auto-Location Detection
-Uses IP geolocation API to automatically detect user's:
-- City and region
-- Country
-- Phone country code
-- Manual override option
-
-### Professional Charts
-- Smooth animated area charts
-- 30-day historical data
-- Interactive tooltips
-- Gradient fills
-- Responsive design
-
-### Modern UI/UX
-- Glassmorphism effects
-- Smooth animations
-- Gradient backgrounds
-- Touch-friendly controls
-- Loading states
-- Error handling
-
-## 🔧 Environment Variables
-
-Create a `.env.local` file:
-
-```env
-NEXT_PUBLIC_API_URL=your_api_url
-```
-
-## 📝 Scripts
-
-```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm start            # Start production server
-npm run lint         # Run ESLint
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 👨‍💻 Developer
-
-Developed by **Prince Flexzy**
-- GitHub: [@princeflexzy0](https://github.com/princeflexzy0)
-
-## 🙏 Acknowledgments
-
-- Next.js team for the amazing framework
-- Tailwind CSS for utility-first styling
-- Framer Motion for smooth animations
-- Recharts for beautiful data visualization
+- **State Management:** React Query
+- **Notifications:** React Hot Toast
 
 ---
 
-**🚀 Ready to go live!** Deploy to Vercel in minutes and start managing your studio content professionally.
+## 📦 Project Structure
+```
+/src
+├── /app
+│   ├── /dashboard
+│   │   ├── page.tsx              # Dashboard overview
+│   │   ├── /billing              # Billing & subscription
+│   │   ├── /campaigns            # Campaign tracker
+│   │   ├── /creators             # User management
+│   │   ├── /requests             # Request approval
+│   │   ├── /settings             # Settings (3 tabs)
+│   │   ├── /system               # System health
+│   │   └── /uploads              # Upload management
+│   └── /login                    # Login page
+├── /components
+│   ├── /dashboard                # Dashboard components
+│   └── NotificationBell.tsx      # Notification system
+├── /contexts
+│   └── AuthContext.tsx           # Authentication
+└── /services
+    └── dashboard.service.ts      # API service layer
+```
+
+---
+
+## 🎨 Key Highlights
+
+✅ **Fully Responsive** - Works seamlessly on mobile, tablet, and desktop
+✅ **Dark Theme** - Modern dark UI with neon accents
+✅ **Real-time Updates** - Live data with 30-second refresh intervals
+✅ **Professional Animations** - Smooth transitions and micro-interactions
+✅ **Role-Based Access** - Different permissions for Admin, Manager, Creator
+✅ **Dummy Data Ready** - Pre-populated with realistic test data
+✅ **Backend Ready** - Structured for easy API integration
+
+---
+
+## 🔄 API Integration
+
+Currently using dummy data from `/public/api/` folder. To connect to backend:
+
+1. Set `NEXT_PUBLIC_API_URL` in `.env.local`
+2. Update `src/services/dashboard.service.ts` to use real endpoints
+3. All dummy JSON files map to expected backend response formats
+
+---
+
+## 🚀 Deployment
+
+**Platform:** Vercel
+**Auto-deploy:** Enabled on main branch push
+**Build Status:** ✅ Passing
+
+---
+
+## 📞 Support
+
+For issues or questions about the dashboard, please contact the development team.
+
+---
+
+## 📄 License
+
+Proprietary - All rights reserved
+
+---
+
+Built with ❤️ for professional studio management
