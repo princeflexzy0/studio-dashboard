@@ -1,6 +1,0 @@
-[
-  {"id": 1, "title": "Product Demo Video", "creator": "John Doe", "size": "45.2 MB", "duration": "3:45", "format": "mp4", "status": "published", "views": 12500, "uploadDate": "2024-11-05"},
-  {"id": 2, "title": "Tutorial Series EP1", "creator": "Jane Smith", "size": "128.5 MB", "duration": "12:30", "format": "mp4", "status": "published", "views": 28000, "uploadDate": "2024-11-04"},
-  {"id": 3, "title": "Behind The Scenes", "creator": "Mike Johnson", "size": "89.3 MB", "duration": "8:15", "format": "webm", "status": "processing", "views": 0, "uploadDate": "2024-11-05"},
-  {"id": 4, "title": "Customer Testimonial", "creator": "Sarah Williams", "size": "32.1 MB", "duration": "2:20", "format": "mp4", "status": "published", "views": 8500, "uploadDate": "2024-11-03"}
-]

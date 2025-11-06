@@ -1,6 +1,0 @@
-[
-  {"id": 1, "name": "John Doe", "email": "john@example.com", "type": "Upload Request", "message": "Need approval for new product video", "date": "2024-11-05", "status": "pending"},
-  {"id": 2, "name": "Jane Smith", "email": "jane@example.com", "type": "Campaign Request", "message": "Request to increase budget for active campaign", "date": "2024-11-05", "status": "pending"},
-  {"id": 3, "name": "Mike Johnson", "email": "mike@example.com", "type": "Content Edit", "message": "Need to update video thumbnail", "date": "2024-11-04", "status": "approved"},
-  {"id": 4, "name": "Sarah Williams", "email": "sarah@example.com", "type": "Account Access", "message": "Request editor permissions", "date": "2024-11-03", "status": "rejected"}
-]

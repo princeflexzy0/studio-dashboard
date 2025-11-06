@@ -1,6 +1,0 @@
-[
-  {"id": "CMP001", "title": "Winter Sale 2024", "budget": 25000, "spent": 18500, "impressions": 450000, "clicks": 12500, "status": "active", "startDate": "2024-11-01", "endDate": "2024-12-31"},
-  {"id": "CMP002", "title": "Product Launch", "budget": 40000, "spent": 35200, "impressions": 680000, "clicks": 22000, "status": "active", "startDate": "2024-10-15", "endDate": "2024-11-30"},
-  {"id": "CMP003", "title": "Brand Awareness", "budget": 15000, "spent": 15000, "impressions": 320000, "clicks": 8500, "status": "completed", "startDate": "2024-09-01", "endDate": "2024-10-31"},
-  {"id": "CMP004", "title": "Holiday Special", "budget": 30000, "spent": 0, "impressions": 0, "clicks": 0, "status": "scheduled", "startDate": "2024-12-15", "endDate": "2025-01-15"}
-]
