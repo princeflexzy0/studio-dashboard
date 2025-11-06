@@ -47,7 +47,7 @@ export default function NotificationBell() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative z-50">
       <button
         onClick={handleBellClick}
         className="relative p-2 text-gray-400 hover:text-white transition-colors"
@@ -67,15 +67,9 @@ export default function NotificationBell() {
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop - only on mobile */}
+            {/* Backdrop for mobile and desktop */}
             <div 
-              className="fixed inset-0 z-40 sm:hidden" 
-              onClick={() => setIsOpen(false)} 
-            />
-            
-            {/* Click-outside handler for desktop */}
-            <div 
-              className="hidden sm:block fixed inset-0" 
+              className="fixed inset-0 z-[60] bg-black/20 sm:bg-transparent" 
               onClick={() => setIsOpen(false)} 
             />
             
@@ -84,7 +78,7 @@ export default function NotificationBell() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="fixed sm:absolute left-4 right-4 sm:left-auto sm:right-0 top-16 sm:top-full mt-0 sm:mt-2 sm:w-96 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl border border-gray-700 z-50 overflow-hidden max-w-md sm:max-w-none"
+              className="fixed sm:absolute left-4 right-4 sm:left-auto sm:right-0 top-16 sm:top-full mt-0 sm:mt-2 sm:w-96 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl border border-gray-700 z-[70] overflow-hidden max-w-md sm:max-w-none"
             >
               {/* Header */}
               <div className="p-4 border-b border-gray-700 flex items-center justify-between">
