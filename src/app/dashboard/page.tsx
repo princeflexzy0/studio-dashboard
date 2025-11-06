@@ -19,8 +19,11 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-4 sm:p-8">
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">
-          Welcome back, {user?.name}! 👋
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2">
+          <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            Welcome back, {user?.name}!
+          </span>{' '}
+          <span className="inline-block">👋</span>
         </h1>
         <p className="text-gray-400">Here's what's happening with your studio today.</p>
       </div>
