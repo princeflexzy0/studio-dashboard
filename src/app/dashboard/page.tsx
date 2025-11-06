@@ -30,22 +30,22 @@ export default function DashboardOverview() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-4 sm:p-6 lg:p-8">
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-4 sm:p-8">
         <ErrorState message="Failed to load stats" onRetry={() => refetch()} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-4 sm:p-8">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent mb-2 sm:mb-3">
+        <h1 className="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent mb-2 sm:mb-3">
           {getGreeting()}, {user?.name || 'Admin'}! <span className="inline-block" style={{ filter: 'none' }}>👋</span>
         </h1>
-        <p className="text-gray-400 text-sm sm:text-base lg:text-lg">Here's your studio performance today</p>
+        <p className="text-gray-400 text-sm sm:text-lg">Here's your studio performance today</p>
       </motion.div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }} 
           animate={{ opacity: 1, scale: 1 }} 
@@ -76,13 +76,13 @@ export default function DashboardOverview() {
           transition={{ delay: 0.4 }}
           whileHover={{ scale: 1.02, y: -4 }}
         >
-          <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-gray-700/50 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 hover:border-green-500/50 hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 cursor-pointer">
+          <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-gray-700/50 rounded-lg sm:rounded-xl p-4 sm:p-6 hover:border-green-500/50 hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 cursor-pointer">
             <div className="flex items-center justify-between mb-2 sm:mb-4">
               <span className="text-gray-400 text-xs sm:text-sm font-medium">Revenue</span>
               <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
             </div>
             <div className="flex items-end justify-between">
-              <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
+              <span className="text-xl sm:text-3xl font-bold text-white">
                 {isLoading ? '...' : `$${stats?.revenue_usd?.toLocaleString() || 0}`}
               </span>
             </div>
@@ -95,10 +95,10 @@ export default function DashboardOverview() {
           initial={{ opacity: 0, y: 20 }} 
           animate={{ opacity: 1, y: 0 }} 
           transition={{ delay: 0.5 }} 
-          className="bg-gradient-to-br from-gray-800/30 to-gray-900/30 backdrop-blur-xl border border-gray-700/50 rounded-lg sm:rounded-xl lg:rounded-2xl p-4 sm:p-5 lg:p-6 mb-6 sm:mb-8"
+          className="bg-gradient-to-br from-gray-800/30 to-gray-900/30 backdrop-blur-xl border border-gray-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8"
         >
-          <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-4 sm:mb-6">Revenue & Views Analytics</h2>
-          <ResponsiveContainer width="100%" height={200} className="sm:hidden">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Revenue & Views Analytics</h2>
+          <ResponsiveContainer width="100%" height={250} className="sm:hidden">
             <LineChart data={stats.graph}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
               <XAxis dataKey="date" stroke="#9CA3AF" tick={{ fontSize: 10 }} />
@@ -144,13 +144,13 @@ export default function DashboardOverview() {
           whileHover={{ scale: 1.02, y: -4 }}
           className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-lg sm:rounded-xl p-4 sm:p-6 cursor-pointer hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/20 transition-all"
         >
-          <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-white mb-1 sm:mb-2">Quick Upload</h3>
+          <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">Quick Upload</h3>
           <p className="text-gray-400 text-sm mb-3 sm:mb-4">Upload new content directly</p>
           <motion.a 
             href="/dashboard/uploads"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-block px-3 py-2 sm:px-4 text-sm sm:text-base bg-cyan-500 text-black rounded-lg hover:bg-cyan-400 transition-colors font-medium shadow-lg hover:shadow-cyan-500/50"
+            className="inline-block px-4 py-2 text-sm sm:text-base bg-cyan-500 text-black rounded-lg hover:bg-cyan-400 transition-colors font-medium shadow-lg hover:shadow-cyan-500/50"
           >
             Upload File
           </motion.a>
@@ -163,13 +163,13 @@ export default function DashboardOverview() {
           whileHover={{ scale: 1.02, y: -4 }}
           className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-lg sm:rounded-xl p-4 sm:p-6 cursor-pointer hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/20 transition-all"
         >
-          <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-white mb-1 sm:mb-2">Review Requests</h3>
+          <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">Review Requests</h3>
           <p className="text-gray-400 text-sm mb-3 sm:mb-4">Pending approvals</p>
           <motion.a 
             href="/dashboard/requests"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-block px-3 py-2 sm:px-4 text-sm sm:text-base bg-purple-500 text-white rounded-lg hover:bg-purple-400 transition-colors font-medium shadow-lg hover:shadow-purple-500/50"
+            className="inline-block px-4 py-2 text-sm sm:text-base bg-purple-500 text-white rounded-lg hover:bg-purple-400 transition-colors font-medium shadow-lg hover:shadow-purple-500/50"
           >
             Review Now
           </motion.a>
