@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import NotificationBell from '@/components/NotificationBell';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   LayoutDashboard, Upload, Users, Briefcase, FileText, 
   CreditCard, Settings, LogOut, Menu, X, Bell, Search,
@@ -14,6 +15,7 @@ import {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { user } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
@@ -42,6 +44,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { icon: Settings, label: 'Settings', path: '/dashboard/settings' },
   ];
 
+  const displayName = user?.name || 'Admin User';
+  const userInitial = displayName.charAt(0).toUpperCase();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       {/* Mobile/Desktop Header */}
@@ -60,7 +65,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               )}
             </button>
             <h1 className="text-xl lg:hidden font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-              📸 Studio
+              �� Studio
             </h1>
           </div>
 
@@ -70,10 +75,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
             >
-              <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center">
-                <User className="w-5 h-5 text-white" />
-              </div>
-              <span className="hidden sm:block text-white text-sm font-medium">Admin</span>
+              {user?.profilePicture ? (
+                <img 
+                  src={user.profilePicture} 
+                  alt={displayName}
+                  className="w-8 h-8 rounded-full object-cover border-2 border-cyan-500"
+                />
+              ) : (
+                <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                  {userInitial}
+                </div>
+              )}
+              <span className="hidden sm:block text-white text-sm font-medium">{displayName}</span>
             </button>
 
             <AnimatePresence>
@@ -84,6 +97,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   exit={{ opacity: 0, y: -10 }}
                   className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg border border-gray-700 shadow-xl overflow-hidden"
                 >
+                  <div className="px-4 py-3 border-b border-gray-700">
+                    <p className="text-white font-medium truncate">{displayName}</p>
+                    <p className="text-gray-400 text-xs truncate">{user?.email || 'admin@studio.com'}</p>
+                  </div>
                   <Link
                     href="/dashboard/settings"
                     className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-gray-700 transition-colors"
