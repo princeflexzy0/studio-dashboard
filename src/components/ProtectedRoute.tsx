@@ -1,12 +1,12 @@
 'use client';
 
-import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedRoles?: Array<'admin' | 'editor' | 'contributor'>;
+  allowedRoles?: Array<'admin' | 'studio' | 'creator'>;
 }
 
 export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
@@ -23,12 +23,15 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
         router.push('/dashboard');
       }
     }
-  }, [loading, isAuthenticated, user, allowedRoles, router]);
+  }, [loading, isAuthenticated, allowedRoles, user, router]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-[#00D9FF]" />
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-400">Loading...</p>
+        </div>
       </div>
     );
   }
