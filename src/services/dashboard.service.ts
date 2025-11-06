@@ -46,6 +46,11 @@ export const dashboardService = {
     return response.json();
   },
 
+  getSystemHealth: async () => {
+    const response = await fetch(`${API_BASE}/system-health.json`);
+    return response.json();
+  },
+
   deleteUser: async (userId: string) => {
     await new Promise(resolve => setTimeout(resolve, 500));
     return { success: true };
