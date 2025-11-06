@@ -1,15 +1,12 @@
 import api from './api';
-import { DashboardStats, Request, UploadedFile, User } from '@/types/dashboard';
 
 export const dashboardService = {
-  // Overview
-  getStats: async (): Promise<DashboardStats> => {
-    const { data } = await api.get('/studio/overview');
+  getStats: async () => {
+    const { data } = await api.get('/admin/summary');
     return data;
   },
 
-  // Requests
-  getRequests: async (): Promise<Request[]> => {
+  getRequests: async () => {
     const { data } = await api.get('/studio/requests');
     return data;
   },
@@ -19,8 +16,7 @@ export const dashboardService = {
     return data;
   },
 
-  // Uploads
-  getUploads: async (): Promise<UploadedFile[]> => {
+  getUploads: async () => {
     const { data } = await api.get('/uploads');
     return data;
   },
@@ -28,7 +24,6 @@ export const dashboardService = {
   uploadFile: async (file: File, onProgress?: (progress: number) => void) => {
     const formData = new FormData();
     formData.append('file', file);
-
     const { data } = await api.post('/uploads', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
       onUploadProgress: (progressEvent) => {
@@ -46,13 +41,12 @@ export const dashboardService = {
     return data;
   },
 
-  // User Profile
-  getProfile: async (): Promise<User> => {
+  getProfile: async () => {
     const { data } = await api.get('/user/profile');
     return data;
   },
 
-  updateProfile: async (profile: Partial<User>) => {
+  updateProfile: async (profile: any) => {
     const { data } = await api.post('/user/update', profile);
     return data;
   },
