@@ -1,0 +1,62 @@
+[
+  {
+    "id": "UPL001",
+    "title": "Summer Campaign Video.mp4",
+    "date": "2025-11-05",
+    "status": "active",
+    "uploader": "Sarah Johnson",
+    "type": "video",
+    "size": "245 MB",
+    "duration": "3:45"
+  },
+  {
+    "id": "UPL002",
+    "title": "Product Launch Banner.jpg",
+    "date": "2025-11-04",
+    "status": "active",
+    "uploader": "Mike Chen",
+    "type": "image",
+    "size": "8.2 MB",
+    "duration": null
+  },
+  {
+    "id": "UPL003",
+    "title": "Brand Guidelines 2024.pdf",
+    "date": "2025-11-03",
+    "status": "active",
+    "uploader": "Emma Davis",
+    "type": "document",
+    "size": "12.5 MB",
+    "duration": null
+  },
+  {
+    "id": "UPL004",
+    "title": "Behind The Scenes.mp4",
+    "date": "2025-11-02",
+    "status": "processing",
+    "uploader": "James Wilson",
+    "type": "video",
+    "size": "512 MB",
+    "duration": "8:20"
+  },
+  {
+    "id": "UPL005",
+    "title": "Social Media Assets.zip",
+    "date": "2025-11-01",
+    "status": "active",
+    "uploader": "Lisa Anderson",
+    "type": "archive",
+    "size": "156 MB",
+    "duration": null
+  },
+  {
+    "id": "UPL006",
+    "title": "Customer Testimonial.mp4",
+    "date": "2025-10-31",
+    "status": "active",
+    "uploader": "Sarah Johnson",
+    "type": "video",
+    "size": "89 MB",
+    "duration": "2:15"
+  }
+]

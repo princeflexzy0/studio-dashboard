@@ -1,41 +1,42 @@
 [
   {
-    "id": 1,
-    "name": "John Doe",
-    "email": "john@example.com",
-    "phone": "+1 (555) 123-4567",
-    "location": "New York, USA",
+    "id": "USR001",
+    "name": "Sarah Johnson",
+    "email": "sarah@studio.com",
+    "role": "admin",
     "status": "active",
-    "joinedDate": "Jan 2024",
-    "uploads": 24,
-    "campaigns": 3,
-    "earnings": 1250,
-    "avatar": "https://ui-avatars.com/api/?name=John+Doe&background=0ea5e9&color=fff"
+    "avatar": "https://ui-avatars.com/api/?name=Sarah+Johnson&background=0ea5e9&color=fff"
   },
   {
-    "id": 2,
-    "name": "Jane Smith",
-    "email": "jane@example.com",
-    "phone": "+1 (555) 987-6543",
-    "location": "Los Angeles, USA",
-    "status": "active",
-    "joinedDate": "Feb 2024",
-    "uploads": 18,
-    "campaigns": 2,
-    "earnings": 980,
-    "avatar": "https://ui-avatars.com/api/?name=Jane+Smith&background=8b5cf6&color=fff"
-  },
-  {
-    "id": 3,
+    "id": "USR002",
     "name": "Mike Chen",
-    "email": "mike@example.com",
-    "phone": "+1 (555) 456-7890",
-    "location": "San Francisco, USA",
-    "status": "pending",
-    "joinedDate": "Mar 2024",
-    "uploads": 5,
-    "campaigns": 0,
-    "earnings": 0,
-    "avatar": "https://ui-avatars.com/api/?name=Mike+Chen&background=10b981&color=fff"
+    "email": "mike@studio.com",
+    "role": "editor",
+    "status": "active",
+    "avatar": "https://ui-avatars.com/api/?name=Mike+Chen&background=8b5cf6&color=fff"
+  },
+  {
+    "id": "USR003",
+    "name": "Emma Davis",
+    "email": "emma@studio.com",
+    "role": "creator",
+    "status": "active",
+    "avatar": "https://ui-avatars.com/api/?name=Emma+Davis&background=ec4899&color=fff"
+  },
+  {
+    "id": "USR004",
+    "name": "James Wilson",
+    "email": "james@studio.com",
+    "role": "viewer",
+    "status": "active",
+    "avatar": "https://ui-avatars.com/api/?name=James+Wilson&background=f59e0b&color=fff"
+  },
+  {
+    "id": "USR005",
+    "name": "Lisa Anderson",
+    "email": "lisa@studio.com",
+    "role": "editor",
+    "status": "inactive",
+    "avatar": "https://ui-avatars.com/api/?name=Lisa+Anderson&background=10b981&color=fff"
   }
 ]
