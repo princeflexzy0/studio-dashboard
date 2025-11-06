@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Home, Upload, Users, FileText, TrendingUp, Activity, CreditCard, Settings, LogOut, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { NotificationBell } from '@/components/NotificationBell';
 
 const menuItems = [
   { name: 'Dashboard', path: '/dashboard', icon: Home },
