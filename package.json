@@ -1,23 +1,30 @@
 {
   "name": "studio-dashboard",
   "version": "1.0.0",
+  "description": "Professional admin dashboard for managing studio operations",
   "private": true,
+  "author": "Studio Development Team",
+  "license": "PROPRIETARY",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/princeflexzy0/studio-dashboard.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "axios": "^1.7.9",
-    "framer-motion": "^12.23.24",
-    "lucide-react": "^0.263.1",
-    "next": "14.2.33",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "framer-motion": "^10.16.4",
+    "lucide-react": "^0.294.0",
+    "next": "14.0.3",
+    "react": "^18",
+    "react-dom": "^18",
     "react-hot-toast": "^2.4.1",
     "react-query": "^3.39.3",
-    "recharts": "^2.15.0"
+    "recharts": "^2.10.3"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -25,9 +32,13 @@
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.33",
+    "eslint-config-next": "14.0.3",
     "postcss": "^8",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^3.3.0",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }
