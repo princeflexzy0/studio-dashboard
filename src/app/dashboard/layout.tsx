@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { NotificationBell } from '@/components/NotificationBell';
+import NotificationBell from '@/components/NotificationBell';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, Upload, Users, Briefcase, FileText, 
