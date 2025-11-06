@@ -3,19 +3,9 @@
 import { useQuery } from 'react-query';
 import { dashboardService } from '@/services/dashboard.service';
 import { motion } from 'framer-motion';
-import { 
-  TrendingUp, 
-  Upload, 
-  Clock, 
-  CheckCircle, 
-  DollarSign,
-  ArrowRight,
-  Video,
-  Users,
-  Briefcase,
-  Activity
-} from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { TrendingUp, Users, HardDrive, DollarSign, Activity, Clock } from 'lucide-react';
+
+export const dynamic = 'force-dynamic';
 
 export default function DashboardPage() {
   const { data: overview, isLoading } = useQuery(
@@ -28,11 +18,11 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="p-4 sm:p-6 lg:p-8">
+      <div className="p-8">
         <div className="animate-pulse space-y-4">
           <div className="h-8 bg-gray-700 rounded w-1/3"></div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map(i => (
               <div key={i} className="h-32 bg-gray-700 rounded"></div>
             ))}
           </div>
@@ -41,278 +31,103 @@ export default function DashboardPage() {
     );
   }
 
-  const stats = overview?.stats || {
-    totalUploads: 247,
-    pendingRequests: 18,
-    completed: 156,
-    revenue: 125400
-  };
-
-  const recentActivity = overview?.recentActivity || [];
-  const revenueTrend = overview?.revenueTrend || [];
+  const stats = overview?.stats || {};
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* Welcome Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-6 sm:mb-8"
+        className="mb-6"
       >
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">
-          Welcome back, Admin User! 👋
+          👋 Welcome back to Studio Dashboard
         </h1>
         <p className="text-sm sm:text-base text-gray-400">
-          Here's what's happening with your studio today.
+          Here's what's happening with your content today
         </p>
       </motion.div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 sm:mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[
-          {
-            label: 'Total Uploads',
-            value: stats.totalUploads,
-            icon: Upload,
-            gradient: 'from-cyan-500 to-blue-600',
-            bgGradient: 'from-cyan-500/10 to-blue-600/10',
-            iconBg: 'bg-cyan-500/20'
-          },
-          {
-            label: 'Pending Requests',
-            value: stats.pendingRequests,
-            icon: Clock,
-            gradient: 'from-yellow-500 to-orange-600',
-            bgGradient: 'from-yellow-500/10 to-orange-600/10',
-            iconBg: 'bg-yellow-500/20'
-          },
-          {
-            label: 'Completed',
-            value: stats.completed,
-            icon: CheckCircle,
-            gradient: 'from-green-500 to-emerald-600',
-            bgGradient: 'from-green-500/10 to-emerald-600/10',
-            iconBg: 'bg-green-500/20'
-          },
-          {
-            label: 'Total Revenue',
-            value: `$${(stats.revenue / 1000).toFixed(1)}k`,
-            icon: DollarSign,
-            gradient: 'from-purple-500 to-pink-600',
-            bgGradient: 'from-purple-500/10 to-pink-600/10',
-            iconBg: 'bg-purple-500/20'
-          },
+          { label: 'Total Views', value: stats.totalViews?.toLocaleString() || '0', icon: TrendingUp, color: 'cyan', growth: overview?.analytics?.viewsGrowth },
+          { label: 'Active Users', value: stats.activeUsers?.toLocaleString() || '0', icon: Users, color: 'blue', growth: overview?.analytics?.usersGrowth },
+          { label: 'Storage Used', value: stats.storageUsed || '0 GB', icon: HardDrive, color: 'purple', growth: null },
+          { label: 'Revenue', value: `$${stats.revenue?.toLocaleString() || '0'}`, icon: DollarSign, color: 'green', growth: overview?.analytics?.revenueGrowth },
         ].map((stat, index) => (
           <motion.div
             key={stat.label}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.1 }}
-            className={`bg-gradient-to-br ${stat.bgGradient} backdrop-blur-xl rounded-xl p-4 sm:p-6 border border-gray-700 hover:scale-105 transition-all duration-300 relative overflow-hidden group cursor-pointer`}
+            className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:border-cyan-500/50 transition-all"
           >
-            <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
-            
-            <div className="flex items-center justify-between mb-3 relative z-10">
-              <div className={`p-3 rounded-lg ${stat.iconBg}`}>
-                <stat.icon className={`w-6 h-6 text-transparent bg-gradient-to-br ${stat.gradient} bg-clip-text`} style={{WebkitTextFillColor: 'transparent', backgroundClip: 'text'}} />
+            <div className="flex items-center justify-between mb-3">
+              <div className={`p-3 rounded-lg bg-${stat.color}-500/20`}>
+                <stat.icon className={`w-6 h-6 text-${stat.color}-400`} />
               </div>
-              <TrendingUp className="w-4 h-4 text-green-500" />
+              {stat.growth && (
+                <span className="text-xs font-medium text-green-400">{stat.growth}</span>
+              )}
             </div>
-            
-            <p className="text-xs sm:text-sm text-gray-400 mb-1 relative z-10">{stat.label}</p>
-            <p className="text-2xl sm:text-3xl font-bold text-white relative z-10">{stat.value}</p>
+            <p className="text-sm text-gray-400 mb-1">{stat.label}</p>
+            <p className="text-2xl font-bold text-white">{stat.value}</p>
           </motion.div>
         ))}
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 sm:mb-8">
-        {/* Recent Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="lg:col-span-2 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 sm:p-6 border border-gray-700 shadow-xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700"
         >
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-              <Activity className="w-5 h-5 text-cyan-400" />
-              Recent Activity
-            </h2>
-            <button className="text-cyan-400 hover:text-cyan-300 transition-colors text-sm flex items-center gap-1 font-medium">
-              View All
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="space-y-3 sm:space-y-4">
-            {recentActivity.length > 0 ? (
-              recentActivity.map((activity: any, idx: number) => (
-                <motion.div
-                  key={activity.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-800/50 rounded-lg hover:bg-gray-700/50 transition-all duration-300 border border-gray-700/50 hover:border-cyan-500/30 group cursor-pointer"
-                >
-                  <img
-                    src={activity.avatar}
-                    alt={activity.user}
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex-shrink-0 ring-2 ring-gray-700 group-hover:ring-cyan-500/50 transition-all"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm sm:text-base text-white font-medium">
-                      <span className="text-cyan-400 font-semibold">{activity.user}</span>{' '}
-                      <span className="text-gray-300">{activity.action}</span>
-                    </p>
-                    <p className="text-xs sm:text-sm text-gray-400 truncate mt-1">{activity.content}</p>
-                    <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {activity.timestamp}
-                    </p>
-                  </div>
-                </motion.div>
-              ))
-            ) : (
-              <div className="text-center py-12 text-gray-400">
-                <Activity className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                <p className="font-medium">No recent activity</p>
-                <p className="text-sm text-gray-500 mt-1">Activity will appear here</p>
+          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <Activity className="w-5 h-5 text-cyan-400" />
+            Recent Activity
+          </h2>
+          <div className="space-y-3">
+            {overview?.recentActivity?.map((activity: any) => (
+              <div key={activity.id} className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors">
+                <img src={activity.avatar} alt={activity.user} className="w-10 h-10 rounded-full" />
+                <div className="flex-1">
+                  <p className="text-sm text-white">
+                    <span className="font-medium">{activity.user}</span> {activity.action}{' '}
+                    <span className="text-cyan-400">{activity.item}</span>
+                  </p>
+                  <p className="text-xs text-gray-400 flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {activity.time}
+                  </p>
+                </div>
               </div>
-            )}
+            ))}
           </div>
         </motion.div>
 
-        {/* Revenue Trend */}
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 sm:p-6 border border-gray-700 shadow-xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700"
         >
-          <h2 className="text-lg sm:text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-cyan-400" />
-            Revenue Trend
-          </h2>
-
-          {revenueTrend.length > 0 ? (
-            <>
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={revenueTrend}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis 
-                    dataKey="day" 
-                    stroke="#9CA3AF" 
-                    style={{ fontSize: '12px' }}
-                    tickLine={false}
-                  />
-                  <YAxis 
-                    stroke="#9CA3AF" 
-                    style={{ fontSize: '12px' }}
-                    tickLine={false}
-                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1F2937',
-                      border: '1px solid #374151',
-                      borderRadius: '8px',
-                      color: '#fff'
-                    }}
-                    formatter={(value: any) => [`$${value.toLocaleString()}`, 'Revenue']}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="url(#colorGradient)"
-                    strokeWidth={3}
-                    dot={{ fill: '#06B6D4', r: 4 }}
-                    activeDot={{ r: 6, fill: '#06B6D4' }}
-                  />
-                  <defs>
-                    <linearGradient id="colorGradient" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#06B6D4" />
-                      <stop offset="50%" stopColor="#3B82F6" />
-                      <stop offset="100%" stopColor="#8B5CF6" />
-                    </linearGradient>
-                  </defs>
-                </LineChart>
-              </ResponsiveContainer>
-
-              <div className="mt-4 flex items-center justify-between p-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg border border-green-500/20">
-                <span className="text-xs sm:text-sm text-gray-400">Last 5 days</span>
-                <span className="text-sm sm:text-base font-bold text-green-400 flex items-center gap-1">
-                  <TrendingUp className="w-4 h-4" />
-                  +12.5%
-                </span>
+          <h2 className="text-xl font-bold text-white mb-4">Top Content</h2>
+          <div className="space-y-3">
+            {overview?.topContent?.map((content: any) => (
+              <div key={content.id} className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors">
+                <img src={content.thumbnail} alt={content.title} className="w-16 h-16 rounded-lg object-cover" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-white">{content.title}</p>
+                  <div className="flex gap-4 text-xs text-gray-400 mt-1">
+                    <span>{content.views?.toLocaleString()} views</span>
+                    <span>{content.likes?.toLocaleString()} likes</span>
+                  </div>
+                </div>
               </div>
-            </>
-          ) : (
-            <div className="text-center py-12 text-gray-400">
-              <TrendingUp className="w-12 h-12 mx-auto mb-3 opacity-30" />
-              <p className="font-medium">No revenue data</p>
-            </div>
-          )}
+            ))}
+          </div>
         </motion.div>
       </div>
-
-      {/* Quick Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 sm:p-6 border border-gray-700 shadow-xl"
-      >
-        <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            {
-              title: 'Upload Content',
-              description: 'Add new videos or media',
-              icon: Video,
-              gradient: 'from-cyan-500 to-blue-600',
-              action: '/dashboard/uploads'
-            },
-            {
-              title: 'View Requests',
-              description: `${stats.pendingRequests} pending`,
-              icon: Clock,
-              gradient: 'from-yellow-500 to-orange-600',
-              action: '/dashboard/uploads'
-            },
-            {
-              title: 'Manage Campaigns',
-              description: '0 active campaigns',
-              icon: Briefcase,
-              gradient: 'from-purple-500 to-pink-600',
-              action: '/dashboard'
-            },
-            {
-              title: 'View Creators',
-              description: '0 active users',
-              icon: Users,
-              gradient: 'from-green-500 to-emerald-600',
-              action: '/dashboard/users'
-            }
-          ].map((action, index) => (
-            <motion.button
-              key={action.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className={`bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 sm:p-6 border border-gray-700 hover:border-gray-600 transition-all duration-300 text-left group hover:scale-105 relative overflow-hidden`}
-            >
-              <div className={`absolute inset-0 bg-gradient-to-br ${action.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
-              
-              <div className={`w-12 h-12 mb-3 rounded-lg bg-gradient-to-br ${action.gradient} bg-opacity-10 flex items-center justify-center relative z-10`}>
-                <action.icon className={`w-6 h-6 text-transparent bg-gradient-to-br ${action.gradient} bg-clip-text`} style={{WebkitTextFillColor: 'transparent', backgroundClip: 'text'}} />
-              </div>
-              
-              <h3 className="text-base sm:text-lg font-bold text-white mb-1 group-hover:text-cyan-400 transition-colors relative z-10">
-                {action.title}
-              </h3>
-              <p className="text-xs sm:text-sm text-gray-400 relative z-10">{action.description}</p>
-            </motion.button>
-          ))}
-        </div>
-      </motion.div>
     </div>
   );
 }
