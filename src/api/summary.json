@@ -1,0 +1,20 @@
+{
+  "totalUploads": 247,
+  "pendingRequests": 18,
+  "completedRequests": 229,
+  "totalRevenue": 125400,
+  "activeUsers": 89,
+  "totalCampaigns": 12,
+  "recentActivity": [
+    {"id": 1, "action": "New upload", "user": "John Doe", "time": "2 hours ago"},
+    {"id": 2, "action": "Request approved", "user": "Jane Smith", "time": "5 hours ago"},
+    {"id": 3, "action": "Campaign created", "user": "Mike Johnson", "time": "1 day ago"}
+  ],
+  "graph": [
+    {"date": "Nov 1", "uploads": 45, "revenue": 12000},
+    {"date": "Nov 2", "uploads": 52, "revenue": 15200},
+    {"date": "Nov 3", "uploads": 38, "revenue": 9800},
+    {"date": "Nov 4", "uploads": 61, "revenue": 18400},
+    {"date": "Nov 5", "uploads": 51, "revenue": 14600}
+  ]
+}
