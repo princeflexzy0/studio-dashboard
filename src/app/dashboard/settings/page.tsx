@@ -1,186 +1,178 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Bell, Shield, Save, Upload, MapPin } from 'lucide-react';
-import { useUser } from '@/contexts/UserContext';
+import { Settings, User, Bell, Lock, Shield, Save } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 export default function SettingsPage() {
-  const { profile, updateProfile } = useUser();
-  const [activeTab, setActiveTab] = useState('profile');
-  const [userLocation, setUserLocation] = useState<any>(null);
-  const [formData, setFormData] = useState(profile);
-  const [notifications, setNotifications] = useState({
-    emailNotifs: true,
-    pushNotifs: true,
-    smsNotifs: false,
-    weeklyReport: true
+  const [settings, setSettings] = useState({
+    name: 'Admin User',
+    email: 'admin@studio.com',
+    notifications: true,
+    emailAlerts: true,
+    twoFactor: false
   });
 
-  useEffect(() => {
-    fetch('https://ipapi.co/json/')
-      .then(res => res.json())
-      .then(data => {
-        setUserLocation({
-          ip: data.ip,
-          city: data.city,
-          region: data.region,
-          country: data.country_name,
-          timezone: data.timezone
-        });
-      })
-      .catch(err => console.error('Failed to fetch location:', err));
-  }, []);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const newAvatar = reader.result as string;
-        setFormData(prev => ({ ...prev, avatar: newAvatar }));
-        updateProfile({ avatar: newAvatar });
-        toast.success('Profile picture updated!');
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleSave = () => {
+    toast.success('Settings saved successfully!');
   };
-
-  const handleSaveProfile = () => {
-    updateProfile(formData);
-    toast.success('Profile saved successfully!');
-  };
-
-  const tabs = [
-    { id: 'profile', label: 'Profile', icon: User },
-    { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'security', label: 'Security', icon: Shield }
-  ];
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">Settings</h1>
-        <p className="text-sm sm:text-base text-gray-400">Manage your account preferences and security</p>
+    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 flex items-center gap-2">
+          <Settings className="w-8 h-8 text-cyan-400" />
+          Settings
+        </h1>
+        <p className="text-gray-400">Manage your account settings and preferences</p>
       </motion.div>
 
-      {userLocation && (
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-gradient-to-r from-cyan-500/10 to-blue-600/10 border border-cyan-500/30 rounded-xl p-4 mb-6">
-          <div className="flex items-center gap-3">
-            <MapPin className="w-5 h-5 text-cyan-400" />
-            <div className="flex-1">
-              <p className="text-sm font-medium text-white">Connected from: {userLocation.city}, {userLocation.region}, {userLocation.country}</p>
-              <p className="text-xs text-gray-400">IP: {userLocation.ip} • Timezone: {userLocation.timezone}</p>
+      <div className="space-y-6">
+        {/* Profile Settings */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <User className="w-6 h-6 text-cyan-400" />
+            <h2 className="text-xl font-bold text-white">Profile Information</h2>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+              <input
+                type="text"
+                value={settings.name}
+                onChange={(e) => setSettings({ ...settings, name: e.target.value })}
+                className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+              <input
+                type="email"
+                value={settings.email}
+                onChange={(e) => setSettings({ ...settings, email: e.target.value })}
+                className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+              />
             </div>
           </div>
         </motion.div>
-      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-1">
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 border border-gray-700 space-y-2">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${activeTab === tab.id ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'}`}>
-                  <Icon className="w-5 h-5" />
-                  <span className="font-medium">{tab.label}</span>
-                </button>
-              );
-            })}
+        {/* Notification Settings */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <Bell className="w-6 h-6 text-cyan-400" />
+            <h2 className="text-xl font-bold text-white">Notifications</h2>
           </div>
-        </div>
 
-        <div className="lg:col-span-3">
-          {activeTab === 'profile' && (
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700">
-              <h2 className="text-xl font-bold text-white mb-6">Profile Information</h2>
-
-              <div className="flex items-center gap-6 mb-6 pb-6 border-b border-gray-700">
-                <img src={formData.avatar} alt="Profile" className="w-24 h-24 rounded-full ring-4 ring-gray-700" />
-                <div>
-                  <label className="flex items-center gap-2 px-4 py-2 bg-cyan-500/10 text-cyan-400 rounded-lg hover:bg-cyan-500/20 transition-colors cursor-pointer font-medium">
-                    <Upload className="w-4 h-4" />
-                    Upload Photo
-                    <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                  </label>
-                  <p className="text-xs text-gray-400 mt-2">JPG, PNG or GIF • Max 2MB</p>
-                </div>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white font-medium">Push Notifications</p>
+                <p className="text-sm text-gray-400">Receive push notifications</p>
               </div>
+              <button
+                onClick={() => setSettings({ ...settings, notifications: !settings.notifications })}
+                className={`relative w-12 h-6 rounded-full transition-colors ${
+                  settings.notifications ? 'bg-cyan-500' : 'bg-gray-600'
+                }`}
+              >
+                <span
+                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                    settings.notifications ? 'translate-x-6' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
-                  <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors" />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
-                  <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors" />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Phone</label>
-                  <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors" />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Bio</label>
-                  <textarea value={formData.bio} onChange={(e) => setFormData({...formData, bio: e.target.value})} rows={4} className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors resize-none" />
-                </div>
-
-                <button onClick={handleSaveProfile} className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg hover:opacity-90 transition-opacity font-medium">
-                  <Save className="w-5 h-5" />
-                  Save Changes
-                </button>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white font-medium">Email Alerts</p>
+                <p className="text-sm text-gray-400">Receive email notifications</p>
               </div>
-            </motion.div>
-          )}
+              <button
+                onClick={() => setSettings({ ...settings, emailAlerts: !settings.emailAlerts })}
+                className={`relative w-12 h-6 rounded-full transition-colors ${
+                  settings.emailAlerts ? 'bg-cyan-500' : 'bg-gray-600'
+                }`}
+              >
+                <span
+                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                    settings.emailAlerts ? 'translate-x-6' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+        </motion.div>
 
-          {activeTab === 'notifications' && (
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700">
-              <h2 className="text-xl font-bold text-white mb-6">Notification Preferences</h2>
-              <div className="space-y-4">
-                {Object.entries(notifications).map(([key, value]) => (
-                  <div key={key} className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
-                    <div>
-                      <p className="text-white font-medium capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
-                      <p className="text-sm text-gray-400">Receive notifications via this channel</p>
-                    </div>
-                    <button onClick={() => setNotifications({...notifications, [key]: !value})} className={`relative w-14 h-7 rounded-full transition-colors ${value ? 'bg-cyan-500' : 'bg-gray-600'}`}>
-                      <span className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${value ? 'translate-x-8' : 'translate-x-1'}`} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
+        {/* Security Settings */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <Shield className="w-6 h-6 text-cyan-400" />
+            <h2 className="text-xl font-bold text-white">Security</h2>
+          </div>
 
-          {activeTab === 'security' && (
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700">
-              <h2 className="text-xl font-bold text-white mb-6">Security Settings</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Current Password</label>
-                  <input type="password" className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">New Password</label>
-                  <input type="password" className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Confirm New Password</label>
-                  <input type="password" className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors" />
-                </div>
-                <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg hover:opacity-90 transition-opacity font-medium">
-                  <Shield className="w-5 h-5" />
-                  Update Password
-                </button>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white font-medium">Two-Factor Authentication</p>
+                <p className="text-sm text-gray-400">Add an extra layer of security</p>
               </div>
-            </motion.div>
-          )}
-        </div>
+              <button
+                onClick={() => setSettings({ ...settings, twoFactor: !settings.twoFactor })}
+                className={`relative w-12 h-6 rounded-full transition-colors ${
+                  settings.twoFactor ? 'bg-cyan-500' : 'bg-gray-600'
+                }`}
+              >
+                <span
+                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                    settings.twoFactor ? 'translate-x-6' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
+
+            <button className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white hover:bg-gray-700 transition-colors flex items-center justify-center gap-2">
+              <Lock className="w-5 h-5" />
+              <span>Change Password</span>
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Save Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <button
+            onClick={handleSave}
+            className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+          >
+            <Save className="w-5 h-5" />
+            <span>Save Changes</span>
+          </button>
+        </motion.div>
       </div>
     </div>
   );
