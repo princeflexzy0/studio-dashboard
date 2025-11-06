@@ -1,0 +1,23 @@
+[
+  {
+    "id": "CMP001",
+    "title": "Summer Collection 2024",
+    "budget": 2500,
+    "status": "active",
+    "views": 12450
+  },
+  {
+    "id": "CMP002",
+    "title": "Holiday Special",
+    "budget": 1800,
+    "status": "active",
+    "views": 8920
+  },
+  {
+    "id": "CMP003",
+    "title": "Spring Launch",
+    "budget": 3200,
+    "status": "paused",
+    "views": 15680
+  }
+]

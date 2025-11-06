@@ -2,13 +2,17 @@
 
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { Home, Upload, Users, Settings, Menu, X, CreditCard, LogOut } from 'lucide-react';
+import { Home, Upload, Users, Settings, Menu, X, CreditCard, LogOut, FileText, TrendingUp, Activity, FolderOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { UserProvider, useUser } from '@/contexts/UserContext';
 
 const menuItems = [
   { name: 'Dashboard', path: '/dashboard', icon: Home },
+  { name: 'Requests', path: '/dashboard/requests', icon: FileText },
+  { name: 'Campaigns', path: '/dashboard/campaigns', icon: TrendingUp },
+  { name: 'Library', path: '/dashboard/library', icon: FolderOpen },
+  { name: 'System Health', path: '/dashboard/system', icon: Activity },
   { name: 'Uploads', path: '/dashboard/uploads', icon: Upload },
   { name: 'Users', path: '/dashboard/users', icon: Users },
   { name: 'Billing', path: '/dashboard/billing', icon: CreditCard },
@@ -104,7 +108,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-<UserProvider>
+    <UserProvider>
       <DashboardContent>{children}</DashboardContent>
     </UserProvider>
   );

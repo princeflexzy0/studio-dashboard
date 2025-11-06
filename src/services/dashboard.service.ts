@@ -59,3 +59,28 @@ export const dashboardService = {
     return { success: true, id };
   },
 };
+
+  getRequests: async () => {
+    const response = await fetch('/api/studio/requests.json');
+    return response.json();
+  },
+
+  approveRequest: async (id: number) => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return { success: true, id };
+  },
+
+  rejectRequest: async (id: number) => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return { success: true, id };
+  },
+
+  getCampaigns: async () => {
+    const response = await fetch('/api/studio/campaigns.json');
+    return response.json();
+  },
+
+  getSystemHealth: async () => {
+    const response = await fetch('/api/studio/system-health.json');
+    return response.json();
+  },

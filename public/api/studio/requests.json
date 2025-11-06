@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Sarah Johnson",
+    "email": "sarah@example.com",
+    "type": "Video Upload",
+    "date": "2025-11-05",
+    "status": "pending"
+  },
+  {
+    "id": 2,
+    "name": "Mike Chen",
+    "email": "mike@example.com",
+    "type": "Campaign Access",
+    "date": "2025-11-04",
+    "status": "pending"
+  },
+  {
+    "id": 3,
+    "name": "Emma Davis",
+    "email": "emma@example.com",
+    "type": "Content Review",
+    "date": "2025-11-03",
+    "status": "approved"
+  }
+]
