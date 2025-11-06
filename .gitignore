@@ -1,16 +1,17 @@
 # dependencies
-node_modules/
-.pnp
+/node_modules
+/.pnp
 .pnp.js
 
 # testing
-coverage/
+/coverage
 
 # next.js
-.next/
-out/
-build/
-dist/
+/.next/
+/out/
+
+# production
+/build
 
 # misc
 .DS_Store
@@ -32,5 +33,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# uploads
-uploads/
+# package locks (let Vercel generate fresh)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
