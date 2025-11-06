@@ -5,11 +5,11 @@ import { Briefcase, TrendingUp, Users, DollarSign, Calendar, Play, Pause, Edit, 
 
 export default function CampaignsPage() {
   const campaigns = [
-    { id: 1, name: 'Summer Promo 2024', status: 'active', budget: '₦500,000', spent: '₦320,000', reach: '1.2M', conversions: 8420, startDate: '2024-06-01', endDate: '2024-08-31' },
-    { id: 2, name: 'Product Launch', status: 'active', budget: '₦750,000', spent: '₦450,000', reach: '2.1M', conversions: 15230, startDate: '2024-07-15', endDate: '2024-09-30' },
-    { id: 3, name: 'Brand Awareness', status: 'paused', budget: '₦300,000', spent: '₦180,000', reach: '850K', conversions: 4120, startDate: '2024-05-01', endDate: '2024-07-31' },
-    { id: 4, name: 'Holiday Special', status: 'scheduled', budget: '₦900,000', spent: '₦0', reach: '0', conversions: 0, startDate: '2024-12-01', endDate: '2025-01-15' },
-    { id: 5, name: 'Flash Sale Campaign', status: 'completed', budget: '₦200,000', spent: '₦195,000', reach: '650K', conversions: 5840, startDate: '2024-04-01', endDate: '2024-04-30' },
+    { id: 1, name: 'Summer Promo 2024', status: 'active', budget: 'A$75,000', spent: 'A$48,000', reach: '1.2M', conversions: 8420, startDate: '2024-06-01', endDate: '2024-08-31' },
+    { id: 2, name: 'Product Launch', status: 'active', budget: 'A$112,500', spent: 'A$67,500', reach: '2.1M', conversions: 15230, startDate: '2024-07-15', endDate: '2024-09-30' },
+    { id: 3, name: 'Brand Awareness', status: 'paused', budget: 'A$45,000', spent: 'A$27,000', reach: '850K', conversions: 4120, startDate: '2024-05-01', endDate: '2024-07-31' },
+    { id: 4, name: 'Holiday Special', status: 'scheduled', budget: 'A$135,000', spent: 'A$0', reach: '0', conversions: 0, startDate: '2024-12-01', endDate: '2025-01-15' },
+    { id: 5, name: 'Flash Sale Campaign', status: 'completed', budget: 'A$30,000', spent: 'A$29,250', reach: '650K', conversions: 5840, startDate: '2024-04-01', endDate: '2024-04-30' },
   ];
 
   return (
@@ -29,7 +29,7 @@ export default function CampaignsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard icon={Briefcase} label="Active Campaigns" value="2" color="cyan" />
-        <StatCard icon={DollarSign} label="Total Budget" value="₦2.65M" color="green" />
+        <StatCard icon={DollarSign} label="Total Budget" value="A$397.5K" color="green" />
         <StatCard icon={Users} label="Total Reach" value="4.8M" color="blue" />
         <StatCard icon={TrendingUp} label="Conversions" value="33.6K" color="purple" />
       </div>

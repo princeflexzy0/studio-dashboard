@@ -5,11 +5,14 @@ import { Users, Video, TrendingUp, DollarSign, Mail, MapPin, Star, Plus, LucideI
 
 export default function CreatorsPage() {
   const creators = [
-    { id: 1, name: 'Sarah Johnson', email: 'sarah@example.com', phone: '+234 801 234 5678', location: 'Lagos', videos: 45, views: '2.3M', earnings: '₦450,000', rating: 4.8, status: 'active', avatar: 'SJ' },
-    { id: 2, name: 'Michael Chen', email: 'michael@example.com', phone: '+234 802 345 6789', location: 'Abuja', videos: 32, views: '1.8M', earnings: '₦380,000', rating: 4.6, status: 'active', avatar: 'MC' },
-    { id: 3, name: 'Aisha Ibrahim', email: 'aisha@example.com', phone: '+234 803 456 7890', location: 'Kano', videos: 58, views: '3.1M', earnings: '₦620,000', rating: 4.9, status: 'active', avatar: 'AI' },
-    { id: 4, name: 'David Okafor', email: 'david@example.com', phone: '+234 804 567 8901', location: 'Enugu', videos: 28, views: '1.2M', earnings: '₦290,000', rating: 4.5, status: 'pending', avatar: 'DO' },
-    { id: 5, name: 'Linda Martinez', email: 'linda@example.com', phone: '+234 805 678 9012', location: 'Port Harcourt', videos: 41, views: '2.0M', earnings: '₦410,000', rating: 4.7, status: 'active', avatar: 'LM' },
+    { id: 1, name: 'Yuki Tanaka', email: 'yuki.tanaka@example.com', phone: '+81 90 1234 5678', location: 'Tokyo, Japan', videos: 45, views: '2.3M', earnings: 'A$67,500', rating: 4.8, status: 'active', avatar: 'YT' },
+    { id: 2, name: 'Sofia Rodriguez', email: 'sofia.r@example.com', phone: '+34 612 345 678', location: 'Barcelona, Spain', videos: 32, views: '1.8M', earnings: 'A$57,000', rating: 4.6, status: 'active', avatar: 'SR' },
+    { id: 3, name: 'Kwame Mensah', email: 'kwame.m@example.com', phone: '+233 24 123 4567', location: 'Accra, Ghana', videos: 58, views: '3.1M', earnings: 'A$93,000', rating: 4.9, status: 'active', avatar: 'KM' },
+    { id: 4, name: 'Priya Sharma', email: 'priya.sharma@example.com', phone: '+91 98765 43210', location: 'Mumbai, India', videos: 28, views: '1.2M', earnings: 'A$43,500', rating: 4.5, status: 'pending', avatar: 'PS' },
+    { id: 5, name: 'Liam O\'Connor', email: 'liam.oconnor@example.com', phone: '+61 412 345 678', location: 'Sydney, Australia', videos: 41, views: '2.0M', earnings: 'A$61,500', rating: 4.7, status: 'active', avatar: 'LO' },
+    { id: 6, name: 'Fatima Al-Rashid', email: 'fatima.ar@example.com', phone: '+971 50 123 4567', location: 'Dubai, UAE', videos: 52, views: '2.7M', earnings: 'A$81,000', rating: 4.8, status: 'active', avatar: 'FA' },
+    { id: 7, name: 'Marcus Washington', email: 'marcus.w@example.com', phone: '+1 917 555 0123', location: 'New York, USA', videos: 38, views: '1.9M', earnings: 'A$57,000', rating: 4.6, status: 'active', avatar: 'MW' },
+    { id: 8, name: 'Chen Wei', email: 'chen.wei@example.com', phone: '+86 138 0013 8000', location: 'Shanghai, China', videos: 47, views: '2.4M', earnings: 'A$72,000', rating: 4.9, status: 'active', avatar: 'CW' },
   ];
 
   return (
@@ -19,7 +22,7 @@ export default function CreatorsPage() {
           <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">
             Content Creators
           </h1>
-          <p className="text-gray-400">Manage your content creator network</p>
+          <p className="text-gray-400">Manage your global content creator network</p>
         </div>
         <button className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2">
           <Plus className="w-5 h-5" />
@@ -28,10 +31,10 @@ export default function CreatorsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard icon={Users} label="Total Creators" value="5" color="cyan" />
-        <StatCard icon={Video} label="Total Videos" value="204" color="purple" />
-        <StatCard icon={TrendingUp} label="Total Views" value="10.4M" color="blue" />
-        <StatCard icon={DollarSign} label="Total Earnings" value="₦2.15M" color="green" />
+        <StatCard icon={Users} label="Total Creators" value="8" color="cyan" />
+        <StatCard icon={Video} label="Total Videos" value="341" color="purple" />
+        <StatCard icon={TrendingUp} label="Total Views" value="17.4M" color="blue" />
+        <StatCard icon={DollarSign} label="Total Earnings" value="A$532.5K" color="green" />
       </div>
 
       <div className="grid gap-4">
