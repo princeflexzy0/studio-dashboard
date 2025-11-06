@@ -1,65 +1,51 @@
-# 🔧 Studio Dashboard Backend Setup
+# Studio Dashboard Backend API
 
-## Prerequisites
-- Node.js v18+
-- MongoDB installed locally or MongoDB Atlas account
-- npm or yarn
+Optional backend API server for Studio Dashboard.
 
-## Installation
-
-1. Navigate to backend directory:
+## Setup
 ```bash
 cd backend
 npm install
 ```
 
-2. Create `.env` file:
-```bash
-cp .env.example .env
-```
+## Configuration
 
-3. Update `.env` with your credentials:
+Create `.env` file:
 ```env
+PORT=5000
 MONGODB_URI=mongodb://localhost:27017/studio-dashboard
 JWT_SECRET=your-secret-key
 ```
 
-4. Start MongoDB (if local):
+## Run
 ```bash
-mongod
-```
-
-5. Start backend server:
-```bash
+# Development
 npm run dev
-```
 
-## Testing Backend
-
-Test all endpoints:
-```bash
-# From project root
-./scripts/test-api.sh
+# Production
+npm start
 ```
 
 ## API Endpoints
 
-### Studio
-- `GET /api/studio/overview` - Dashboard stats
-- `GET /api/studio/requests` - All requests
-- `POST /api/studio/request/:id/action` - Approve/Reject
+### Authentication
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
+- `GET /api/auth/profile` - Get user profile
+
+### Campaigns
+- `GET /api/campaigns` - List campaigns
+- `POST /api/campaigns` - Create campaign
+- `PUT /api/campaigns/:id` - Update campaign
+- `DELETE /api/campaigns/:id` - Delete campaign
 
 ### Uploads
-- `GET /api/uploads` - List uploads
 - `POST /api/uploads` - Upload file
-- `DELETE /api/uploads/:id` - Delete file
+- `GET /api/uploads/:id` - Get file details
 
-### User
-- `GET /api/user/profile` - Get profile
-- `POST /api/user/update` - Update profile
-- `POST /api/user/notifications` - Update notifications
-- `POST /api/user/security` - Update security
+## Tech Stack
 
-## Deployment
-
-See main README for production deployment instructions.
+- Node.js
+- Express.js
+- MongoDB
+- JWT Authentication

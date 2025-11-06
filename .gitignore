@@ -1,5 +1,5 @@
 # Dependencies
-/node_modules
+node_modules
 /.pnp
 .pnp.js
 
@@ -33,9 +33,22 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Logs
+logs/
+*.log
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+
+# OS
+.DS_Store
+Thumbs.db
