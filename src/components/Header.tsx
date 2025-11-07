@@ -43,17 +43,9 @@ export default function Header({ title, subtitle }: HeaderProps) {
                 onClick={() => setShowDropdown(!showDropdown)}
                 className="flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
               >
-                {user?.profilePicture ? (
-                  <img
-                    src={user.profilePicture}
-                    alt={displayName}
-                    className="w-8 h-8 rounded-full object-cover border-2 border-cyan-500"
-                  />
-                ) : (
-                  <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                    {userInitial}
-                  </div>
-                )}
+                <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                  {userInitial}
+                </div>
                 <span className="hidden sm:block text-white text-sm font-medium">
                   {displayName}
                 </span>
@@ -64,17 +56,15 @@ export default function Header({ title, subtitle }: HeaderProps) {
                 {showDropdown && (
                   <>
                     <div
-                      className="fixed inset-0"
+                      className="fixed inset-0 z-30"
                       onClick={() => setShowDropdown(false)}
-                      style={{ zIndex: 9998 }}
                     />
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl border border-gray-700 overflow-hidden"
-                      style={{ zIndex: 9999 }}
+                      className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl border border-gray-700 overflow-hidden z-50"
                     >
                       <div className="p-3 border-b border-gray-700">
                         <p className="text-white font-medium text-sm">{displayName}</p>

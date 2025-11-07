@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 interface User {
   email: string;
   name: string;
+  role?: string;
 }
 
 interface AuthContextType {
@@ -23,28 +24,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is logged in
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const token = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('auth_token=') || row.startsWith('auth-token='));
+
+    if (token) {
+      setUser({
+        email: 'admin@test.com',
+        name: 'Admin User',
+        role: 'admin'
+      });
     }
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string) => {
-    // Mock authentication
+  const login = async (email: string, password: string): Promise<boolean> => {
     if (email === 'admin@test.com' && password === 'Test@123') {
-      const userData = { email, name: 'Admin User' };
-      setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
+      const token = 'auth-token-' + Date.now();
+      document.cookie = `auth_token=${token}; path=/; max-age=86400`;
+      
+      setUser({
+        email,
+        name: 'Admin User',
+        role: 'admin'
+      });
+      
       return true;
     }
     return false;
   };
 
   const logout = () => {
+    document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     setUser(null);
-    localStorage.removeItem('user');
     router.push('/login');
   };
 
