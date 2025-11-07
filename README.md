@@ -1,307 +1,218 @@
-# 📸 Studio Dashboard
+# 🎨 Studio Dashboard
 
-A modern, full-featured content creator management dashboard built with Next.js 14, TypeScript, and Tailwind CSS.
+A modern, full-featured admin dashboard for managing content creators, uploads, campaigns, and system monitoring. Built with Next.js 14, TypeScript, Tailwind CSS, and Framer Motion.
 
-## 🌟 Features
+![Studio Dashboard](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8?style=for-the-badge&logo=tailwind-css)
 
-### 👤 Authentication System
-- Secure login and signup pages
-- User session management
-- Profile picture upload and display
-- Dynamic user menu with dropdown
+## ✨ Features
 
-### 📊 Dashboard Pages
+### 🔐 Authentication
+- Mock authentication system (admin@test.com / Test@123)
+- Protected routes with middleware
+- Session management with cookies
+- Auto-redirect for authenticated users
 
-#### 1. **Overview Dashboard**
+### 📊 Dashboard
 - Real-time statistics and metrics
-- Quick access to key features
-- Activity feed and notifications
+- Recent activity feed
+- Top performers leaderboard
+- Responsive card layouts
 
-#### 2. **Campaigns Management**
-- Create and edit campaigns with date pickers
-- Budget tracking in USD
-- Pause/Resume/Delete campaigns
-- Real-time status updates
-- Campaign performance metrics
+### 👥 Creator Management
+- Search and filter creators
+- Status tracking (Active, Pending, Inactive)
+- Upload statistics per creator
+- Profile management
 
-#### 3. **Content Creators**
-- Add new creators with detailed profiles
-- Direct messaging system
-- Approve/Suspend creator accounts
-- Track earnings and performance
-- Global creator diversity support
+### 📤 Upload Management
+- Connected to API endpoints
+- File status tracking (Approved, Pending, Rejected)
+- Search functionality
+- Bulk actions support
 
-#### 4. **User Management**
-- Add/Edit users with role assignment
-- Role-based access (Admin/Editor/Viewer)
-- Activate/Deactivate user accounts
-- User activity tracking
+### 📣 Campaign Management
+- Campaign creation and tracking
+- Budget monitoring
+- Participant management
+- Duration and deadline tracking
 
-#### 5. **Content Requests**
-- View detailed request information
-- Approve/Reject workflow with reasons
-- Status tracking (Pending/Approved/Rejected)
-- Request filtering and search
+### 🖥️ System Monitoring
+- CPU, Memory, and Disk usage metrics
+- System uptime tracking
+- Real-time logs with color coding
+- Active users monitoring
+- API call tracking
 
-#### 6. **Billing & Payments**
-- Multiple subscription plans (Starter/Professional/Enterprise)
-- Add payment methods securely
-- Upgrade/Downgrade plans
-- Transaction history with invoice downloads
-- Credit usage tracking
-
-#### 7. **Content Library**
-- Upload files (videos, images, documents)
-- View file details and metadata
-- Download files
-- Delete with confirmation
-- File type categorization
-
-#### 8. **System Monitoring**
-- Real-time system health checks
-- Performance metrics
-- Server status monitoring
-
-#### 9. **Settings**
-- Profile management with picture upload
-- Email and password updates
+### ⚙️ Settings
+- Connected to API endpoints
+- General site configuration
+- User management settings
 - Notification preferences
-- Security settings
+- Theme selection
+- Maintenance mode
 
-### 🎨 UI/UX Features
-- **Responsive Design**: Optimized for mobile, tablet, and desktop
-- **Dark Theme**: Modern gradient-based dark interface
-- **Smooth Animations**: Framer Motion powered transitions
-- **Toast Notifications**: Real-time user feedback
-- **Form Validations**: Client-side input validation
-- **Loading States**: Skeleton screens and spinners
-- **Empty States**: Helpful placeholders for empty data
-- **Dropdown Menus**: Context-aware action menus
-- **Modal Dialogs**: Clean, animated modal interfaces
+## �� Getting Started
 
-### 🔔 Notification System
-- Real-time notification bell with badge count
-- Mobile-responsive notification panel
-- Mark as read functionality
-- Sound alerts for new notifications
-- Notification history
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
 
-## 🛠️ Technology Stack
+### Installation
 
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Animations**: Framer Motion
-- **Icons**: Lucide React
-- **Notifications**: react-hot-toast
-- **State Management**: React Context API
-- **Form Handling**: React Hooks
-
-## 📦 Installation
+1. **Clone the repository**
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/studio-dashboard.git
-
-# Navigate to project directory
+git clone <your-repo-url>
 cd studio-dashboard
+```
 
-# Install dependencies
+2. **Install dependencies**
+```bash
 npm install
+# or
+yarn install
+```
 
-# Create environment file
+3. **Set up environment variables**
+```bash
 cp .env.example .env.local
+```
 
-# Run development server
+4. **Run the development server**
+```bash
 npm run dev
+# or
+yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+5. **Open your browser**
+Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 🚀 Deployment
-
-### Vercel (Recommended)
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel
+### 🔑 Demo Credentials
 ```
-
-### Manual Build
-```bash
-# Build for production
-npm run build
-
-# Start production server
-npm start
+Email: admin@test.com
+Password: Test@123
 ```
 
 ## 📁 Project Structure
 ```
 studio-dashboard/
 ├── src/
-│   ├── app/
-│   │   ├── dashboard/
-│   │   │   ├── billing/
-│   │   │   ├── campaigns/
-│   │   │   ├── creators/
-│   │   │   ├── library/
-│   │   │   ├── requests/
-│   │   │   ├── settings/
-│   │   │   ├── system/
-│   │   │   ├── uploads/
-│   │   │   ├── users/
-│   │   │   ├── layout.tsx
-│   │   │   └── page.tsx
-│   │   ├── login/
-│   │   ├── signup/
-│   │   └── layout.tsx
-│   ├── components/
-│   │   └── NotificationBell.tsx
-│   ├── contexts/
-│   │   └── AuthContext.tsx
-│   └── services/
-│       └── dashboard.service.ts
-├── public/
-├── .env.local
-├── next.config.js
-├── tailwind.config.ts
-├── tsconfig.json
-└── package.json
+│   ├── app/                    # Next.js app directory
+│   │   ├── api/               # API routes
+│   │   │   └── admin/         # Admin API endpoints
+│   │   ├── dashboard/         # Dashboard pages
+│   │   │   ├── creators/      # Creator management
+│   │   │   ├── uploads/       # Upload management
+│   │   │   ├── campaigns/     # Campaign management
+│   │   │   ├── system/        # System monitoring
+│   │   │   └── settings/      # Settings page
+│   │   ├── login/             # Login page
+│   │   └── layout.tsx         # Root layout
+│   ├── components/            # Reusable components
+│   │   ├── Sidebar.tsx        # Navigation sidebar
+│   │   ├── Header.tsx         # Page header
+│   │   ├── Table.tsx          # Reusable table
+│   │   ├── ChartCard.tsx      # Metric cards
+│   │   ├── LoadingSpinner.tsx # Loading states
+│   │   └── ErrorBoundary.tsx  # Error handling
+│   ├── contexts/              # React contexts
+│   │   └── AuthContext.tsx    # Authentication context
+│   └── middleware.ts          # Route protection
+├── public/                    # Static assets
+├── .env.example              # Environment variables template
+├── next.config.js            # Next.js configuration
+├── tailwind.config.ts        # Tailwind CSS configuration
+└── package.json              # Dependencies
 ```
 
-## 🔐 Environment Variables
+## 🛠️ Tech Stack
 
-Create a `.env.local` file:
-```env
-NEXT_PUBLIC_API_URL=your_api_url_here
-NEXT_PUBLIC_APP_NAME=Studio Dashboard
-```
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Animations:** Framer Motion
+- **Icons:** Lucide React
+- **State Management:** React Context API
 
-## 🎯 Key Features by Page
+## 📱 Responsive Design
 
-### Campaigns
-- Full CRUD operations
-- Budget management (USD)
-- Date range selection
-- Status management (Active/Paused/Scheduled/Completed)
-- Performance metrics display
+The dashboard is fully responsive and works seamlessly on:
+- 📱 Mobile devices (320px+)
+- �� Tablets (768px+)
+- 💻 Laptops (1024px+)
+- 🖥️ Desktops (1280px+)
 
-### Creators
-- Creator profiles with avatars
-- Email and phone contact info
-- Location tracking
-- Earnings and video statistics
-- Messaging system
-- Approval workflow
+## 🔒 Security Features
 
-### Users
-- User role management
-- Profile editing
-- Account status toggling
-- User activity logs
-
-### Requests
-- Request status workflow
-- Approval with confirmation
-- Rejection with reasons
-- Detailed view modal
-- Date and creator tracking
-
-### Billing
-- Plan comparison (Starter/Pro/Enterprise)
-- Credit usage tracking
-- Payment method management
-- Transaction history
-- Invoice downloads
-
-### Library
-- Multi-format file support
-- File metadata display
-- Upload with progress
-- Preview and download
-- Bulk operations
-
-## 💡 Usage Examples
-
-### Adding a Campaign
-1. Navigate to Campaigns page
-2. Click "New Campaign" button
-3. Fill in campaign details (name, budget, dates)
-4. Click "Create" to save
-
-### Managing Creators
-1. Go to Creators page
-2. Click "Add Creator" to onboard new creators
-3. Use Message icon to communicate
-4. Approve/Suspend using action buttons
-
-### Handling Requests
-1. Visit Requests page
-2. Click "View" to see request details
-3. Use "Approve" or "Reject" buttons
-4. Add rejection reason if declining
+- Protected routes with middleware
+- Cookie-based session management
+- Auto-redirect for unauthenticated users
+- Admin-only access
+- CSRF protection ready
 
 ## 🎨 Customization
 
-### Theme Colors
-Edit `tailwind.config.ts` to customize colors:
+### Colors
+Update `tailwind.config.ts` to change the color scheme:
 ```typescript
-theme: {
-  extend: {
-    colors: {
-      primary: '#06b6d4', // Cyan
-      secondary: '#3b82f6', // Blue
-    }
-  }
+colors: {
+  primary: '#06b6d4', // Cyan
+  secondary: '#3b82f6', // Blue
 }
 ```
 
-### Adding New Pages
-1. Create folder in `src/app/dashboard/`
-2. Add `page.tsx` file
-3. Update navigation in `layout.tsx`
-
-## 🐛 Troubleshooting
-
-### Build Errors
-```bash
-# Clear Next.js cache
-rm -rf .next
-
-# Reinstall dependencies
-rm -rf node_modules package-lock.json
-npm install
-
-# Rebuild
-npm run build
+### Branding
+Update the sidebar branding in `src/components/Sidebar.tsx`:
+```tsx
+<h1>Your Brand</h1>
 ```
 
-### Authentication Issues
-- Check localStorage is enabled in browser
-- Verify environment variables are set
-- Clear browser cache and cookies
+## 📝 API Endpoints
 
-## 📝 License
+### Uploads API
+```
+GET /api/admin/uploads - Get all uploads
+```
 
-MIT License - feel free to use this project for personal or commercial purposes.
+### Settings API
+```
+GET /api/admin/settings - Get settings
+POST /api/admin/settings - Update settings
+```
 
-## 👥 Contributing
+## 🚧 Future Enhancements
+
+- [ ] Real database integration
+- [ ] Advanced analytics
+- [ ] Export functionality
+- [ ] Email notifications
+- [ ] Multi-language support
+- [ ] Role-based access control
+- [ ] Real-time updates with WebSockets
+- [ ] File upload with S3/CloudFlare
+- [ ] Advanced search and filters
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📧 Support
+## �� Support
 
-For issues and questions, please open an issue on GitHub.
+For support, email support@yourdomain.com or open an issue in the repository.
 
-## 🎉 Acknowledgments
+## 🙏 Acknowledgments
 
-- Next.js team for the amazing framework
-- Tailwind CSS for utility-first CSS
-- Framer Motion for smooth animations
-- Lucide for beautiful icons
+- Built with [Next.js](https://nextjs.org/)
+- Styled with [Tailwind CSS](https://tailwindcss.com/)
+- Animated with [Framer Motion](https://www.framer.com/motion/)
+- Icons from [Lucide](https://lucide.dev/)
 
 ---
 
-Built with ❤️ using Next.js 14
+Made with ❤️ by Your Team

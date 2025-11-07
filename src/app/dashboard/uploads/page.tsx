@@ -1,249 +1,162 @@
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Upload as UploadIcon, X, Eye, Download, Trash2, FileVideo } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { useEffect, useState } from 'react';
+import Header from '@/components/Header';
+import Table, { Column, StatusBadge } from '@/components/Table';
+import { Search, Filter, Download, Eye } from 'lucide-react';
 
-interface UploadedVideo {
-  id: string;
-  name: string;
+interface Upload {
+  id: number;
+  title: string;
+  creator: string;
+  status: string;
+  date: string;
   size: string;
-  uploadDate: string;
-  thumbnail: string;
-  duration: string;
-  url: string;
+  type: string;
 }
 
 export default function UploadsPage() {
-  const [uploads, setUploads] = useState<UploadedVideo[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState<UploadedVideo | null>(null);
+  const [uploads, setUploads] = useState<Upload[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const handleFileUpload = (files: FileList | null) => {
-    if (!files || files.length === 0) return;
+  useEffect(() => {
+    // Fetch from our API endpoint we created in Task 1
+    fetch('/api/admin/uploads')
+      .then(res => res.json())
+      .then(data => {
+        setUploads(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching uploads:', error);
+        setLoading(false);
+      });
+  }, []);
 
-    const file = files[0];
-    
-    if (!file.type.startsWith('video/')) {
-      toast.error('Please upload a video file', { style: { background: '#1F2937', color: '#fff' } });
-      return;
-    }
+  const columns: Column[] = [
+    {
+      key: 'title',
+      label: 'Title',
+      render: (value, row) => (
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg flex items-center justify-center border border-purple-500/30">
+            <Eye className="w-5 h-5 text-purple-400" />
+          </div>
+          <div>
+            <p className="text-white font-medium">{value}</p>
+            <p className="text-gray-400 text-xs">{row.type}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: 'creator',
+      label: 'Creator',
+      render: (value) => (
+        <span className="text-gray-300">{value}</span>
+      ),
+    },
+    {
+      key: 'size',
+      label: 'Size',
+      render: (value) => (
+        <span className="text-cyan-400 font-medium">{value}</span>
+      ),
+    },
+    {
+      key: 'date',
+      label: 'Upload Date',
+      render: (value) => (
+        <span className="text-gray-300">{new Date(value).toLocaleDateString()}</span>
+      ),
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      render: (value) => <StatusBadge status={value} />,
+    },
+    {
+      key: 'actions',
+      label: 'Actions',
+      render: () => (
+        <div className="flex items-center gap-2">
+          <button className="p-2 text-cyan-400 hover:text-cyan-300 hover:bg-gray-700 rounded-lg transition-colors">
+            <Eye className="w-4 h-4" />
+          </button>
+          <button className="p-2 text-green-400 hover:text-green-300 hover:bg-gray-700 rounded-lg transition-colors">
+            <Download className="w-4 h-4" />
+          </button>
+        </div>
+      ),
+    },
+  ];
 
-    if (file.size > 500 * 1024 * 1024) {
-      toast.error('File size must be less than 500MB', { style: { background: '#1F2937', color: '#fff' } });
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const newUpload: UploadedVideo = {
-        id: Date.now().toString(),
-        name: file.name,
-        size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
-        uploadDate: new Date().toLocaleDateString(),
-        thumbnail: reader.result as string,
-        duration: '0:00',
-        url: reader.result as string,
-      };
-
-      setUploads(prev => [newUpload, ...prev]);
-      toast.success('Video uploaded successfully!', { style: { background: '#1F2937', color: '#fff' }, icon: '🎥' });
-    };
-
-    reader.readAsDataURL(file);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    handleFileUpload(e.dataTransfer.files);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDelete = (id: string) => {
-    setUploads(uploads.filter(upload => upload.id !== id));
-    toast.success('Video deleted', { style: { background: '#1F2937', color: '#fff' }, icon: '🗑️' });
-  };
-
-  const handleView = (video: UploadedVideo) => {
-    setSelectedVideo(video);
-  };
-
-  const handleDownload = (video: UploadedVideo) => {
-    const link = document.createElement('a');
-    link.href = video.url;
-    link.download = video.name;
-    link.click();
-    toast.success('Download started', { style: { background: '#1F2937', color: '#fff' }, icon: '⬇️' });
-  };
+  const filteredUploads = uploads.filter(upload =>
+    upload.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    upload.creator.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-4 sm:p-8">
-      <div className="mb-6 sm:mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">
-          Uploads
-        </h1>
-        <p className="text-gray-400 text-sm sm:text-base">Upload and manage your video content</p>
+    <div className="min-h-screen bg-black">
+      <Header 
+        title="Uploads" 
+        subtitle="Manage and review content uploads"
+      />
+      
+      <div className="p-4 sm:p-6 lg:p-8">
+        {/* Search and Filters */}
+        <div className="mb-6 flex flex-col sm:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search uploads by title or creator..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 transition-colors"
+            />
+          </div>
+          <button className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-white transition-colors">
+            <Filter className="w-5 h-5" />
+            <span>Filters</span>
+          </button>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-6">
+          <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6">
+            <p className="text-gray-400 text-sm mb-2">Total Uploads</p>
+            <p className="text-white text-3xl font-bold">{uploads.length}</p>
+          </div>
+          <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6">
+            <p className="text-gray-400 text-sm mb-2">Approved</p>
+            <p className="text-green-400 text-3xl font-bold">
+              {uploads.filter(u => u.status === 'approved').length}
+            </p>
+          </div>
+          <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6">
+            <p className="text-gray-400 text-sm mb-2">Pending Review</p>
+            <p className="text-yellow-400 text-3xl font-bold">
+              {uploads.filter(u => u.status === 'pending').length}
+            </p>
+          </div>
+          <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6">
+            <p className="text-gray-400 text-sm mb-2">Rejected</p>
+            <p className="text-red-400 text-3xl font-bold">
+              {uploads.filter(u => u.status === 'rejected').length}
+            </p>
+          </div>
+        </div>
+
+        {/* Uploads Table */}
+        <Table
+          columns={columns}
+          data={filteredUploads}
+          isLoading={loading}
+          emptyMessage="No uploads found"
+        />
       </div>
-
-      {/* Upload Area */}
-      <motion.div
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        whileHover={{ scale: 1.01 }}
-        className={`mb-8 p-8 sm:p-12 border-2 border-dashed rounded-xl transition-all ${
-          isDragging
-            ? 'border-cyan-500 bg-cyan-500/10'
-            : 'border-gray-700 bg-gradient-to-br from-gray-800/50 to-gray-900/50'
-        }`}
-      >
-        <div className="text-center">
-          <UploadIcon className="w-16 h-16 mx-auto mb-4 text-cyan-400" />
-          <h3 className="text-xl font-semibold text-white mb-2">Upload Video</h3>
-          <p className="text-gray-400 mb-4">Drag and drop your video here, or click to browse</p>
-          <input
-            type="file"
-            accept="video/*"
-            onChange={(e) => handleFileUpload(e.target.files)}
-            className="hidden"
-            id="video-upload"
-          />
-          <motion.label
-            htmlFor="video-upload"
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-block px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-medium rounded-lg cursor-pointer hover:from-cyan-400 hover:to-blue-400 transition-all shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50"
-          >
-            Browse Files
-          </motion.label>
-          <p className="text-xs text-gray-500 mt-3">Supported formats: MP4, AVI, MOV • Max size: 500MB</p>
-        </div>
-      </motion.div>
-
-      {/* Uploaded Videos */}
-      {uploads.length === 0 ? (
-        <div className="text-center py-12 bg-gray-800/30 rounded-xl border border-gray-700/50">
-          <FileVideo className="w-16 h-16 mx-auto mb-4 text-gray-600" />
-          <p className="text-gray-400">No videos uploaded yet</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {uploads.map((upload, index) => (
-            <motion.div
-              key={upload.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.05 }}
-              className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-gray-700/50 rounded-xl overflow-hidden hover:border-cyan-500/50 transition-all"
-            >
-              <div className="relative aspect-video bg-gray-900">
-                <video
-                  src={upload.url}
-                  className="w-full h-full object-cover"
-                  preload="metadata"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
-                  <span className="text-xs text-white bg-black/50 px-2 py-1 rounded">{upload.duration}</span>
-                </div>
-              </div>
-
-              <div className="p-4">
-                <h3 className="text-white font-semibold mb-1 truncate">{upload.name}</h3>
-                <div className="flex items-center justify-between text-xs text-gray-400 mb-3">
-                  <span>{upload.size}</span>
-                  <span>{upload.uploadDate}</span>
-                </div>
-
-                <div className="flex gap-2">
-                  <motion.button
-                    onClick={() => handleView(upload)}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 rounded-lg hover:bg-cyan-500/30 transition-all text-sm"
-                  >
-                    <Eye className="w-4 h-4" />
-                    View
-                  </motion.button>
-                  <motion.button
-                    onClick={() => handleDownload(upload)}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center justify-center p-2 bg-green-500/20 text-green-400 border border-green-500/50 rounded-lg hover:bg-green-500/30 transition-all"
-                  >
-                    <Download className="w-4 h-4" />
-                  </motion.button>
-                  <motion.button
-                    onClick={() => handleDelete(upload.id)}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center justify-center p-2 bg-red-500/20 text-red-400 border border-red-500/50 rounded-lg hover:bg-red-500/30 transition-all"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      )}
-
-      {/* Video Preview Modal */}
-      <AnimatePresence>
-        {selectedVideo && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-            onClick={() => setSelectedVideo(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="relative max-w-4xl w-full bg-gray-900 rounded-xl overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between p-4 border-b border-gray-800">
-                <h3 className="text-white font-semibold truncate flex-1">{selectedVideo.name}</h3>
-                <motion.button
-                  onClick={() => setSelectedVideo(null)}
-                  whileHover={{ scale: 1.1, rotate: 90 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="p-2 bg-red-500/20 text-red-400 border border-red-500/50 rounded-lg hover:bg-red-500/30 transition-all ml-4"
-                >
-                  <X className="w-5 h-5" />
-                </motion.button>
-              </div>
-              <div className="aspect-video bg-black">
-                <video
-                  src={selectedVideo.url}
-                  controls
-                  autoPlay
-                  className="w-full h-full"
-                />
-              </div>
-              <div className="p-4 bg-gray-800/50">
-                <div className="flex items-center justify-between text-sm text-gray-400">
-                  <span>Size: {selectedVideo.size}</span>
-                  <span>Uploaded: {selectedVideo.uploadDate}</span>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

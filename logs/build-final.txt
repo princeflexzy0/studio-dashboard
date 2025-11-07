@@ -1,0 +1,48 @@
+
+> studio-dashboard@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/20) ...
+   Generating static pages (5/20) 
+   Generating static pages (10/20) 
+   Generating static pages (15/20) 
+ ✓ Generating static pages (20/20)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    510 B            88 kB
+├ ○ /_not-found                          876 B          88.4 kB
+├ ○ /api/admin/campaigns                 0 B                0 B
+├ ○ /api/admin/summary                   0 B                0 B
+├ ○ /api/admin/users                     0 B                0 B
+├ ○ /api/studio/overview                 0 B                0 B
+├ ƒ /api/studio/request/[id]/action      0 B                0 B
+├ ○ /api/studio/requests                 0 B                0 B
+├ ○ /api/system/health                   0 B                0 B
+├ ƒ /api/uploads                         0 B                0 B
+├ ○ /api/user/profile                    0 B                0 B
+├ ○ /dashboard                           23.5 kB         121 kB
+├ ○ /dashboard/campaigns                 2.37 kB         132 kB
+├ ○ /dashboard/creators                  2.15 kB         127 kB
+├ ○ /dashboard/requests                  1.92 kB         131 kB
+├ ○ /dashboard/settings                  4.7 kB          134 kB
+├ ○ /dashboard/system                    104 kB          228 kB
+├ ○ /dashboard/uploads                   4.45 kB         134 kB
+└ ○ /login                               2.39 kB         132 kB
++ First Load JS shared by all            87.5 kB
+  ├ chunks/117-db567d1448a5408c.js       31.9 kB
+  ├ chunks/fd9d1056-0926bcd7a2c3dcd4.js  53.6 kB
+  └ other shared chunks (total)          2 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

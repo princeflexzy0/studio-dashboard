@@ -1,132 +1,154 @@
 'use client';
 
-import { useQuery } from 'react-query';
-import { dashboardService } from '@/services/dashboard.service';
+import { useEffect, useState } from 'react';
+import Header from '@/components/Header';
+import ChartCard from '@/components/ChartCard';
+import { Users, Upload, Megaphone, TrendingUp, Activity, DollarSign } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Users, HardDrive, DollarSign, Activity, Clock } from 'lucide-react';
 
-export const dynamic = 'force-dynamic';
+interface DashboardStats {
+  totalCreators: number;
+  totalUploads: number;
+  activeCampaigns: number;
+  revenue: string;
+  creatorsChange: string;
+  uploadsChange: string;
+  campaignsChange: string;
+  revenueChange: string;
+}
 
 export default function DashboardPage() {
-  const { data: overview, isLoading } = useQuery(
-    'dashboard-overview',
-    dashboardService.getOverview,
-    {
-      refetchInterval: 30000,
-    }
-  );
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (isLoading) {
+  useEffect(() => {
+    // Simulate API call - replace with real API later
+    setTimeout(() => {
+      setStats({
+        totalCreators: 1234,
+        totalUploads: 5678,
+        activeCampaigns: 42,
+        revenue: '$125,430',
+        creatorsChange: '+12%',
+        uploadsChange: '+23%',
+        campaignsChange: '+5%',
+        revenueChange: '+18%',
+      });
+      setLoading(false);
+    }, 500);
+  }, []);
+
+  if (loading) {
     return (
-      <div className="p-8">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-700 rounded w-1/3"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-32 bg-gray-700 rounded"></div>
-            ))}
+      <div className="min-h-screen bg-black">
+        <Header title="Dashboard" subtitle="Welcome back! Here's what's happening." />
+        <div className="p-8">
+          <div className="flex items-center justify-center h-64">
+            <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
           </div>
         </div>
       </div>
     );
   }
 
-  const stats = overview?.stats || {};
-
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
-      >
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">
-          👋 Welcome back to Studio Dashboard
-        </h1>
-        <p className="text-sm sm:text-base text-gray-400">
-          Here's what's happening with your content today
-        </p>
-      </motion.div>
+    <div className="min-h-screen bg-black">
+      <Header title="Dashboard" subtitle="Welcome back! Here's what's happening." />
+      
+      <div className="p-4 sm:p-6 lg:p-8">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <ChartCard
+            title="Total Creators"
+            value={stats?.totalCreators.toLocaleString() || '0'}
+            change={stats?.creatorsChange}
+            changeType="positive"
+            icon={Users}
+          />
+          
+          <ChartCard
+            title="Total Uploads"
+            value={stats?.totalUploads.toLocaleString() || '0'}
+            change={stats?.uploadsChange}
+            changeType="positive"
+            icon={Upload}
+          />
+          
+          <ChartCard
+            title="Active Campaigns"
+            value={stats?.activeCampaigns || '0'}
+            change={stats?.campaignsChange}
+            changeType="positive"
+            icon={Megaphone}
+          />
+          
+          <ChartCard
+            title="Revenue"
+            value={stats?.revenue || '$0'}
+            change={stats?.revenueChange}
+            changeType="positive"
+            icon={DollarSign}
+          />
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {[
-          { label: 'Total Views', value: stats.totalViews?.toLocaleString() || '0', icon: TrendingUp, color: 'cyan', growth: overview?.analytics?.viewsGrowth },
-          { label: 'Active Users', value: stats.activeUsers?.toLocaleString() || '0', icon: Users, color: 'blue', growth: overview?.analytics?.usersGrowth },
-          { label: 'Storage Used', value: stats.storageUsed || '0 GB', icon: HardDrive, color: 'purple', growth: null },
-          { label: 'Revenue', value: `$${stats.revenue?.toLocaleString() || '0'}`, icon: DollarSign, color: 'green', growth: overview?.analytics?.revenueGrowth },
-        ].map((stat, index) => (
+        {/* Recent Activity */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:border-cyan-500/50 transition-all"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-gray-800/50 rounded-xl border border-gray-700 p-6"
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className={`p-3 rounded-lg bg-${stat.color}-500/20`}>
-                <stat.icon className={`w-6 h-6 text-${stat.color}-400`} />
-              </div>
-              {stat.growth && (
-                <span className="text-xs font-medium text-green-400">{stat.growth}</span>
-              )}
+            <div className="flex items-center gap-3 mb-4">
+              <Activity className="w-5 h-5 text-cyan-400" />
+              <h3 className="text-white font-semibold">Recent Activity</h3>
             </div>
-            <p className="text-sm text-gray-400 mb-1">{stat.label}</p>
-            <p className="text-2xl font-bold text-white">{stat.value}</p>
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700"
-        >
-          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <Activity className="w-5 h-5 text-cyan-400" />
-            Recent Activity
-          </h2>
-          <div className="space-y-3">
-            {overview?.recentActivity?.map((activity: any) => (
-              <div key={activity.id} className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors">
-                <img src={activity.avatar} alt={activity.user} className="w-10 h-10 rounded-full" />
-                <div className="flex-1">
-                  <p className="text-sm text-white">
-                    <span className="font-medium">{activity.user}</span> {activity.action}{' '}
-                    <span className="text-cyan-400">{activity.item}</span>
-                  </p>
-                  <p className="text-xs text-gray-400 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {activity.time}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700"
-        >
-          <h2 className="text-xl font-bold text-white mb-4">Top Content</h2>
-          <div className="space-y-3">
-            {overview?.topContent?.map((content: any) => (
-              <div key={content.id} className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors">
-                <img src={content.thumbnail} alt={content.title} className="w-16 h-16 rounded-lg object-cover" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-white">{content.title}</p>
-                  <div className="flex gap-4 text-xs text-gray-400 mt-1">
-                    <span>{content.views?.toLocaleString()} views</span>
-                    <span>{content.likes?.toLocaleString()} likes</span>
+            <div className="space-y-4">
+              {[
+                { action: 'New upload approved', user: 'Sarah Johnson', time: '5 min ago' },
+                { action: 'Campaign launched', user: 'Mike Chen', time: '1 hour ago' },
+                { action: 'Creator joined', user: 'Emma Wilson', time: '2 hours ago' },
+              ].map((activity, index) => (
+                <div key={index} className="flex items-start gap-3 text-sm">
+                  <div className="w-2 h-2 bg-cyan-500 rounded-full mt-1.5"></div>
+                  <div className="flex-1">
+                    <p className="text-white">{activity.action}</p>
+                    <p className="text-gray-400 text-xs">{activity.user} • {activity.time}</p>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-gray-800/50 rounded-xl border border-gray-700 p-6"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <TrendingUp className="w-5 h-5 text-green-400" />
+              <h3 className="text-white font-semibold">Top Performers</h3>
+            </div>
+            <div className="space-y-4">
+              {[
+                { name: 'Sarah Johnson', uploads: 45, badge: '🏆' },
+                { name: 'Mike Chen', uploads: 38, badge: '🥈' },
+                { name: 'Emma Wilson', uploads: 32, badge: '🥉' },
+              ].map((performer, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{performer.badge}</span>
+                    <div>
+                      <p className="text-white text-sm font-medium">{performer.name}</p>
+                      <p className="text-gray-400 text-xs">{performer.uploads} uploads</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
