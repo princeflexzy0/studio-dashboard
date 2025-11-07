@@ -3,17 +3,15 @@
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Table, { Column, StatusBadge } from '@/components/Table';
-import { Search, Filter, Plus, Calendar, Target } from 'lucide-react';
+import { Search, Filter, Plus, Target } from 'lucide-react';
 
 interface Campaign {
-  id: number;
-  name: string;
-  brand: string;
+  id: string;
+  title: string;
+  budget: number;
+  spent: number;
   status: string;
-  startDate: string;
-  endDate: string;
-  budget: string;
-  participants: number;
+  impressions: number;
 }
 
 export default function CampaignsPage() {
@@ -22,67 +20,22 @@ export default function CampaignsPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    // Simulate API call - dummy data for campaigns
-    setTimeout(() => {
-      setCampaigns([
-        {
-          id: 1,
-          name: 'Summer Sale 2024',
-          brand: 'FashionCo',
-          status: 'active',
-          startDate: '2024-06-01',
-          endDate: '2024-08-31',
-          budget: '$50,000',
-          participants: 25
-        },
-        {
-          id: 2,
-          name: 'Back to School',
-          brand: 'TechGear',
-          status: 'active',
-          startDate: '2024-08-01',
-          endDate: '2024-09-30',
-          budget: '$35,000',
-          participants: 18
-        },
-        {
-          id: 3,
-          name: 'Holiday Special',
-          brand: 'GiftWorld',
-          status: 'pending',
-          startDate: '2024-12-01',
-          endDate: '2024-12-31',
-          budget: '$75,000',
-          participants: 0
-        },
-        {
-          id: 4,
-          name: 'Spring Collection',
-          brand: 'StyleHub',
-          status: 'completed',
-          startDate: '2024-03-01',
-          endDate: '2024-05-31',
-          budget: '$45,000',
-          participants: 32
-        },
-        {
-          id: 5,
-          name: 'Fitness Challenge',
-          brand: 'HealthPlus',
-          status: 'active',
-          startDate: '2024-10-01',
-          endDate: '2024-11-30',
-          budget: '$28,000',
-          participants: 15
-        }
-      ]);
-      setLoading(false);
-    }, 500);
+    // Fetch from API
+    fetch('/api/admin/campaigns')
+      .then(res => res.json())
+      .then(data => {
+        setCampaigns(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching campaigns:', error);
+        setLoading(false);
+      });
   }, []);
 
   const columns: Column[] = [
     {
-      key: 'name',
+      key: 'title',
       label: 'Campaign',
       render: (value, row) => (
         <div className="flex items-center gap-3">
@@ -91,37 +44,25 @@ export default function CampaignsPage() {
           </div>
           <div>
             <p className="text-white font-medium">{value}</p>
-            <p className="text-gray-400 text-xs">{row.brand}</p>
+            <p className="text-gray-400 text-xs">{row.id}</p>
           </div>
         </div>
       ),
     },
     {
-      key: 'participants',
-      label: 'Participants',
+      key: 'impressions',
+      label: 'Impressions',
       render: (value) => (
-        <span className="text-cyan-400 font-semibold">{value}</span>
+        <span className="text-cyan-400 font-semibold">{value.toLocaleString()}</span>
       ),
     },
     {
       key: 'budget',
       label: 'Budget',
-      render: (value) => (
-        <span className="text-green-400 font-semibold">{value}</span>
-      ),
-    },
-    {
-      key: 'startDate',
-      label: 'Duration',
       render: (value, row) => (
-        <div className="text-gray-300 text-sm">
-          <div className="flex items-center gap-1">
-            <Calendar className="w-3 h-3" />
-            <span>{new Date(value).toLocaleDateString()}</span>
-          </div>
-          <div className="text-gray-500 text-xs">
-            to {new Date(row.endDate).toLocaleDateString()}
-          </div>
+        <div>
+          <p className="text-green-400 font-semibold">${value}</p>
+          <p className="text-gray-500 text-xs">Spent: ${row.spent}</p>
         </div>
       ),
     },
@@ -142,9 +83,12 @@ export default function CampaignsPage() {
   ];
 
   const filteredCampaigns = campaigns.filter(campaign =>
-    campaign.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    campaign.brand.toLowerCase().includes(searchQuery.toLowerCase())
+    campaign.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    campaign.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const totalBudget = campaigns.reduce((sum, c) => sum + c.budget, 0);
+  const totalSpent = campaigns.reduce((sum, c) => sum + c.spent, 0);
 
   return (
     <div className="min-h-screen bg-black">
@@ -160,7 +104,7 @@ export default function CampaignsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
-              placeholder="Search campaigns by name or brand..."
+              placeholder="Search campaigns..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 transition-colors"
@@ -189,16 +133,12 @@ export default function CampaignsPage() {
             </p>
           </div>
           <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6">
-            <p className="text-gray-400 text-sm mb-2">Pending</p>
-            <p className="text-yellow-400 text-3xl font-bold">
-              {campaigns.filter(c => c.status === 'pending').length}
-            </p>
+            <p className="text-gray-400 text-sm mb-2">Total Budget</p>
+            <p className="text-cyan-400 text-3xl font-bold">${totalBudget}</p>
           </div>
           <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6">
-            <p className="text-gray-400 text-sm mb-2">Total Budget</p>
-            <p className="text-cyan-400 text-3xl font-bold">
-              ${campaigns.reduce((sum, c) => sum + parseInt(c.budget.replace(/[$,]/g, '')), 0).toLocaleString()}
-            </p>
+            <p className="text-gray-400 text-sm mb-2">Total Spent</p>
+            <p className="text-purple-400 text-3xl font-bold">${totalSpent}</p>
           </div>
         </div>
 

@@ -24,7 +24,7 @@
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1",
     "react-query": "^3.39.3",
-    "recharts": "^2.10.3"
+    "recharts": "^2.15.4"
   },
   "devDependencies": {
     "@types/node": "^20",

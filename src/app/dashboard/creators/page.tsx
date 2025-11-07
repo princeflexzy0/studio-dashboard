@@ -11,7 +11,7 @@ interface Creator {
   email: string;
   uploads: number;
   status: string;
-  joinDate: string;
+  joined: string;
 }
 
 export default function CreatorsPage() {
@@ -20,17 +20,17 @@ export default function CreatorsPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    // Simulate API call - replace with real API later
-    setTimeout(() => {
-      setCreators([
-        { id: 1, name: 'Sarah Johnson', email: 'sarah@example.com', uploads: 45, status: 'active', joinDate: '2024-01-15' },
-        { id: 2, name: 'Mike Chen', email: 'mike@example.com', uploads: 38, status: 'active', joinDate: '2024-02-20' },
-        { id: 3, name: 'Emma Wilson', email: 'emma@example.com', uploads: 32, status: 'active', joinDate: '2024-03-10' },
-        { id: 4, name: 'David Park', email: 'david@example.com', uploads: 28, status: 'pending', joinDate: '2024-10-01' },
-        { id: 5, name: 'Lisa Anderson', email: 'lisa@example.com', uploads: 15, status: 'inactive', joinDate: '2023-12-05' },
-      ]);
-      setLoading(false);
-    }, 500);
+    // Fetch from API
+    fetch('/api/admin/users')
+      .then(res => res.json())
+      .then(data => {
+        setCreators(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching creators:', error);
+        setLoading(false);
+      });
   }, []);
 
   const columns: Column[] = [
@@ -62,7 +62,7 @@ export default function CreatorsPage() {
       render: (value) => <StatusBadge status={value} />,
     },
     {
-      key: 'joinDate',
+      key: 'joined',
       label: 'Join Date',
       render: (value) => (
         <span className="text-gray-300">{new Date(value).toLocaleDateString()}</span>
@@ -71,7 +71,7 @@ export default function CreatorsPage() {
     {
       key: 'actions',
       label: 'Actions',
-      render: (_, row) => (
+      render: () => (
         <button className="text-cyan-400 hover:text-cyan-300 text-sm font-medium">
           View Profile
         </button>

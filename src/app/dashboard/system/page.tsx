@@ -2,84 +2,47 @@
 
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
-import ChartCard from '@/components/ChartCard';
 import { 
   Server, 
   Database, 
-  Cpu, 
-  HardDrive, 
   Activity,
   AlertCircle,
   CheckCircle,
-  Clock
+  Clock,
+  HardDrive,
+  Cpu
 } from 'lucide-react';
-import { motion } from 'framer-motion';
 
-interface SystemMetrics {
-  cpuUsage: number;
-  memoryUsage: number;
-  diskUsage: number;
-  uptime: string;
-  activeUsers: number;
-  apiCalls: number;
-}
-
-interface SystemLog {
-  id: number;
-  timestamp: string;
-  level: 'info' | 'warning' | 'error' | 'success';
-  message: string;
+interface SystemHealth {
+  status: string;
+  uptime_hours: number;
+  queue_status: string;
+  last_check: string;
+  services: {
+    database: string;
+    storage: string;
+    api: string;
+    automation: string;
+  };
 }
 
 export default function SystemPage() {
-  const [metrics, setMetrics] = useState<SystemMetrics | null>(null);
-  const [logs, setLogs] = useState<SystemLog[]>([]);
+  const [health, setHealth] = useState<SystemHealth | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate API call - dummy system data
-    setTimeout(() => {
-      setMetrics({
-        cpuUsage: 45,
-        memoryUsage: 62,
-        diskUsage: 73,
-        uptime: '15 days, 4 hours',
-        activeUsers: 1234,
-        apiCalls: 45678
+    // Fetch from API
+    fetch('/api/system/health')
+      .then(res => res.json())
+      .then(data => {
+        setHealth(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching system health:', error);
+        setLoading(false);
       });
-
-      setLogs([
-        { id: 1, timestamp: '2024-11-07 10:30:00', level: 'success', message: 'Database backup completed successfully' },
-        { id: 2, timestamp: '2024-11-07 10:15:22', level: 'info', message: 'New user registration: sarah@example.com' },
-        { id: 3, timestamp: '2024-11-07 09:45:33', level: 'warning', message: 'High CPU usage detected (85%)' },
-        { id: 4, timestamp: '2024-11-07 09:30:15', level: 'info', message: 'Campaign "Summer Sale" started' },
-        { id: 5, timestamp: '2024-11-07 09:00:00', level: 'success', message: 'System health check passed' },
-        { id: 6, timestamp: '2024-11-07 08:45:12', level: 'error', message: 'Failed upload attempt from IP 192.168.1.100' },
-        { id: 7, timestamp: '2024-11-07 08:30:45', level: 'info', message: 'Cache cleared automatically' },
-        { id: 8, timestamp: '2024-11-07 08:00:00', level: 'success', message: 'Scheduled maintenance completed' },
-      ]);
-
-      setLoading(false);
-    }, 500);
   }, []);
-
-  const getLogIcon = (level: string) => {
-    switch (level) {
-      case 'success': return <CheckCircle className="w-4 h-4 text-green-400" />;
-      case 'error': return <AlertCircle className="w-4 h-4 text-red-400" />;
-      case 'warning': return <AlertCircle className="w-4 h-4 text-yellow-400" />;
-      default: return <Activity className="w-4 h-4 text-cyan-400" />;
-    }
-  };
-
-  const getLogColor = (level: string) => {
-    switch (level) {
-      case 'success': return 'border-l-green-500 bg-green-500/5';
-      case 'error': return 'border-l-red-500 bg-red-500/5';
-      case 'warning': return 'border-l-yellow-500 bg-yellow-500/5';
-      default: return 'border-l-cyan-500 bg-cyan-500/5';
-    }
-  };
 
   if (loading) {
     return (
@@ -94,130 +57,145 @@ export default function SystemPage() {
     );
   }
 
+  const getStatusColor = (status: string) => {
+    return status === 'healthy' || status === 'operational' 
+      ? 'text-green-400' 
+      : status === 'stable'
+      ? 'text-cyan-400'
+      : 'text-red-400';
+  };
+
+  const getStatusIcon = (status: string) => {
+    return status === 'healthy' || status === 'operational' || status === 'stable'
+      ? <CheckCircle className="w-5 h-5 text-green-400" />
+      : <AlertCircle className="w-5 h-5 text-red-400" />;
+  };
+
+  const services = [
+    {
+      name: 'Database',
+      status: health?.services?.database || 'unknown',
+      icon: Database,
+      color: 'blue'
+    },
+    {
+      name: 'Storage',
+      status: health?.services?.storage || 'unknown',
+      icon: HardDrive,
+      color: 'purple'
+    },
+    {
+      name: 'API',
+      status: health?.services?.api || 'unknown',
+      icon: Server,
+      color: 'cyan'
+    },
+    {
+      name: 'Automation',
+      status: health?.services?.automation || 'unknown',
+      icon: Cpu,
+      color: 'green'
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-black">
       <Header 
-        title="System" 
-        subtitle="Monitor system health and performance"
+        title="System Health" 
+        subtitle="Monitor system status and services"
       />
       
       <div className="p-4 sm:p-6 lg:p-8">
-        {/* System Metrics */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <ChartCard
-            title="CPU Usage"
-            value={`${metrics?.cpuUsage}%`}
-            change={metrics?.cpuUsage && metrics.cpuUsage > 80 ? 'High' : 'Normal'}
-            changeType={metrics?.cpuUsage && metrics.cpuUsage > 80 ? 'negative' : 'positive'}
-            icon={Cpu}
-          >
-            <div className="mt-2">
-              <div className="w-full bg-gray-700 rounded-full h-2">
-                <div 
-                  className="bg-gradient-to-r from-cyan-500 to-blue-500 h-2 rounded-full transition-all"
-                  style={{ width: `${metrics?.cpuUsage}%` }}
-                />
+        {/* Overall Status */}
+        <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-8 mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              {getStatusIcon(health?.status || '')}
+              <div>
+                <h2 className="text-2xl font-bold text-white">System Status</h2>
+                <p className={`text-lg font-semibold capitalize ${getStatusColor(health?.status || '')}`}>
+                  {health?.status}
+                </p>
               </div>
             </div>
-          </ChartCard>
-
-          <ChartCard
-            title="Memory Usage"
-            value={`${metrics?.memoryUsage}%`}
-            change={metrics?.memoryUsage && metrics.memoryUsage > 80 ? 'High' : 'Normal'}
-            changeType={metrics?.memoryUsage && metrics.memoryUsage > 80 ? 'negative' : 'positive'}
-            icon={Database}
-          >
-            <div className="mt-2">
-              <div className="w-full bg-gray-700 rounded-full h-2">
-                <div 
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all"
-                  style={{ width: `${metrics?.memoryUsage}%` }}
-                />
-              </div>
+            <div className="text-right">
+              <p className="text-gray-400 text-sm">Last Check</p>
+              <p className="text-white font-medium">
+                {health?.last_check ? new Date(health.last_check).toLocaleString() : 'N/A'}
+              </p>
             </div>
-          </ChartCard>
-
-          <ChartCard
-            title="Disk Usage"
-            value={`${metrics?.diskUsage}%`}
-            change={metrics?.diskUsage && metrics.diskUsage > 80 ? 'High' : 'Normal'}
-            changeType={metrics?.diskUsage && metrics.diskUsage > 80 ? 'negative' : 'positive'}
-            icon={HardDrive}
-          >
-            <div className="mt-2">
-              <div className="w-full bg-gray-700 rounded-full h-2">
-                <div 
-                  className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full transition-all"
-                  style={{ width: `${metrics?.diskUsage}%` }}
-                />
-              </div>
-            </div>
-          </ChartCard>
-
-          <ChartCard
-            title="System Uptime"
-            value={metrics?.uptime || '0 days'}
-            icon={Clock}
-          >
-            <div className="mt-2 text-xs text-green-400 font-medium">
-              ✓ All systems operational
-            </div>
-          </ChartCard>
+          </div>
         </div>
 
-        {/* Additional Stats */}
+        {/* Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
           <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-semibold">Active Users</h3>
-              <Server className="w-5 h-5 text-cyan-400" />
+              <h3 className="text-white font-semibold">Uptime</h3>
+              <Clock className="w-5 h-5 text-cyan-400" />
             </div>
-            <p className="text-3xl font-bold text-white mb-2">{metrics?.activeUsers.toLocaleString()}</p>
-            <p className="text-sm text-gray-400">Currently online</p>
+            <p className="text-3xl font-bold text-white mb-2">
+              {health?.uptime_hours || 0} hours
+            </p>
+            <p className="text-sm text-gray-400">
+              {health?.uptime_hours ? Math.floor(health.uptime_hours / 24) : 0} days
+            </p>
           </div>
 
           <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-semibold">API Calls (24h)</h3>
+              <h3 className="text-white font-semibold">Queue Status</h3>
               <Activity className="w-5 h-5 text-green-400" />
             </div>
-            <p className="text-3xl font-bold text-white mb-2">{metrics?.apiCalls.toLocaleString()}</p>
-            <p className="text-sm text-gray-400">Last 24 hours</p>
+            <p className={`text-3xl font-bold capitalize ${getStatusColor(health?.queue_status || '')}`}>
+              {health?.queue_status}
+            </p>
+            <p className="text-sm text-gray-400">Processing normally</p>
           </div>
         </div>
 
-        {/* System Logs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-gray-800/50 rounded-xl border border-gray-700 p-6"
-        >
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-white font-semibold text-lg">System Logs</h3>
-            <button className="text-cyan-400 hover:text-cyan-300 text-sm font-medium">
-              View All Logs
-            </button>
-          </div>
+        {/* Services Status */}
+        <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6">
+          <h3 className="text-xl font-semibold text-white mb-6">Services</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {services.map((service) => {
+              const Icon = service.icon;
+              const colorClasses = {
+                blue: 'bg-blue-500/10 border-blue-500/30',
+                purple: 'bg-purple-500/10 border-purple-500/30',
+                cyan: 'bg-cyan-500/10 border-cyan-500/30',
+                green: 'bg-green-500/10 border-green-500/30',
+              }[service.color];
 
-          <div className="space-y-3">
-            {logs.map((log) => (
-              <div
-                key={log.id}
-                className={`flex items-start gap-3 p-4 rounded-lg border-l-4 ${getLogColor(log.level)} transition-all hover:bg-opacity-80`}
-              >
-                <div className="mt-0.5">
-                  {getLogIcon(log.level)}
+              return (
+                <div 
+                  key={service.name}
+                  className={`${colorClasses} border rounded-xl p-6`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <Icon className="w-8 h-8 text-white" />
+                    {getStatusIcon(service.status)}
+                  </div>
+                  <h4 className="text-white font-semibold mb-1">{service.name}</h4>
+                  <p className={`text-sm font-medium capitalize ${getStatusColor(service.status)}`}>
+                    {service.status}
+                  </p>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm">{log.message}</p>
-                  <p className="text-gray-500 text-xs mt-1">{log.timestamp}</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
-        </motion.div>
+        </div>
+
+        {/* Refresh Button */}
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors flex items-center gap-2"
+          >
+            <Activity className="w-5 h-5" />
+            Refresh Status
+          </button>
+        </div>
       </div>
     </div>
   );
