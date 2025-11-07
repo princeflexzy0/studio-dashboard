@@ -34,7 +34,6 @@ export default function RequestsPage() {
       });
   }, []);
 
-  // Approve request
   const handleApprove = (request: Request) => {
     setRequests(prev => prev.map(r => 
       r.id === request.id 
@@ -44,7 +43,6 @@ export default function RequestsPage() {
     toast.success(`"${request.title}" approved successfully!`);
   };
 
-  // Reject request
   const handleReject = (request: Request) => {
     if (confirm(`Are you sure you want to reject "${request.title}"?`)) {
       setRequests(prev => prev.map(r => 
@@ -56,7 +54,6 @@ export default function RequestsPage() {
     }
   };
 
-  // View request details
   const handleView = (request: Request) => {
     setViewingRequest(request);
   };
@@ -98,7 +95,7 @@ export default function RequestsPage() {
         <div className="flex items-center gap-2">
           <button 
             onClick={() => handleView(row)}
-            className="p-2 text-cyan-400 hover:text-cyan-300 hover:bg-gray-700 rounded-lg transition-colors"
+            className="p-2 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/20 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/50"
             title="View Details"
           >
             <Eye className="w-4 h-4" />
@@ -107,14 +104,14 @@ export default function RequestsPage() {
             <>
               <button 
                 onClick={() => handleApprove(row)}
-                className="p-2 text-green-400 hover:text-green-300 hover:bg-gray-700 rounded-lg transition-colors"
+                className="p-2 text-green-400 hover:text-green-300 hover:bg-green-500/20 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-green-500/50"
                 title="Approve"
               >
                 <Check className="w-4 h-4" />
               </button>
               <button 
                 onClick={() => handleReject(row)}
-                className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-700 rounded-lg transition-colors"
+                className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/50"
                 title="Reject"
               >
                 <XIcon className="w-4 h-4" />
@@ -150,7 +147,7 @@ export default function RequestsPage() {
               className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 transition-colors"
             />
           </div>
-          <button className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-white transition-colors">
+          <button className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-white transition-all duration-300 hover:scale-105 hover:shadow-lg">
             <Filter className="w-5 h-5" />
             <span>Filters</span>
           </button>
@@ -158,7 +155,7 @@ export default function RequestsPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
-          <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6">
+          <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6 hover:border-yellow-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/20">
             <div className="flex items-center gap-3 mb-2">
               <Clock className="w-5 h-5 text-yellow-400" />
               <p className="text-gray-400 text-sm">Pending Review</p>
@@ -167,7 +164,7 @@ export default function RequestsPage() {
               {requests.filter(r => r.status === 'pending').length}
             </p>
           </div>
-          <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6">
+          <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6 hover:border-green-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/20">
             <div className="flex items-center gap-3 mb-2">
               <Check className="w-5 h-5 text-green-400" />
               <p className="text-gray-400 text-sm">Approved</p>
@@ -176,7 +173,7 @@ export default function RequestsPage() {
               {requests.filter(r => r.status === 'approved').length}
             </p>
           </div>
-          <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6">
+          <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-6 hover:border-red-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20">
             <div className="flex items-center gap-3 mb-2">
               <XIcon className="w-5 h-5 text-red-400" />
               <p className="text-gray-400 text-sm">Rejected</p>
@@ -197,8 +194,8 @@ export default function RequestsPage() {
 
       {/* View Modal */}
       {viewingRequest && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 max-w-2xl w-full">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-gray-800 rounded-2xl border border-gray-700 max-w-2xl w-full animate-in zoom-in duration-200">
             <div className="flex items-center justify-between p-6 border-b border-gray-700">
               <div>
                 <h3 className="text-xl font-semibold text-white">{viewingRequest.title}</h3>
@@ -212,7 +209,7 @@ export default function RequestsPage() {
               </div>
               <button
                 onClick={() => setViewingRequest(null)}
-                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+                className="p-2 text-gray-400 hover:text-white hover:bg-red-500/20 rounded-lg transition-all duration-300 hover:scale-110 hover:rotate-90"
               >
                 <XIcon className="w-6 h-6" />
               </button>
@@ -237,7 +234,7 @@ export default function RequestsPage() {
                       handleApprove(viewingRequest);
                       setViewingRequest(null);
                     }}
-                    className="px-4 py-2 bg-green-500/20 text-green-400 hover:bg-green-500/30 rounded-lg transition-colors flex items-center gap-2"
+                    className="px-4 py-2 bg-green-500/20 text-green-400 hover:bg-green-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-green-500/50 flex items-center gap-2"
                   >
                     <Check className="w-4 h-4" />
                     Approve
@@ -247,7 +244,7 @@ export default function RequestsPage() {
                       handleReject(viewingRequest);
                       setViewingRequest(null);
                     }}
-                    className="px-4 py-2 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-lg transition-colors flex items-center gap-2"
+                    className="px-4 py-2 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-500/50 flex items-center gap-2"
                   >
                     <XIcon className="w-4 h-4" />
                     Reject
@@ -258,7 +255,7 @@ export default function RequestsPage() {
               )}
               <button
                 onClick={() => setViewingRequest(null)}
-                className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all duration-300 hover:scale-105"
               >
                 Close
               </button>

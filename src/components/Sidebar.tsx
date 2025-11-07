@@ -97,7 +97,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Header */}
         <div className="h-16 flex items-center justify-between px-6 border-b border-gray-800">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/30">
               <span className="text-white font-bold text-sm">S</span>
             </div>
             <div>
@@ -107,7 +107,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           </div>
           <button
             onClick={onClose}
-            className="lg:hidden text-gray-400 hover:text-white transition-colors"
+            className="lg:hidden text-gray-400 hover:text-white hover:bg-red-500/20 rounded-lg p-1 transition-all duration-300 hover:scale-110 hover:rotate-90"
           >
             <X className="w-5 h-5" />
           </button>
@@ -131,17 +131,26 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                       href={item.path}
                       onClick={onClose}
                       className={`
-                        flex items-center gap-3 px-3 py-2.5 rounded-lg
-                        transition-all duration-200
+                        group flex items-center gap-3 px-3 py-2.5 rounded-lg
+                        transition-all duration-300 ease-out
                         ${
                           isActive
-                            ? 'bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 border border-cyan-500/20'
-                            : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                            ? 'bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 border border-cyan-500/20 shadow-lg shadow-cyan-500/20'
+                            : 'text-gray-400 hover:text-white hover:bg-gray-800/80 hover:scale-105 hover:shadow-lg border border-transparent hover:border-gray-700'
                         }
                       `}
                     >
-                      <Icon className="w-5 h-5 flex-shrink-0" />
+                      <Icon className={`w-5 h-5 flex-shrink-0 transition-all duration-300 ${
+                        isActive 
+                          ? 'text-cyan-400' 
+                          : 'group-hover:scale-110 group-hover:text-cyan-400'
+                      }`} />
                       <span className="font-medium text-sm">{item.label}</span>
+                      {!isActive && (
+                        <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="w-1.5 h-1.5 rounded-full bg-cyan-400"></div>
+                        </div>
+                      )}
                     </Link>
                   );
                 })}
@@ -154,11 +163,12 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="p-4 border-t border-gray-800">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg
+            className="group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg
               text-gray-400 hover:text-red-400 hover:bg-red-500/10
-              transition-all duration-200 border border-transparent hover:border-red-500/20"
+              transition-all duration-300 border border-transparent hover:border-red-500/20
+              hover:scale-105 hover:shadow-lg hover:shadow-red-500/20"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
             <span className="font-medium text-sm">Logout</span>
           </button>
           

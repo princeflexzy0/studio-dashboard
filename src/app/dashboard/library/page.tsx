@@ -37,22 +37,18 @@ export default function LibraryPage() {
       });
   }, []);
 
-  // View file details
   const handleView = (file: File) => {
     setViewingFile(file);
     toast.success('Opening file preview...');
   };
 
-  // Download file
   const handleDownload = (file: File) => {
     toast.success(`Downloading ${file.name}...`);
-    // Mock download delay
     setTimeout(() => {
       toast.success('Download complete!');
     }, 1500);
   };
 
-  // Edit file
   const handleEdit = (file: File) => {
     setEditingFile(file);
     setEditTitle(file.name);
@@ -72,7 +68,6 @@ export default function LibraryPage() {
     setEditTitle('');
   };
 
-  // Delete file
   const handleDelete = (file: File) => {
     if (confirm(`Are you sure you want to delete "${file.name}"?`)) {
       setFiles(prev => prev.filter(f => f.id !== file.id));
@@ -129,28 +124,28 @@ export default function LibraryPage() {
         <div className="flex items-center gap-2">
           <button 
             onClick={() => handleView(row)}
-            className="p-2 text-cyan-400 hover:text-cyan-300 hover:bg-gray-700 rounded-lg transition-colors"
+            className="group relative p-2 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/20 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/50"
             title="View"
           >
             <Eye className="w-4 h-4" />
           </button>
           <button 
             onClick={() => handleDownload(row)}
-            className="p-2 text-green-400 hover:text-green-300 hover:bg-gray-700 rounded-lg transition-colors"
+            className="group relative p-2 text-green-400 hover:text-green-300 hover:bg-green-500/20 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-green-500/50"
             title="Download"
           >
             <Download className="w-4 h-4" />
           </button>
           <button 
             onClick={() => handleEdit(row)}
-            className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-700 rounded-lg transition-colors"
+            className="group relative p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-blue-500/50"
             title="Edit"
           >
             <Edit className="w-4 h-4" />
           </button>
           <button 
             onClick={() => handleDelete(row)}
-            className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-700 rounded-lg transition-colors"
+            className="group relative p-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/50"
             title="Delete"
           >
             <Trash2 className="w-4 h-4" />
@@ -184,7 +179,7 @@ export default function LibraryPage() {
               className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 transition-colors"
             />
           </div>
-          <button className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-white transition-colors">
+          <button className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-white transition-all duration-300 hover:scale-105 hover:shadow-lg">
             <Filter className="w-5 h-5" />
             <span>Filters</span>
           </button>
@@ -200,8 +195,8 @@ export default function LibraryPage() {
 
       {/* View Modal */}
       {viewingFile && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 max-w-4xl w-full">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-gray-800 rounded-2xl border border-gray-700 max-w-4xl w-full animate-in zoom-in duration-200">
             <div className="flex items-center justify-between p-6 border-b border-gray-700">
               <div>
                 <h3 className="text-xl font-semibold text-white">{viewingFile.name}</h3>
@@ -215,7 +210,7 @@ export default function LibraryPage() {
               </div>
               <button
                 onClick={() => setViewingFile(null)}
-                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+                className="p-2 text-gray-400 hover:text-white hover:bg-red-500/20 rounded-lg transition-all duration-300 hover:scale-110 hover:rotate-90"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -230,14 +225,14 @@ export default function LibraryPage() {
             <div className="p-6 border-t border-gray-700 flex justify-between">
               <button
                 onClick={() => handleDownload(viewingFile)}
-                className="px-4 py-2 bg-green-500/20 text-green-400 hover:bg-green-500/30 rounded-lg transition-colors flex items-center gap-2"
+                className="px-4 py-2 bg-green-500/20 text-green-400 hover:bg-green-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-green-500/50 flex items-center gap-2"
               >
                 <Download className="w-4 h-4" />
                 Download
               </button>
               <button
                 onClick={() => setViewingFile(null)}
-                className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all duration-300 hover:scale-105"
               >
                 Close
               </button>
@@ -248,13 +243,13 @@ export default function LibraryPage() {
 
       {/* Edit Modal */}
       {editingFile && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 max-w-md w-full">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-gray-800 rounded-2xl border border-gray-700 max-w-md w-full animate-in zoom-in duration-200">
             <div className="flex items-center justify-between p-6 border-b border-gray-700">
               <h3 className="text-xl font-semibold text-white">Edit File</h3>
               <button
                 onClick={() => setEditingFile(null)}
-                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+                className="p-2 text-gray-400 hover:text-white hover:bg-red-500/20 rounded-lg transition-all duration-300 hover:scale-110 hover:rotate-90"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -273,13 +268,13 @@ export default function LibraryPage() {
             <div className="p-6 border-t border-gray-700 flex justify-end gap-3">
               <button
                 onClick={() => setEditingFile(null)}
-                className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all duration-300 hover:scale-105"
               >
                 Cancel
               </button>
               <button
                 onClick={saveEdit}
-                className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white rounded-lg transition-colors"
+                className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/50"
               >
                 Save Changes
               </button>
