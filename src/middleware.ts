@@ -3,46 +3,39 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  
+  // Get token from cookies (try both names for compatibility)
+  const token = request.cookies.get('auth_token')?.value || 
+                request.cookies.get('auth-token')?.value;
+  
+  console.log('🔍 Middleware check:', { 
+    pathname, 
+    hasToken: !!token,
+    token: token ? token.substring(0, 20) + '...' : 'none'
+  });
 
-  // Get auth token from cookie
-  const authToken = request.cookies.get('auth-token')?.value;
+  // Public paths
+  const publicPaths = ['/', '/login'];
+  const isPublicPath = publicPaths.includes(pathname);
 
-  console.log('🔍 Middleware check:', { pathname, hasToken: !!authToken });
-
-  // Public paths that don't require authentication
-  const publicPaths = ['/login', '/'];
-
-  // Check if the path is public
-  const isPublicPath = publicPaths.some(path => pathname === path);
-
-  // If trying to access protected route without auth, redirect to login
-  if (!isPublicPath && !authToken) {
-    console.log('❌ No auth token, redirecting to login');
-    const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('redirect', pathname);
-    return NextResponse.redirect(loginUrl);
+  // Redirect to dashboard if logged in and accessing login
+  if (token && pathname === '/login') {
+    console.log('✅ Has token, redirecting to dashboard');
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  // If authenticated user tries to access login, redirect to dashboard
-  if (authToken && pathname === '/login') {
-    console.log('✅ Already authenticated, redirecting to dashboard');
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+  // Redirect to login if not authenticated and accessing protected route
+  if (!token && !isPublicPath && pathname.startsWith('/dashboard')) {
+    console.log('❌ No auth token, redirecting to login');
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   console.log('✅ Access granted');
   return NextResponse.next();
 }
 
-// Configure which routes use this middleware
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - api routes
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico
-     */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };
