@@ -1,333 +1,292 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FolderOpen, 
-  Video, 
-  Image, 
-  File, 
-  Download, 
-  Trash2, 
-  Eye, 
-  Upload, 
-  X, 
-  Calendar, 
-  User, 
-  FileType 
-} from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
+import Table, { Column, StatusBadge } from '@/components/Table';
+import { Search, Filter, Download, Eye, Trash2, Edit, X, FileVideo } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
-interface LibraryFile {
-  id: string;
-  title: string;
-  uploader: string;
-  date: string;
-  status: string;
+interface File {
+  id: number;
+  name: string;
   type: string;
   size: string;
-  description: string;
+  uploadDate: string;
+  status: string;
+  uploader: string;
 }
 
 export default function LibraryPage() {
-  const [files, setFiles] = useState<LibraryFile[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedFile, setSelectedFile] = useState<LibraryFile | null>(null);
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [viewingFile, setViewingFile] = useState<File | null>(null);
+  const [editingFile, setEditingFile] = useState<File | null>(null);
+  const [editTitle, setEditTitle] = useState('');
 
   useEffect(() => {
-    fetchFiles();
+    fetch('/api/admin/library')
+      .then(res => res.json())
+      .then(data => {
+        setFiles(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching files:', error);
+        setLoading(false);
+      });
   }, []);
 
-  const fetchFiles = async () => {
-    try {
-      const response = await fetch('/api/admin/library');
-      const data = await response.json();
-      setFiles(data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching library files:', error);
-      toast.error('Failed to load library files');
-      setLoading(false);
+  // View file details
+  const handleView = (file: File) => {
+    setViewingFile(file);
+    toast.success('Opening file preview...');
+  };
+
+  // Download file
+  const handleDownload = (file: File) => {
+    toast.success(`Downloading ${file.name}...`);
+    // Mock download delay
+    setTimeout(() => {
+      toast.success('Download complete!');
+    }, 1500);
+  };
+
+  // Edit file
+  const handleEdit = (file: File) => {
+    setEditingFile(file);
+    setEditTitle(file.name);
+  };
+
+  const saveEdit = () => {
+    if (!editingFile) return;
+    
+    setFiles(prev => prev.map(f => 
+      f.id === editingFile.id 
+        ? { ...f, name: editTitle }
+        : f
+    ));
+    
+    toast.success('File updated successfully!');
+    setEditingFile(null);
+    setEditTitle('');
+  };
+
+  // Delete file
+  const handleDelete = (file: File) => {
+    if (confirm(`Are you sure you want to delete "${file.name}"?`)) {
+      setFiles(prev => prev.filter(f => f.id !== file.id));
+      toast.success('File deleted successfully!');
     }
   };
 
-  const handleDelete = (id: string) => {
-    setFiles(files.filter(file => file.id !== id));
-    toast.success('File deleted successfully');
-    setSelectedFile(null);
-  };
-
-  const handleDownload = (file: LibraryFile) => {
-    toast.success(`Downloading ${file.title}...`);
-  };
-
-  const getFileIcon = (type: string) => {
-    switch (type) {
-      case 'video':
-        return <Video className="w-12 h-12 text-purple-400" />;
-      case 'image':
-        return <Image className="w-12 h-12 text-blue-400" />;
-      case 'document':
-        return <File className="w-12 h-12 text-green-400" />;
-      default:
-        return <FileType className="w-12 h-12 text-gray-400" />;
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-500/10 text-green-400 border-green-500/30';
-      case 'processing':
-        return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30';
-      default:
-        return 'bg-gray-500/10 text-gray-400 border-gray-500/30';
-    }
-  };
-
-  const filteredFiles = files.filter(file => {
-    const matchesSearch = file.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         file.uploader.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterType === 'all' || file.type === filterType;
-    return matchesSearch && matchesFilter;
-  });
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-black">
-        <Header title="Library" subtitle="Manage your media files" />
-        <div className="p-8">
-          <div className="flex items-center justify-center h-64">
-            <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+  const columns: Column[] = [
+    {
+      key: 'name',
+      label: 'File Name',
+      render: (value, row) => (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-lg flex items-center justify-center border border-cyan-500/30">
+            <FileVideo className="w-5 h-5 text-cyan-400" />
+          </div>
+          <div>
+            <p className="text-white font-medium">{value}</p>
+            <p className="text-gray-400 text-xs">{row.type}</p>
           </div>
         </div>
-      </div>
-    );
-  }
+      ),
+    },
+    {
+      key: 'size',
+      label: 'Size',
+      render: (value) => (
+        <span className="text-gray-300">{value}</span>
+      ),
+    },
+    {
+      key: 'uploader',
+      label: 'Uploaded By',
+      render: (value) => (
+        <span className="text-gray-300">{value}</span>
+      ),
+    },
+    {
+      key: 'uploadDate',
+      label: 'Upload Date',
+      render: (value) => (
+        <span className="text-gray-300">{new Date(value).toLocaleDateString()}</span>
+      ),
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      render: (value) => <StatusBadge status={value} />,
+    },
+    {
+      key: 'actions',
+      label: 'Actions',
+      render: (_, row) => (
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={() => handleView(row)}
+            className="p-2 text-cyan-400 hover:text-cyan-300 hover:bg-gray-700 rounded-lg transition-colors"
+            title="View"
+          >
+            <Eye className="w-4 h-4" />
+          </button>
+          <button 
+            onClick={() => handleDownload(row)}
+            className="p-2 text-green-400 hover:text-green-300 hover:bg-gray-700 rounded-lg transition-colors"
+            title="Download"
+          >
+            <Download className="w-4 h-4" />
+          </button>
+          <button 
+            onClick={() => handleEdit(row)}
+            className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-700 rounded-lg transition-colors"
+            title="Edit"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+          <button 
+            onClick={() => handleDelete(row)}
+            className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-700 rounded-lg transition-colors"
+            title="Delete"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  const filteredFiles = files.filter(file =>
+    file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    file.uploader.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-black">
-      <Header title="Library" subtitle="Manage your media files and documents" />
+      <Header 
+        title="Library" 
+        subtitle="Manage your content library"
+      />
       
       <div className="p-4 sm:p-6 lg:p-8">
-        {/* Controls */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="flex-1">
+        <div className="mb-6 flex flex-col sm:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
               placeholder="Search files..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 transition-colors"
             />
           </div>
-          
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
-          >
-            <option value="all">All Types</option>
-            <option value="video">Videos</option>
-            <option value="image">Images</option>
-            <option value="document">Documents</option>
-          </select>
-
-          <button
-            onClick={() => setIsUploadModalOpen(true)}
-            className="px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors flex items-center gap-2 justify-center"
-          >
-            <Upload className="w-5 h-5" />
-            Upload File
+          <button className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-white transition-colors">
+            <Filter className="w-5 h-5" />
+            <span>Filters</span>
           </button>
         </div>
 
-        {/* File Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredFiles.map((file) => (
-            <motion.div
-              key={file.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-gray-800/50 rounded-xl border border-gray-700 p-6 hover:border-cyan-500/50 transition-all cursor-pointer"
-              onClick={() => setSelectedFile(file)}
-            >
-              <div className="flex items-center justify-center mb-4">
-                {getFileIcon(file.type)}
-              </div>
-              
-              <h3 className="text-white font-semibold mb-2 truncate" title={file.title}>
-                {file.title}
-              </h3>
-              
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <User className="w-4 h-4" />
-                  {file.uploader}
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <Calendar className="w-4 h-4" />
-                  {new Date(file.date).toLocaleDateString()}
-                </div>
-                <div className="text-sm text-gray-400">
-                  {file.size}
-                </div>
-              </div>
-              
-              <div className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(file.status)}`}>
-                {file.status}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {filteredFiles.length === 0 && (
-          <div className="text-center py-20">
-            <FolderOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <p className="text-gray-400 text-lg">No files found</p>
-            <p className="text-gray-500 text-sm mt-2">Try adjusting your search or filters</p>
-          </div>
-        )}
+        <Table
+          columns={columns}
+          data={filteredFiles}
+          isLoading={loading}
+          emptyMessage="No files found"
+        />
       </div>
 
-      {/* File Details Modal */}
-      <AnimatePresence>
-        {selectedFile && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setSelectedFile(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-gray-800 rounded-2xl max-w-2xl w-full p-6 border border-gray-700"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-white">File Details</h2>
-                <button
-                  onClick={() => setSelectedFile(null)}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-center py-8 bg-gray-900/50 rounded-xl">
-                  {getFileIcon(selectedFile.type)}
-                </div>
-
-                <div>
-                  <label className="text-gray-400 text-sm">Title</label>
-                  <p className="text-white font-medium">{selectedFile.title}</p>
-                </div>
-
-                <div>
-                  <label className="text-gray-400 text-sm">Description</label>
-                  <p className="text-white">{selectedFile.description}</p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-gray-400 text-sm">Uploader</label>
-                    <p className="text-white">{selectedFile.uploader}</p>
-                  </div>
-                  <div>
-                    <label className="text-gray-400 text-sm">Upload Date</label>
-                    <p className="text-white">{new Date(selectedFile.date).toLocaleDateString()}</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-gray-400 text-sm">File Size</label>
-                    <p className="text-white">{selectedFile.size}</p>
-                  </div>
-                  <div>
-                    <label className="text-gray-400 text-sm">Status</label>
-                    <div className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(selectedFile.status)}`}>
-                      {selectedFile.status}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex gap-3 pt-4">
-                  <button
-                    onClick={() => handleDownload(selectedFile)}
-                    className="flex-1 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
-                  >
-                    <Download className="w-5 h-5" />
-                    Download
-                  </button>
-                  <button
-                    onClick={() => handleDelete(selectedFile.id)}
-                    className="flex-1 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 border border-red-500/30"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                    Delete
-                  </button>
+      {/* View Modal */}
+      {viewingFile && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-gray-800 rounded-2xl border border-gray-700 max-w-4xl w-full">
+            <div className="flex items-center justify-between p-6 border-b border-gray-700">
+              <div>
+                <h3 className="text-xl font-semibold text-white">{viewingFile.name}</h3>
+                <div className="flex items-center gap-4 mt-2 text-sm text-gray-400">
+                  <span>By {viewingFile.uploader}</span>
+                  <span>•</span>
+                  <span>{viewingFile.size}</span>
+                  <span>•</span>
+                  <span>{new Date(viewingFile.uploadDate).toLocaleDateString()}</span>
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Upload Modal */}
-      <AnimatePresence>
-        {isUploadModalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setIsUploadModalOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-gray-800 rounded-2xl max-w-md w-full p-6 border border-gray-700"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-white">Upload File</h2>
-                <button
-                  onClick={() => setIsUploadModalOpen(false)}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-
-              <div className="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center hover:border-cyan-500 transition-colors cursor-pointer">
-                <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-white font-medium mb-2">Click to upload or drag and drop</p>
-                <p className="text-gray-400 text-sm">Video, Image, or Document files</p>
-              </div>
-
               <button
-                onClick={() => {
-                  toast.success('Upload feature coming soon!');
-                  setIsUploadModalOpen(false);
-                }}
-                className="w-full mt-6 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors"
+                onClick={() => setViewingFile(null)}
+                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
               >
-                Upload
+                <X className="w-6 h-6" />
               </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </div>
+            <div className="p-6">
+              <div className="bg-gray-900/50 rounded-lg p-12 text-center border border-gray-700">
+                <FileVideo className="w-24 h-24 mx-auto mb-4 text-cyan-400" />
+                <p className="text-white font-medium mb-2">{viewingFile.name}</p>
+                <p className="text-gray-500 text-sm">(File preview would load here)</p>
+              </div>
+            </div>
+            <div className="p-6 border-t border-gray-700 flex justify-between">
+              <button
+                onClick={() => handleDownload(viewingFile)}
+                className="px-4 py-2 bg-green-500/20 text-green-400 hover:bg-green-500/30 rounded-lg transition-colors flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Download
+              </button>
+              <button
+                onClick={() => setViewingFile(null)}
+                className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {editingFile && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-gray-800 rounded-2xl border border-gray-700 max-w-md w-full">
+            <div className="flex items-center justify-between p-6 border-b border-gray-700">
+              <h3 className="text-xl font-semibold text-white">Edit File</h3>
+              <button
+                onClick={() => setEditingFile(null)}
+                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="p-6">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                File Name
+              </label>
+              <input
+                type="text"
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-900/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500 transition-colors"
+              />
+            </div>
+            <div className="p-6 border-t border-gray-700 flex justify-end gap-3">
+              <button
+                onClick={() => setEditingFile(null)}
+                className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveEdit}
+                className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white rounded-lg transition-colors"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
